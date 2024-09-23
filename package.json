@@ -33,5 +33,8 @@
 		"vite": "^5.0.3",
 		"vitest": "^2.0.0"
 	},
+	"dependencies": {
+		"got": "^14.4.2"
+	},
 	"type": "module"
 }

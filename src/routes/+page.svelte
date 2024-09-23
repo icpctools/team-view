@@ -1,2 +1,20 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script lang="ts">
+	import type { OrganizationJSON, TeamJSON } from "$lib/contest-types";
+	
+	export let data: { name:string,
+		teams: TeamJSON[],
+		orgs: OrganizationJSON[],
+		logos: string[]
+	};
+	console.log('here');
+</script>
+
+<h1>ICPC Team View</h1>
+
+<p>{data.name}</p>
+
+{#each data.teams as team, i}
+
+<div><img src="{data.logos[i]}" alt="logo"/> {team.display_name || team.name}</div>
+
+{/each}
