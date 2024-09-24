@@ -103,7 +103,7 @@ export interface ScoreboardJSON {
 	time: Time,
 	contest_time: RelTime,
 	state: ContestStateJSON,
-	rows: []
+	rows: ScoreboardRowJSON[]
 }
 
 export interface ScoreboardScoreJSON {
@@ -117,7 +117,16 @@ export interface ScoreboardRowJSON {
 	rank: number,
 	team_id: string,
 	score: ScoreboardScoreJSON,
-	problems?: any[] // TODO
+	problems?: ScoreboardProblemJSON[]
+}
+
+export interface ScoreboardProblemJSON {
+	problem_id: string,
+	num_judged: number,
+	num_pending:number,
+	solved?: boolean,
+	score?:number,
+	time?: number
 }
 
 export interface AwardJSON {

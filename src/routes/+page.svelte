@@ -12,6 +12,8 @@
 
 <p>{data.name}</p>
 
+<a href="/scoreboard">Scoreboard</a>
+
 {#each data.teams as team, i}
 
 <a href="/team/{team.id}">
