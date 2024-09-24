@@ -1,0 +1,29 @@
+import { error } from '@sveltejs/kit';
+import { Contests } from '$lib/contests';
+import { ContestUtil } from '$lib/contest-util';
+
+export const load = async (params) => {
+    const c = new Contests("https://localhost:8443/api/");
+	await c.loadContests();
+	if (!c) throw error(404);
+	
+	const cc = c.getContest();
+	if (!cc) throw error(404);
+	
+	let teams = await cc.loadTeams();
+	const team = teams?.find((t) => t.id && t.id === params.params.id);
+	if (!team) throw error(404);
+
+	let orgs = await cc.loadOrganizations();
+
+	const util = new ContestUtil();
+	let org = util.findById(orgs, team.organization_id);
+
+	let logo:string |undefined; 
+	logo = cc.resolveURL(util.bestSquareLogo(org?.logo, 64));
+
+    return {
+        team:team,
+		logo:logo,
+    };
+};

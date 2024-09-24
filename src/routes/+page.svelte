@@ -1,9 +1,8 @@
 <script lang="ts">
-	import type { OrganizationJSON, TeamJSON } from "$lib/contest-types";
+	import type { TeamJSON } from "$lib/contest-types";
 	
 	export let data: { name:string,
 		teams: TeamJSON[],
-		orgs: OrganizationJSON[],
 		logos: string[]
 	};
 	console.log('here');
@@ -15,6 +14,8 @@
 
 {#each data.teams as team, i}
 
+<a href="/team/{team.id}">
 <div><img src="{data.logos[i]}" alt="logo"/> {team.display_name || team.name}</div>
+</a>
 
 {/each}
