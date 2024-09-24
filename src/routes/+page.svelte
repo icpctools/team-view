@@ -17,7 +17,7 @@
 {#each data.teams as team, i}
 
 <a href="/team/{team.id}">
-<div><img src="{data.logos[i]}" alt="logo"/> {team.display_name || team.name}</div>
+<div class="flex flex-row"><img src="{data.logos[i]}" alt="logo"/> {team.display_name || team.name}</div>
 </a>
 
 {/each}
