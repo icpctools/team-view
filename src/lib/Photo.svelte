@@ -4,7 +4,6 @@
 	
 	export let url:string= 'https://localhost:8443/api/contests';
 	export let ref:FileReferenceJSON[] | undefined;
-	export let size: 32 | 64 = 32;
 </script>
 
-<Image url={url} ref={ref} size={size}/>
+<Image url={url} ref={ref} size={24}/>

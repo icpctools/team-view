@@ -14,19 +14,7 @@ export const load = async (params) => {
 	const team = teams?.find((t) => t.id && t.id === params.params.id);
 	if (!team) throw error(404);
 
-	const orgs = await cc.loadOrganizations();
-
-	const util = new ContestUtil();
-	const logo = util.findById(orgs, team.organization_id)?.logo;
-
-	const persons = await cc.loadPersons();
-	const coaches = persons?.filter(p => p.role === 'coach' && p.team_ids?.includes(team.id));
-	const contestants = persons?.filter(p => p.role === 'contestant' && p.team_ids?.includes(team.id));
-
     return {
         team:team,
-		logo:logo,
-		coaches:coaches,
-		contestants:contestants
     };
 };
