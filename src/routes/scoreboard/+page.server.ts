@@ -7,8 +7,6 @@ export const load = async (_params) => {
     const c = new Contests("https://localhost:8443/api/");
 	await c.loadContests();
 	if (!c) throw error(404);
-
-	console.log("contests: " + c.getContests()?.length);
 	
 	const cc = c.getContest();
 	if (!cc) throw error(404);
@@ -28,8 +26,7 @@ export const load = async (_params) => {
 
 	let orgs = await cc.loadOrganizations();
 
-	let map = sortedTeams?.map(team => util.findById(orgs, team.organization_id));
-	let logos = map?.map(org => cc.resolveURL(util.bestSquareLogo(org?.logo, 64)));
+	let logos = sortedTeams?.map(team => util.findById(orgs, team.organization_id)?.logo);
 
     return {
         name: c.getContests()[0].name,

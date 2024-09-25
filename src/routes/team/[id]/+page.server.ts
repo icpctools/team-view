@@ -17,10 +17,7 @@ export const load = async (params) => {
 	let orgs = await cc.loadOrganizations();
 
 	const util = new ContestUtil();
-	let org = util.findById(orgs, team.organization_id);
-
-	let logo:string |undefined; 
-	logo = cc.resolveURL(util.bestSquareLogo(org?.logo, 64));
+	const logo = util.findById(orgs, team.organization_id)?.logo;
 
     return {
         team:team,

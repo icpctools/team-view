@@ -1,0 +1,16 @@
+<script lang="ts">
+	import type { FileReferenceJSON } from "$lib/contest-types";
+	import { ContestUtil } from "./contest-util";
+	
+	export let url:string = 'https://localhost:8443/api/contests';
+	export let ref:FileReferenceJSON[] | undefined;
+	export let size: 8 | 32 = 8;
+
+	const util = new ContestUtil();
+	const bestRef = util.bestSquareLogo(ref, size);
+	const imgSrc = url.substring(0, 27) + bestRef?.href;
+</script>
+
+{#if bestRef}
+	<img src="{imgSrc}" alt="logo" class="max-h-{size} max-w-{size}"/>
+{/if}

@@ -1,10 +1,11 @@
 <script lang="ts">
-	import type { ProblemJSON, ScoreboardJSON, TeamJSON } from "$lib/contest-types";
+	import type { FileReferenceJSON, ProblemJSON, ScoreboardJSON, TeamJSON } from "$lib/contest-types";
+	import Logo from "$lib/Logo.svelte";
 	
 	export let data: { name:string,
 		scoreboard:ScoreboardJSON,
 		teams: TeamJSON[],
-		logos: string[],
+		logos: FileReferenceJSON[][],
 		problems: ProblemJSON[]
 	};
 	let cols:string[] = ['40px','60px','300px'];
@@ -39,7 +40,7 @@
 			class="grid grid-table gap-x-0.5 h-7"
 			style="grid-template-columns: {col}">
 			<div role="cell">{row.rank}</div>
-			<div role="cell"><img src="{data.logos[i]}" alt="logo"/></div>
+			<div role="cell"><Logo ref={data.logos[i]}/></div>
 			<div role="cell">{data.teams[i].display_name || data.teams[i].name}</div>
 
 			{#each row.problems || [] as rp}

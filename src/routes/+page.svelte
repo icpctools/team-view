@@ -1,11 +1,14 @@
 <script lang="ts">
-	import type { TeamJSON } from "$lib/contest-types";
+	import Banner from "$lib/Banner.svelte";
+import type { FileReferenceJSON, TeamJSON } from "$lib/contest-types";
+	import Logo from "$lib/Logo.svelte";
 	
 	export let data: { name:string,
 		teams: TeamJSON[],
-		logos: string[]
+		logos: FileReferenceJSON[][],
+		banner: FileReferenceJSON[],
+		logo: FileReferenceJSON[]
 	};
-	console.log('here');
 </script>
 
 <h1>ICPC Team View</h1>
@@ -14,10 +17,14 @@
 
 <a href="/scoreboard">Scoreboard</a>
 
+<Logo ref={data.logo}/>
+
 {#each data.teams as team, i}
 
 <a href="/team/{team.id}">
-<div class="flex flex-row"><img src="{data.logos[i]}" alt="logo"/> {team.display_name || team.name}</div>
+<div class="flex flex-row"><Logo ref={data.logos[i]}/> {team.display_name || team.name}</div>
 </a>
 
 {/each}
+
+<Banner ref={data.banner}/>
