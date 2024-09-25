@@ -1,10 +1,11 @@
 <script lang="ts">
-	import type { FileReferenceJSON, TeamJSON } from "$lib/contest-types";
+	import type { FileReferenceJSON, PersonJSON, TeamJSON } from "$lib/contest-types";
 	import Logo from "$lib/Logo.svelte";
 	
 	export let data: { name:string,
 		team: TeamJSON,
-		logo: FileReferenceJSON[]
+		logo: FileReferenceJSON[],
+		members: PersonJSON[]
 	};
 </script>
 
@@ -27,3 +28,8 @@ Activity
 </div><div>
 Details
 </div>
+
+Members:
+{#each data.members as person}
+<div>{person.name}</div>
+{/each}

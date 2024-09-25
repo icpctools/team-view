@@ -96,7 +96,13 @@ export interface LanguageJSON {
 
 export interface PersonJSON {
 	id: string,
-	name: string // todo
+	name: string,
+	team_ids?: string[],
+	title?: string,
+	email?: string,
+	sex?: string,
+	role: 'contestant'| 'coach'| 'staff' | 'other',
+	photo?: FileReferenceJSON[]
 }
 
 export interface ScoreboardJSON {
