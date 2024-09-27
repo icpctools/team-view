@@ -47,7 +47,13 @@ export interface TeamJSON {
 	label: string,
 	name: string,
 	display_name: string,
-	organization_id: string
+	organization_id: string,
+	group_ids?: string[],
+	photo?: FileReferenceJSON[],
+	video?: FileReferenceJSON[],
+	desktop?: FileReferenceJSON[],
+	webcam?: FileReferenceJSON[],
+	audio?: FileReferenceJSON[],
 }
 
 export interface ProblemJSON {
