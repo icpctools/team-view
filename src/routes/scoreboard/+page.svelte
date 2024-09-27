@@ -8,7 +8,7 @@
 		logos: FileReferenceJSON[][],
 		problems: ProblemJSON[]
 	};
-	let cols:string[] = ['40px','60px','300px'];
+	let cols:string[] = ['40px','40px','600px'];
 
 	data.problems.forEach(p => cols.push('1fr'));
 
@@ -17,19 +17,29 @@
 	let col = cols.join(' ');
 </script>
 
-<h1>ICPC Team View Scoreboard</h1>
+<div class="flex flex-row gap-8">
+	<a href="/"><h1>ICPC Team View</h1></a>
+
+<h1>Scoreboard</h1>
 
 <p>{data.name}</p>
 
-<div class="w-full" role="table" aria-label="scoreboard">
+</div>
+
+<div class="w-full text-sm" role="table" aria-label="scoreboard">
 	<!-- Table header -->
 	<div role="rowgroup">
 	  <div role="row"
-		class="grid grid-table gap-x-0.5 h-7 sticky top-0 uppercase"
+		class="grid grid-table gap-x-0.5 h-7 sticky top-0"
 		style="grid-template-columns: {col}">
+	  <div role="cell"></div>
+	  <div role="cell"></div>
+	  <div role="cell"></div>
 		{#each data.problems as problem}
-			<div role="cell">{problem.label}</div>
+			<div role="cell uppercase">{problem.label}</div>
 		{/each}
+		<div role="cell" class="justify-self-center">Solved</div>
+		<div role="cell" class="justify-self-center">Penalty</div>
 	  </div>
 	</div>
 
@@ -37,10 +47,10 @@
 	<div role="rowgroup">
 		{#each data.scoreboard.rows as row, i}
 			<div role="row"
-			class="grid grid-table gap-x-0.5 h-7"
+			class="grid grid-table gap-x-0.5 h-6"
 			style="grid-template-columns: {col}">
-			<div role="cell">{row.rank}</div>
-			<div role="cell"><Logo ref={data.logos[i]}/></div>
+			<div role="cell" class="justify-self-end">{row.rank}</div>
+			<div role="cell" class="w-4 h-4 justify-self-center"><Logo ref={data.logos[i]}/></div>
 			<div role="cell">{data.teams[i].display_name || data.teams[i].name}</div>
 
 			{#each row.problems || [] as rp}
@@ -48,8 +58,8 @@
 				class:bg-green-500={rp.solved}>{rp.solved}</div>
 			{/each}
 
-			<div role="cell">{row.score.num_solved}</div>
-			<div role="cell">{row.score.total_time}</div>
+			<div role="cell" class="justify-self-center">{row.score.num_solved > 0 ? row.score.num_solved : ''}</div>
+			<div role="cell" class="justify-self-center">{row.score.total_time > 0 ? row.score.total_time : ''}</div>
 		</div>
 	{/each}
   </div>

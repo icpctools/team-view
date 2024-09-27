@@ -12,5 +12,7 @@
 </script>
 
 {#if bestRef}
-	<img src="{imgSrc}" alt="logo" class="h-{size} w-{size} max-h-{size} max-w-{size}"/>
+<div class="max-h-{size} max-w-{size}">
+	<img src="{imgSrc}" alt="logo" class="object-scale-down h-{size} rounded-md"/>
+</div>
 {/if}

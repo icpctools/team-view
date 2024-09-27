@@ -9,9 +9,8 @@
 	};
 </script>
 
-<h1>ICPC Team View</h1>
-
-<Logo ref={data.logo} size={32} />
+<div class="flex flex-row gap-8">
+	<a href="/"><h1>ICPC Team View</h1></a>
 
 <p>{data.team.id} - {data.team.display_name || data.team.name}</p>
 
@@ -20,5 +19,8 @@
     <div><a href="/team/{data.team.id}/desktop">Desktop</a></div>
     <div><a href="/team/{data.team.id}/pip">Picture in Picture</a></div>
     <div><a href="/team/{data.team.id}/details">Details</a></div>
+</div>
+
+<Logo ref={data.logo} size={24} />
 </div>
 <slot />

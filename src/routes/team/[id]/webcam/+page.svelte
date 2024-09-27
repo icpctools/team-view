@@ -6,4 +6,7 @@
 	};
 </script>
 
-Webcam
+<div class="w-full h-full bg-green-200 p-2">
+	<!-- svelte-ignore a11y_media_has_caption -->
+	<video class="w-full h-full bg-black-800" src="http://localhost:9999/test">Webcam</video>
+</div>

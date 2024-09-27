@@ -14,6 +14,17 @@ export const load = async (_params) => {
 	let teams:TeamJSON[]|undefined = await cc.loadTeams();
 	if (!teams) throw error(404);
 
+	// sort teams by id
+	teams.sort((a,b) => {
+		// todo: try parsing as number first
+		const an = parseInt(a.id);
+		const bn = parseInt(b.id);
+		if (!Number.isNaN(an) && !Number.isNaN(bn)) {
+			return an - bn;
+		}
+		return a.id.localeCompare(b.id);
+	});
+
 	const orgs = await cc.loadOrganizations();
 
 	const util = new ContestUtil();
