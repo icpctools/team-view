@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { GroupJSON, OrganizationJSON, PersonJSON, TeamJSON } from '$lib/contest-types';
-	import Person from '$lib/Person.svelte';
+	import Person from '$lib/ui/Person.svelte';
 
 	export let data: {
 		team: TeamJSON;

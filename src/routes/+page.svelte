@@ -1,7 +1,7 @@
 <script lang="ts">
-	import Banner from "$lib/Banner.svelte";
+	import Banner from "$lib/ui/Banner.svelte";
 import type { FileReferenceJSON, TeamJSON } from "$lib/contest-types";
-	import Logo from "$lib/Logo.svelte";
+	import Logo from "$lib/ui/Logo.svelte";
 	
 	export let data: { name:string,
 		teams: TeamJSON[],

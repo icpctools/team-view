@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { FileReferenceJSON } from "$lib/contest-types";
-	import { ContestUtil } from "./contest-util";
+	import { ContestUtil } from "../contest-util";
 	
 	export let url:string = 'https://localhost:8443/api/contests';
 	export let ref:FileReferenceJSON[] | undefined;
