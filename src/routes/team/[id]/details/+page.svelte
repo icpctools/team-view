@@ -19,26 +19,26 @@
 {#if data.groups && data.groups.length > 0}
 	<h2>Groups</h2>
 	<div class="flex flex-row gap-2">
-	{#each data.groups as group}
-		<div>{group.name}</div>
-	{/each}
+		{#each data.groups as group}
+			<div>{group.name}</div>
+		{/each}
 	</div>
 {/if}
 
 {#if data.coaches}
 	<h2>Coaches</h2>
 	<div class="flex flex-row gap-2">
-	{#each data.coaches as person}
-		<Person person={person} />
-	{/each}
+		{#each data.coaches as person}
+			<Person {person} />
+		{/each}
 	</div>
 {/if}
 
 {#if data.contestants}
 	<h2>Contestants</h2>
 	<div class="flex flex-row gap-2">
-	{#each data.contestants as person}
-		<Person person={person} />
-	{/each}
-</div>
+		{#each data.contestants as person}
+			<Person {person} />
+		{/each}
+	</div>
 {/if}

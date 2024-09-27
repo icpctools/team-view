@@ -12,10 +12,9 @@ export class Contests {
 	baseURL: string;
 
 	constructor(baseURL: string) {
-		if (!baseURL.endsWith('/'))
-			baseURL += '/';
+		if (!baseURL.endsWith('/')) baseURL += '/';
 		this.baseURL = baseURL;
-		console.log("Contest API URL: " + this.baseURL);
+		console.log('Contest API URL: ' + this.baseURL);
 	}
 
 	public async loadContests() {
@@ -51,8 +50,8 @@ export class Contests {
 				secureConnect: 2000,
 				socket: 2000,
 				send: 10000,
-				response: 1000,
-			},
+				response: 1000
+			}
 		};
 
 		/*if (options.https) {
@@ -75,16 +74,14 @@ export class Contests {
 			return undefined;
 		}
 		let baseURL = this.baseURL;
-		if (!baseURL.endsWith('/'))
-			baseURL += '/';
+		if (!baseURL.endsWith('/')) baseURL += '/';
 		let contestURL = baseURL + 'contests/' + this.contests[0].id;
 		const c: Contest = new Contest(contestURL);
 		return c;
 	}
 
 	getContestObjs(): Contest[] | undefined {
-		if (this.contestObjs != null)
-			return this.contestObjs;
+		if (this.contestObjs != null) return this.contestObjs;
 
 		this.contests = [];
 		/*for (var i = 0; i < this.contests.length; i++) {

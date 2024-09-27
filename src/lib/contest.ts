@@ -3,7 +3,28 @@
  */
 import type { HttpsOptions, OptionsOfTextResponseBody } from 'got';
 import got from 'got';
-import type { AccessJSON, AccountJSON, AwardJSON, ClarificationJSON, CommentaryJSON, ContestJSON, ContestStateJSON, FileReferenceJSON, GroupJSON, JudgementJSON, JudgementTypeJSON, LanguageJSON, OrganizationJSON, PersonJSON, ProblemJSON, RunJSON, ScoreboardJSON, StartStatusJSON, SubmissionJSON, TeamJSON } from './contest-types';
+import type {
+	AccessJSON,
+	AccountJSON,
+	AwardJSON,
+	ClarificationJSON,
+	CommentaryJSON,
+	ContestJSON,
+	ContestStateJSON,
+	FileReferenceJSON,
+	GroupJSON,
+	JudgementJSON,
+	JudgementTypeJSON,
+	LanguageJSON,
+	OrganizationJSON,
+	PersonJSON,
+	ProblemJSON,
+	RunJSON,
+	ScoreboardJSON,
+	StartStatusJSON,
+	SubmissionJSON,
+	TeamJSON
+} from './contest-types';
 
 export class Contest {
 	info?: ContestJSON;
@@ -40,12 +61,11 @@ export class Contest {
 
 	constructor(contestURL: string) {
 		this.contestURL = contestURL;
-		console.log("Contest URL: " + this.contestURL);
+		console.log('Contest URL: ' + this.contestURL);
 	}
 
 	getURL(type: any, id?: string) {
-		if (id == null)
-			return this.contestURL + '/' + type;
+		if (id == null) return this.contestURL + '/' + type;
 		return this.contestURL + '/' + type + '/' + id;
 	}
 
@@ -63,8 +83,8 @@ export class Contest {
 				secureConnect: 2000,
 				socket: 2000,
 				send: 10000,
-				response: 1000,
-			},
+				response: 1000
+			}
 		};
 
 		/*if (options.https) {
@@ -75,7 +95,7 @@ export class Contest {
 	}
 
 	async loadObject(type: any): Promise<any> {
-		console.log("Loading contest " + type);
+		console.log('Loading contest ' + type);
 		const startTime = performance.now();
 		try {
 			const url = this.getURL(type);
@@ -118,7 +138,7 @@ export class Contest {
 		return this.loadObject('');
 	}
 
-	async loadAccess():Promise<StartStatusJSON|undefined> {
+	async loadAccess(): Promise<StartStatusJSON | undefined> {
 		this.access = await this.loadObject('access');
 		return this.access;
 	}
@@ -128,7 +148,7 @@ export class Contest {
 		return this.state;
 	}
 
-	async loadStartStatus():Promise<StartStatusJSON[]|undefined> {
+	async loadStartStatus(): Promise<StartStatusJSON[] | undefined> {
 		this.startStatus = await this.loadObject('start-status');
 		return this.startStatus;
 	}
@@ -228,33 +248,76 @@ export class Contest {
 		return this.awards;
 	}
 
-	getContestURL(): string { return this.contestURL }
-	getInfo(): ContestJSON | undefined { return this.info }
-	getAccess() { return this.access }
-	getState(): ContestStateJSON | undefined { return this.state }
-	getStartStatus() { return this.startStatus }
-	getLanguages(): LanguageJSON[] | undefined { return this.languages }
-	getJudgementTypes(): JudgementTypeJSON[] | undefined { return this.judgementTypes }
-	getProblems(): ProblemJSON[] | undefined { return this.problems }
-	getGroups(): GroupJSON[] | undefined { return this.groups }
-	getTeams(): TeamJSON[] | undefined { return this.teams }
-	getOrganizations(): OrganizationJSON[] | undefined { return this.organizations }
-	getPersons(): PersonJSON[] | undefined { return this.persons }
-	getAccounts(): AccountJSON[] | undefined { return this.accounts }
-	getAccount(): AccountJSON | undefined { return this.account }
-	getSubmissions(): SubmissionJSON[] | undefined { return this.submissions }
-	getJudgements(): JudgementJSON[] | undefined { return this.judgements }
-	getRuns(): RunJSON[] | undefined { return this.runs }
-	getClarifications(): ClarificationJSON[] | undefined { return this.clarifications }
-	getCommentary(): CommentaryJSON[] | undefined { return this.commentary }
-	getScoreboard(): ScoreboardJSON | undefined { return this.scoreboard }
-	getAwards(): AwardJSON[] | undefined { return this.awards }
+	getContestURL(): string {
+		return this.contestURL;
+	}
+	getInfo(): ContestJSON | undefined {
+		return this.info;
+	}
+	getAccess() {
+		return this.access;
+	}
+	getState(): ContestStateJSON | undefined {
+		return this.state;
+	}
+	getStartStatus() {
+		return this.startStatus;
+	}
+	getLanguages(): LanguageJSON[] | undefined {
+		return this.languages;
+	}
+	getJudgementTypes(): JudgementTypeJSON[] | undefined {
+		return this.judgementTypes;
+	}
+	getProblems(): ProblemJSON[] | undefined {
+		return this.problems;
+	}
+	getGroups(): GroupJSON[] | undefined {
+		return this.groups;
+	}
+	getTeams(): TeamJSON[] | undefined {
+		return this.teams;
+	}
+	getOrganizations(): OrganizationJSON[] | undefined {
+		return this.organizations;
+	}
+	getPersons(): PersonJSON[] | undefined {
+		return this.persons;
+	}
+	getAccounts(): AccountJSON[] | undefined {
+		return this.accounts;
+	}
+	getAccount(): AccountJSON | undefined {
+		return this.account;
+	}
+	getSubmissions(): SubmissionJSON[] | undefined {
+		return this.submissions;
+	}
+	getJudgements(): JudgementJSON[] | undefined {
+		return this.judgements;
+	}
+	getRuns(): RunJSON[] | undefined {
+		return this.runs;
+	}
+	getClarifications(): ClarificationJSON[] | undefined {
+		return this.clarifications;
+	}
+	getCommentary(): CommentaryJSON[] | undefined {
+		return this.commentary;
+	}
+	getScoreboard(): ScoreboardJSON | undefined {
+		return this.scoreboard;
+	}
+	getAwards(): AwardJSON[] | undefined {
+		return this.awards;
+	}
 
 	getTimeDelta() {
-		if (this.timeDelta.length == 0)
-			return 0;
+		if (this.timeDelta.length == 0) return 0;
 		var total = 0;
-		this.timeDelta.forEach(function (item) { total += item });
+		this.timeDelta.forEach(function (item) {
+			total += item;
+		});
 		return total / this.timeDelta.length;
 	}
 
@@ -286,9 +349,8 @@ export class Contest {
 		return (Date.now() - d.getTime()) * m - this.getTimeDelta();*/
 	}
 
-	resolveURL(ref:FileReferenceJSON|undefined):string|undefined {
-		if (!ref || !ref.href)
-			return undefined;
+	resolveURL(ref: FileReferenceJSON | undefined): string | undefined {
+		if (!ref || !ref.href) return undefined;
 		// TODO: for now, hack off part of the URL
 		return this.contestURL.substring(0, 27) + ref.href;
 	}

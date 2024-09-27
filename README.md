@@ -1,10 +1,12 @@
 This repo is a very fresh first pass at:
+
 - Converting the Javascript contest model from the CDS to Typescript.
 - Using SvelteKit to create a webapp, for now just using the contest API to show
   a list of teams.
 
 The contest model is incomplete and still has compile errors; there are
 also some extremely hardcoded bits:
+
 - page.server.ts hardcodes the contest API url and always uses the first contest.
 - contest.ts resolveURL() strips chars from the URL instead of resolving
   contest URLs correctly.
