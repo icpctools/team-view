@@ -1,22 +1,51 @@
 <script lang="ts">
 	import type { FileReferenceJSON } from '$lib/contest-types';
-	import { ContestUtil } from '../contest-util';
 
-	export let ref: FileReferenceJSON[] | undefined;
-	export let type: string;
+	import { onMount, onDestroy } from 'svelte';
+	import videojs from 'video.js';
+	import type Player from 'video.js/dist/types/player';
+	import 'video.js/dist/video-js.css'; // default Video.js CSS
 
-	const util = new ContestUtil();
-	
-	let videoHref : string | undefined;
-	if (ref && ref.length > 0) {
-		videoHref = ref[0].href;
+	interface Props {
+		ref?: FileReferenceJSON[];
+		type: string;
 	}
-	if (!videoHref) {
-		videoHref = "http://localhost:9999/test";
-	}
+
+	let { ref, type }: Props = $props();
+
+	let src = $derived((ref && ref.length > 0) ? ref[0].href : undefined);
+
+	let videoNode = $state<HTMLElement | string>('');
+	let player = $state<Player>();
+
+	const options = {
+		autoplay: true,
+		controls: false,
+		responsive: true,
+		fluid: true,
+		poster: '/images/icpc-logo.png',
+		preload: 'auto'
+	};
+
+	onMount(() => {
+		player = videojs(videoNode, options, function onPlayerReady() {
+			// player ready
+		});
+		if (src) {
+			player.src(src);
+		}
+	});
+
+	onDestroy(() => {
+		if (player) {
+			player.dispose();
+		}
+	});
 </script>
 
-{#if videoHref}
-  <!-- svelte-ignore a11y_media_has_caption -->
-  <video class="w-full h-full bg-black-800" src="{videoHref}">{type}</video>
+{#if src}
+	<!-- svelte-ignore a11y_media_has_caption -->
+	<video bind:this={videoNode} class="video-js vjs-default-skin"></video>
+{:else}
+	<span class="self-center">({type} unavailable)</span>
 {/if}

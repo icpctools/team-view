@@ -38,6 +38,7 @@
 	},
 	"dependencies": {
 		"got": "^14.4.6",
+		"video.js": "^8.23.4",
 		"i18n-iso-countries": "^7.14.0"
 	}
 }
