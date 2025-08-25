@@ -25,7 +25,7 @@ import type {
 	SubmissionJSON,
 	TeamJSON
 } from './contest-types';
-import { CONTEST_PASSWORD, CONTEST_URL, CONTEST_USER } from './hardcoded';
+import { CONTEST } from './hardcoded.svelte';
 
 export class Contest {
 	info?: ContestJSON;
@@ -76,8 +76,8 @@ export class Contest {
 		const httpsOptions: HttpsOptions = {
 			rejectUnauthorized: false
 		};
-		const user = CONTEST_USER;
-		const password = CONTEST_PASSWORD;
+		const user = CONTEST.user;
+		const password = CONTEST.password;
 		const options: OptionsOfTextResponseBody = {
 			https: httpsOptions,
 			retry: { limit: 0 },
@@ -360,7 +360,7 @@ export class Contest {
 	resolveURL(ref: FileReferenceJSON | undefined): string | undefined {
 		if (!ref || !ref.href) return undefined;
 		// TODO: for now, hack off part of the URL
-		return this.contestURL.substring(0, CONTEST_URL.length) + ref.href;
+		return this.contestURL.substring(0, CONTEST.url.length) + ref.href;
 	}
 
 	clear() {

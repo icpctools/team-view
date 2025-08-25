@@ -1,7 +1,7 @@
 import { Contests } from "./contests";
-import { CONTEST_URL } from "./hardcoded";
+import { CONTEST } from "./hardcoded.svelte";
 
-const contestsImpl = new Contests(CONTEST_URL);
+const contestsImpl = new Contests(CONTEST.url);
 
 await contestsImpl.loadContests();
 

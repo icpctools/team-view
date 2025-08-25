@@ -1,9 +1,9 @@
 <script lang="ts">
 	import type { FileReferenceJSON } from '$lib/contest-types';
-	import { CONTEST_URL } from '$lib/hardcoded';
+	import { CONTEST } from '$lib/hardcoded.svelte';
 	import Image from './Image.svelte';
 
-	export let url: string = CONTEST_URL + 'contests';
+	export let url: string = CONTEST.url + 'contests';
 	export let ref: FileReferenceJSON[] | undefined;
 	let size = 24;
 </script>
