@@ -19,9 +19,9 @@ RUN adduser -S svelte -u 1001
 RUN chown -R svelte:nodejs /app
 USER svelte
 
-# Set default environment variables
-ENV NODE_ENV=development
-ENV PORT=5173
+# Set environment variables
+ENV NODE_ENV=production
+ENV PORT=3000
 ENV HOST=0.0.0.0
 ENV CONTEST_URL=https://localhost:8443/api/
 ENV CONTEST_USER=admin
@@ -30,5 +30,5 @@ ENV CONTEST_PASSWORD=adm1n
 # Expose the configurable port
 EXPOSE $PORT
 
-# Start the application in development mode
-CMD ["sh", "-c", "npm run dev -- --port $PORT --host $HOST"]
+# Build and serve the application
+CMD ["sh", "-c", "npm run build && node build"]
