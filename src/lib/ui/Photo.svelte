@@ -1,13 +1,15 @@
 <script lang="ts">
 	import type { FileReferenceJSON } from '$lib/contest-types';
-	import { CONTEST } from '$lib/hardcoded.svelte';
 	import Image from './Image.svelte';
 
-	export let url: string = CONTEST.url + 'contests';
-	export let ref: FileReferenceJSON[] | undefined;
-	let size = 24;
+	interface Props {
+		ref?: FileReferenceJSON[];
+		size: number;
+	}
+
+	let { ref, size = 24 }: Props = $props();
 </script>
 
 <div class="max-h-{size} max-w-{size} h-{size} w-{size} flex place-content-center">
-  <Image {url} {ref} size={size} />
+  <Image {ref} size={size} />
 </div>

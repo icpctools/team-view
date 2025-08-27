@@ -2,7 +2,11 @@
 	import type { PersonJSON } from '$lib/contest-types';
 	import Image from './Image.svelte';
 
-	export let person: PersonJSON;
+	interface Props {
+		person: PersonJSON;
+	}
+
+	let { person }: Props = $props();
 </script>
 
 <div class="flex flex-col items-center border-[1px] bg-gray-200 gap-2">
