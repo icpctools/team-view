@@ -2,7 +2,8 @@
  * Copyright later.
  */
 import type { Contest } from './contest';
-import type { ContestJSON, FileReferenceJSON, ProblemJSON, SubmissionJSON } from './contest-types';
+import { parseRelTime } from './contest-time-util';
+import type { FileReferenceJSON, ProblemJSON, SubmissionJSON } from './contest-types';
 
 export class ContestUtil {
 	findById<Type extends { id: string }>(arr: Array<Type> | undefined, id: string | undefined): Type | undefined {
@@ -120,61 +121,6 @@ export class ContestUtil {
 		return best;
 	}
 
-	isNumber(value: any): value is number {
-		return typeof value === 'number';
-	}
-
-	parseRelTime(relTime: number | string | undefined): number | undefined {
-		if (!relTime) {
-			return undefined;
-		}
-		if (this.isNumber(relTime)) {
-			// times were in minutes, but we want ms
-			return relTime * 60 * 1000;
-		}
-		const match = relTime.match('-?([0-9]+):([0-9]{2}):([0-9]{2})(\\.[0-9]{3})?');
-
-		if (match == null || match.length < 4) {
-			return undefined;
-		}
-
-		const h = parseInt(match[1]);
-		const m = parseInt(match[2]);
-		const s = parseInt(match[3]);
-		let ms = 0;
-		if (match.length == 5) {
-			ms = parseInt(match[4].substring(1));
-		}
-
-		const ret = h * 60 * 60 * 1000 + m * 60 * 1000 + s * 1000 + ms;
-		if (relTime.startsWith('-')) {
-			return -ret;
-		}
-
-		return ret;
-	}
-
-	formatTimeInMin(timeMs: number | undefined) {
-		if (!timeMs) {
-			return "";
-		}
-		if (timeMs >= 0 && timeMs < 1000)
-			return "0";
-
-		var sb = [];
-		if (timeMs < 0) {
-			sb.push("-");
-			timeMs = -timeMs;
-		}
-		let timeS = Math.floor(timeMs / 1000);
-
-		let mins = Math.floor(timeS / 60.0);
-		if (mins > 0)
-			sb.push(mins);
-
-		return sb.join("");
-	}
-
 	isFirstToSolve(contest: Contest, submission: SubmissionJSON): boolean {
 		const problem_id = submission.problem_id;
 		const submissions = contest.getSubmissions();
@@ -183,7 +129,7 @@ export class ContestUtil {
 		}
 
 		for (var i = 0; i < submissions.length; i++) {
-			const time: number | string | undefined = this.parseRelTime(submissions[i].contest_time);
+			const time: number | string | undefined = parseRelTime(submissions[i].contest_time);
 			if (time && time >= 0 && submissions[i].problem_id == problem_id) {
 				// TODO: should we check if this is a public team too?
 				const judgements = this.findManyBySubmissionId(contest.getJudgements(), submissions[i].id);
@@ -206,110 +152,5 @@ export class ContestUtil {
 
 	sortProblems(problems: ProblemJSON[]): any {
 		return problems.sort((a, b) => (a.ordinal > b.ordinal ? 1 : b.ordinal > a.ordinal ? -1 : 0));
-	}
-
-	getState(contest: ContestJSON | undefined): 'unscheduled' | 'countdown' | 'paused' | 'running' | 'frozen' | 'finished' {
-		if (contest == null) {
-			return 'unscheduled';
-		}
-
-		let m = 1;
-		if (contest.time_multiplier)
-			m = contest.time_multiplier;
-
-		if (contest.start_time == null) {
-			if (contest.countdown_pause_time)
-				return 'paused';
-			return 'unscheduled';
-		}
-
-		let d = new Date(contest.start_time);
-
-		let time = (Date.now() - d.getTime()) * m; // - contest.getTimeDelta();
-		if (time < 0) {
-			return 'countdown';
-		}
-		let duration = this.parseRelTime(contest.duration);
-		if (duration) {
-			if (time > duration)
-				return 'finished';
-
-			let freeze = this.parseRelTime(contest.scoreboard_freeze_duration);
-			if (freeze && time > duration - freeze)
-				return 'frozen';
-		}
-		
-		return 'running';
-	}
-
-	getContestTime(contest: ContestJSON | undefined, short: boolean): string | undefined {
-		if (contest == null) {
-			return undefined;
-		}
-
-		let m = 1;
-		if (contest.time_multiplier)
-			m = contest.time_multiplier;
-
-		if (contest.start_time == null) {
-			if (!contest.countdown_pause_time)
-				return "Contest not scheduled";
-			else {
-				let pause = this.parseRelTime(contest.countdown_pause_time);
-				if (!pause)
-					return "Paused";
-
-				if (short)
-					return this.formatContestTime(-pause * m, false) + " (paused)";
-				else
-					return "Countdown paused: " + this.formatContestTime(-pause * m, false);
-			}
-		}
-
-		let d = new Date(contest.start_time);
-
-		let time = (Date.now() - d.getTime()) * m; // - contest.getTimeDelta();
-		if (time < 0) {
-			if (short)
-				return this.formatContestTime(time, true);
-			else
-				return "Countdown: " + this.formatContestTime(time, true);
-		}
-		let duration = this.parseRelTime(contest.duration);
-		if (duration && time > duration)
-			return "Contest is over";
-		
-		return this.formatContestTime(time, true);
-	}
-
-	formatContestTime(time: number, floor: boolean): string {
-		var sb = [];
-		if (time < 0)
-			sb.push("-");
-		
-		let ss: number;
-		if (floor)
-			ss = Math.abs(Math.floor(time / 1000.0));
-		else
-			ss = Math.abs(Math.ceil(time / 1000.0));
-
-		var days = Math.floor(ss / 86400.0);
-
-		if (days > 0)
-			sb.push(days + "d ");
-
-		var hours = Math.floor(ss / 3600.0) % 24;
-		sb.push(hours + ":");
-
-		var minutes = Math.floor(ss / 60) % 60;
-		if (minutes < 10)
-			sb.push("0");
-		sb.push(minutes + ":");
-
-		var seconds = ss % 60;
-		if (seconds < 10)
-			sb.push("0");
-		sb.push(seconds);
-		return sb.join("");
 	}
 }

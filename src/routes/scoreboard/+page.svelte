@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { invalidateAll } from '$app/navigation';
-	import { ContestUtil } from '$lib/contest-util';
 	import Logo from '$lib/ui/Logo.svelte';
 	import { flip } from 'svelte/animate';
 	import { parseHexColor, darker, rgbToHex } from '$lib/color-util.js';
+	import { timeToMin } from '$lib/contest-time-util.js';
 
 	let { data } = $props();
 
@@ -20,8 +20,6 @@
 	data.problems.forEach((_p) => cols.push('1fr'));
 
 	let col = cols.join(' ');
-
-	const util = new ContestUtil();
 
 	let pStyle: string[] = [];
 	data.problems.forEach((p) => {
@@ -101,9 +99,7 @@
 					{row.score.num_solved && row.score.num_solved > 0 ? row.score.num_solved : ''}
 				</div>
 				<div role="cell" class="justify-self-center">
-					{row.score.total_time
-						? util.formatTimeInMin(util.parseRelTime(row.score.total_time))
-						: ''}
+					{timeToMin(row.score.total_time)}
 					{row.score.score ? row.score.score : ''}
 				</div>
 
@@ -122,7 +118,7 @@
 								<div>
 									{rp.num_judged + rp.num_pending}
 									<span class="text-xs text-black/50"
-										>{rp.time ? util.formatTimeInMin(util.parseRelTime(rp.time)) : ''}</span
+										>{timeToMin(rp.time)}</span
 									>
 								</div>
 							</div>

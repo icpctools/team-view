@@ -329,34 +329,6 @@ export class Contest {
 		return total / this.timeDelta.length;
 	}
 
-	getContestTimeObj() {
-		// returns a single object with contest time/state
-		// null - if unscheduled
-		// -time - if in countdown
-		// "time" - if countdown is paused
-		// time - time if past contest start
-		if (this.info == null) {
-			// contest info wasn't loaded yet - so let's do that in the background in case we're called again
-			this.loadInfo();
-			return null;
-		}
-
-		/*var m = this.info.time_multiplier;
-		if (m == null)
-			m = 1;
-
-		if (this.info.start_time == null) {
-			if (this.info.countdown_pause_time == null)
-				return null;
-			else
-				return formatTime(parseTime(this.info.countdown_pause_time) * m) + "";
-		}
-
-		var d = new Date(this.info.start_time);
-
-		return (Date.now() - d.getTime()) * m - this.getTimeDelta();*/
-	}
-
 	resolveURL(ref: FileReferenceJSON | undefined): string | undefined {
 		if (!ref || !ref.href) return undefined;
 		// TODO: for now, hack off part of the URL

@@ -1,6 +1,6 @@
 <script lang="ts">
+	import { getContestTime, getContestState } from '$lib/contest-time-util';
 	import type { ContestJSON } from '$lib/contest-types';
-	import { ContestUtil } from '$lib/contest-util';
 	import { onMount } from 'svelte';
 
 	interface Props {
@@ -10,13 +10,12 @@
 	let { contest }: Props = $props();
 	let clock: string | undefined = $derived('?');
 
-	const util = new ContestUtil();
-	let state = $derived(util.getState(contest));
+	let state = $derived(getContestState(contest));
 
 	onMount(() => {
 		const clockInt = setInterval(
 			() => {
-				clock = util.getContestTime(contest, true);
+				clock = getContestTime(contest, true);
 			},
 			contest && contest.time_multiplier ? 50 : 350
 		);
