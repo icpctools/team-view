@@ -1,60 +1,55 @@
 /**
  * Copyright later.
  */
-import type { Contest } from './contest';
-import type { FileReferenceJSON, ProblemJSON, SubmissionJSON } from './contest-types';
+export function parseHexColor(hex: string): [number, number, number] | [number, number, number, number] {
+	// remove the '#' if present
+	const cleanHex = hex.startsWith('#') ? hex.slice(1) : hex;
 
-export class ColorUtil {
-	parseHexColor(hex: string): [number, number, number] | [number, number, number, number] {
-		// remove the '#' if present
-		const cleanHex = hex.startsWith('#') ? hex.slice(1) : hex;
+	let r: number, g: number, b: number, a: number | undefined;
 
-		let r: number, g: number, b: number, a: number | undefined;
-
-		if (cleanHex.length === 3) {
-			// handle shorthand hex (e.g., #FFF)
-			r = parseInt(cleanHex[0] + cleanHex[0], 16);
-			g = parseInt(cleanHex[1] + cleanHex[1], 16);
-			b = parseInt(cleanHex[2] + cleanHex[2], 16);
-		} else if (cleanHex.length === 6) {
-			// handle full hex (e.g., #RRGGBB)
-			r = parseInt(cleanHex.slice(0, 2), 16);
-			g = parseInt(cleanHex.slice(2, 4), 16);
-			b = parseInt(cleanHex.slice(4, 6), 16);
-		} else if (cleanHex.length === 8) {
-			// handle hex with alpha (e.g., #RRGGBBAA)
-			r = parseInt(cleanHex.slice(0, 2), 16);
-			g = parseInt(cleanHex.slice(2, 4), 16);
-			b = parseInt(cleanHex.slice(4, 6), 16);
-			a = parseInt(cleanHex.slice(6, 8), 16);
-		} else {
-			throw new Error('Invalid hex color format.');
-		}
-
-		if (a !== undefined) {
-			return [r, g, b, a];
-		} else {
-			return [r, g, b];
-		}
+	if (cleanHex.length === 3) {
+		// handle shorthand hex (e.g., #FFF)
+		r = parseInt(cleanHex[0] + cleanHex[0], 16);
+		g = parseInt(cleanHex[1] + cleanHex[1], 16);
+		b = parseInt(cleanHex[2] + cleanHex[2], 16);
+	} else if (cleanHex.length === 6) {
+		// handle full hex (e.g., #RRGGBB)
+		r = parseInt(cleanHex.slice(0, 2), 16);
+		g = parseInt(cleanHex.slice(2, 4), 16);
+		b = parseInt(cleanHex.slice(4, 6), 16);
+	} else if (cleanHex.length === 8) {
+		// handle hex with alpha (e.g., #RRGGBBAA)
+		r = parseInt(cleanHex.slice(0, 2), 16);
+		g = parseInt(cleanHex.slice(2, 4), 16);
+		b = parseInt(cleanHex.slice(4, 6), 16);
+		a = parseInt(cleanHex.slice(6, 8), 16);
+	} else {
+		throw new Error('Invalid hex color format.');
 	}
 
-	darker(color: number[]): number[] {
-		let darker: number[] = [];
-		darker.push(Math.max(color[0] - 64, 0));
-		darker.push(Math.max(color[1] - 64, 0));
-		darker.push(Math.max(color[2] - 64, 0));
-		if (color.length === 4)
-			darker.push(color[3]);
-
-		return darker;
+	if (a !== undefined) {
+		return [r, g, b, a];
+	} else {
+		return [r, g, b];
 	}
+}
 
-	rgbToHex(color: number[]): string {
-		return '#' + this.colorToHex(color[0]) + this.colorToHex(color[1]) + this.colorToHex(color[2]);
-	}
+export function darker(color: number[]): number[] {
+	let darker: number[] = [];
+	darker.push(Math.max(color[0] - 64, 0));
+	darker.push(Math.max(color[1] - 64, 0));
+	darker.push(Math.max(color[2] - 64, 0));
+	if (color.length === 4)
+		darker.push(color[3]);
 
-	colorToHex(c: number): string {
-		const hex = c.toString(16);
-		return hex.length === 1 ? "0" + hex : hex;
-	}
+	return darker;
+}
+
+export function rgbToHex(color: number[]): string {
+	return '#' + colorToHex(color[0]) + colorToHex(color[1]) + colorToHex(color[2]);
+}
+
+export function colorToHex(c: number): string {
+	const hex = c.toString(16);
+	return hex.length === 1 ? "0" + hex : hex;
 }

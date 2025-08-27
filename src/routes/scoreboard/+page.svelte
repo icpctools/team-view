@@ -4,7 +4,7 @@
 	import { ContestUtil } from '$lib/contest-util';
 	import Logo from '$lib/ui/Logo.svelte';
 	import { flip } from 'svelte/animate';
-	import { ColorUtil } from '$lib/color-util.js';
+	import { parseHexColor, darker, rgbToHex } from '$lib/color-util.js';
 
 	let { data } = $props();
 
@@ -22,20 +22,18 @@
 	let col = cols.join(' ');
 
 	const util = new ContestUtil();
-	const cUtil = new ColorUtil();
 
 	let pStyle: string[] = [];
 	data.problems.forEach((p) => {
 		if (p.rgb) {
-			let col = cUtil.parseHexColor(p.rgb);
+			let col = parseHexColor(p.rgb);
 			let fg = '#fff';
 			if (col && col[0] + col[1] + col[2] > 450) {
 				fg = '#000';
 			}
 			let border = p.rgb;
 			if (col) {
-				let darker = cUtil.darker(col);
-				border = cUtil.rgbToHex(darker);
+				border = rgbToHex(darker(col));
 			}
 
 			pStyle.push('background-color:' + p.rgb + ';color:' + fg + ';border-color:' + border + ';');

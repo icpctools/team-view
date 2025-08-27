@@ -1,22 +1,19 @@
 <script lang="ts">
-	import { ColorUtil } from '$lib/color-util.js';
+	import { parseHexColor, darker, rgbToHex } from '$lib/color-util.js';
 
 	let { data } = $props();
 
-	const cUtil = new ColorUtil();
-	
 	let pStyle = $state('');
 	let rgb = data.problem.rgb;
 	if (rgb) {
-		let col = cUtil.parseHexColor(rgb);
+		let col = parseHexColor(rgb);
 		let fg = '#fff';
 		if (col && col[0] + col[1] + col[2] > 450) {
 			fg = '#000';
 		}
 		let border =rgb;
 		if (col) {
-			let darker = cUtil.darker(col);
-			border = cUtil.rgbToHex(darker);
+			border = rgbToHex(darker(col));
 		}
 
 		pStyle = 'background-color:'+rgb+';color:'+fg+ ';border-color:'+border+';';
