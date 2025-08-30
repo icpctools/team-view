@@ -1,6 +1,12 @@
 /**
  * Copyright later.
  */
+export const PENDING = rgbToHex([66, 114, 245]);
+export const FAILED = rgbToHex([240, 0, 0]);
+export const SOLVED = rgbToHex([0, 230, 0]);
+export const SCORING_MID = rgbToHex([210, 210, 0]);
+export const FIRST_TO_SOLVE = rgbToHex([0, 100, 0]);
+
 export function parseHexColor(hex: string): [number, number, number] | [number, number, number, number] {
 	// remove the '#' if present
 	const cleanHex = hex.startsWith('#') ? hex.slice(1) : hex;
@@ -50,6 +56,6 @@ export function rgbToHex(color: number[]): string {
 }
 
 export function colorToHex(c: number): string {
-	const hex = c.toString(16);
+	const hex = Math.floor(c).toString(16);
 	return hex.length === 1 ? "0" + hex : hex;
 }

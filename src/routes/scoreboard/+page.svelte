@@ -3,8 +3,9 @@
 	import { invalidateAll } from '$app/navigation';
 	import Logo from '$lib/ui/Logo.svelte';
 	import { flip } from 'svelte/animate';
-	import { parseHexColor, darker, rgbToHex } from '$lib/color-util.js';
+	import { parseHexColor, darker, rgbToHex, FAILED, SOLVED, PENDING, SCORING_MID } from '$lib/color-util.js';
 	import { timeToMin } from '$lib/contest-time-util.js';
+	import type { ProblemJSON, ScoreboardProblemJSON } from '$lib/contest-types.js';
 
 	let { data } = $props();
 
@@ -14,8 +15,12 @@
 	}
 	cols.push('425px');
 
-	cols.push('60px');
-	cols.push('60px');
+	if (data.scoreboard_type === 'pass-fail') {
+		cols.push('60px');
+		cols.push('60px');
+	} else if (data.scoreboard_type === 'score') {
+		cols.push('80px');
+	}
 
 	data.problems.forEach((_p) => cols.push('1fr'));
 
@@ -40,6 +45,40 @@
 		}
 	});
 
+	function scoreBg(rp: ScoreboardProblemJSON, problem: ProblemJSON):string {
+		if (rp.num_pending > 0) {
+			return PENDING;
+		}
+		if (data.scoreboard_type === 'pass-fail') {
+			if (rp.solved)
+				return SOLVED;
+		} else if (data.scoreboard_type === 'score') {
+			if (rp.score) {
+				if (problem.max_score) {
+					const percent = (rp.score ?? 0) / problem.max_score;
+
+					const c1 = parseHexColor(FAILED);
+					const c2 = parseHexColor(SCORING_MID);
+					const c3 = parseHexColor(SOLVED);
+					let cr = [0,0,0];
+					for (let i = 0; i < 3; i++) {
+						if (percent <= 0.5) {
+							cr[i] = c1[i] * (1 - percent * 2) + c2[i] * percent * 2;
+						} else {
+							cr[i] = c2[i] * (1 - (percent - 0.5) * 2) + c3[i] * (percent - 0.5) * 2;
+						}
+					}
+					return rgbToHex(cr);
+				} else {
+					return SOLVED;
+				}
+			}
+		}
+		if (rp.num_judged > 0 && rp.num_pending === 0)
+			return FAILED;
+		return '#333';
+	}
+
 	onMount(() => {
 		const interval = setInterval(() => {
 			invalidateAll();
@@ -63,8 +102,12 @@
 				<div role="cell"></div>
 			{/if}
 			<div role="cell">Team</div>
-			<div role="cell" class="justify-self-center">Solved</div>
-			<div role="cell" class="justify-self-center">Penalty</div>
+			{#if data.scoreboard_type === 'pass-fail'}
+			  <div role="cell" class="justify-self-center">Solved</div>
+			  <div role="cell" class="justify-self-center">Penalty</div>
+			{:else if data.scoreboard_type === 'score'}
+			  <div role="cell" class="justify-self-center">Score</div>
+			{/if}
 			{#each data.problems as problem, ind}
 				<a class="justify-self-center" href="/problem/{problem.id}">
 					<div
@@ -95,32 +138,40 @@
 						>{data.teams[i]?.display_name || data.teams[i]?.name}</a>
 				</div>
 
-				<div role="cell" class="justify-self-center text-xl">
-					{row.score.num_solved && row.score.num_solved > 0 ? row.score.num_solved : ''}
-				</div>
-				<div role="cell" class="justify-self-center">
-					{timeToMin(row.score.total_time)}
-					{row.score.score ? row.score.score : ''}
-				</div>
+				{#if data.scoreboard_type === 'pass-fail'}
+					<div role="cell" class="justify-self-center text-xl">
+						{row.score.num_solved && row.score.num_solved > 0 ? row.score.num_solved : ''}
+					</div>
+					<div role="cell" class="justify-self-center">
+						{timeToMin(row.score.total_time)}
+					</div>
+				{:else if data.scoreboard_type === 'score'}
+					<div role="cell" class="justify-self-center">
+						{row.score.score ? row.score.score : ''}
+					</div>
+				{/if}
 
 				{#each data.problems as problem}
 					{@const rp = row.problems?.find((p) => p.problem_id == problem.id)}
 					{#if rp}
-						{#if rp.num_judged > 0}
+						{#if rp.num_judged > 0 || rp.num_pending > 0}
 							<div
 								role="cell"
 								class="flex flex-row justify-center items-center w-full h-full rounded-md"
-								class:bg-green-500={rp.solved || (rp.score && rp.score > 0)}
-								class:bg-yellow-500={rp.num_pending > 0 &&
-									!rp.solved &&
-									(!rp.score || rp.score == 0)}
-								class:bg-red-500={!rp.solved && rp.num_judged > 0 && rp.num_pending == 0}>
-								<div>
-									{rp.num_judged + rp.num_pending}
-									<span class="text-xs text-black/50"
-										>{timeToMin(rp.time)}</span
-									>
-								</div>
+								style="background-color:{scoreBg(rp, problem)}">
+								{#if data.scoreboard_type === 'pass-fail'}
+									<div>
+										{timeToMin(rp.time)}
+										<span class="text-xs text-black/50"
+											>{rp.num_judged + rp.num_pending}</span>
+									</div>
+								{:else if data.scoreboard_type === 'score'}
+									<div>
+										{rp.score}
+										<span class="text-xs text-black/50"
+											>{rp.num_judged + rp.num_pending}</span>
+									</div>
+								{/if}
 							</div>
 						{:else}
 							<div role="cell"></div>

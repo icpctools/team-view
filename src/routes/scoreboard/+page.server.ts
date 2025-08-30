@@ -38,6 +38,7 @@ export const load = async (_params) => {
 
 	return {
 		name: info.name,
+		scoreboard_type: info.scoreboard_type,
 		scoreboard: scoreboard,
 		teams: sortedTeams,
 		logos: logos,

@@ -20,7 +20,7 @@ export interface ContestJSON {
 	start_time?: string;
 	duration: RelTime;
 	scoreboard_freeze_duration?: RelTime;
-	scoreboard_type: 'pass-fail' | 'scoring';
+	scoreboard_type: 'pass-fail' | 'score';
 	penalty_time?: number | RelTime; // 2023-06 | draft
 	countdown_pause_time?: RelTime;
 	banner?: FileReferenceJSON[];
