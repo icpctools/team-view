@@ -1,10 +1,6 @@
 <script lang="ts">
 	import Person from '$lib/ui/Person.svelte';
-	import * as countries from 'i18n-iso-countries';
-	import en from 'i18n-iso-countries/langs/en.json';
-
-	countries.registerLocale(en);
-
+	
 	let { data } = $props();
 </script>
 
@@ -24,7 +20,7 @@
 {#if data.organization?.country}
 <div class="flex flex-col">
 	<div class="text-xl">Country</div>
-	<div>{countries.getName(data.organization.country, 'en')}</div>
+	<div>{data.country}</div>
 </div>
 {/if}
 
@@ -56,8 +52,19 @@
 {#if data.submissions && data.submissions.length > 0}
 <div class="flex flex-col">
 <div class="text-xl">Submissions</div>
+<div class="grid grid-table" style="grid-template-columns: 1fr 1fr 1fr 1fr" role="row">
+  <div role="cell" class="">Time</div>
+  <div role="cell" class="">Problem</div>
+  <div role="cell" class="">Language</div>
+  <div role="cell" class="">Judgement</div>
+</div>
 {#each data.submissions as submission}
-<div class="flex flex-row">{submission.contest_time}</div>
+<div class="grid grid-table" style="grid-template-columns: 1fr 1fr 1fr 1fr" role="row">
+  <div role="cell" class="">{submission.time}</div>
+  <div role="cell" class="">{submission.problem}</div>
+  <div role="cell" class="">{submission.language}</div>
+  <div role="cell" class="">{submission.judgement}</div>
+</div>
 {/each}
 </div>
 {/if}

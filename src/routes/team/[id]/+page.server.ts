@@ -1,6 +1,10 @@
 import { error } from '@sveltejs/kit';
 import { ContestUtil } from '$lib/contest-util';
 import { contest } from '$lib/state.svelte.js';
+import { timeToMin } from '$lib/contest-time-util.js';
+import type { JudgementJSON } from '$lib/contest-types.js';
+import * as countries from 'i18n-iso-countries';
+import en from 'i18n-iso-countries/langs/en.json';
 
 export const load = async (params) => {
 	const cc = contest
@@ -37,12 +41,63 @@ export const load = async (params) => {
 		(p) => p.role === 'contestant' && p.team_ids?.includes(team.id)
 	);
 
-	//const submissions2 = await cc.loadSubmissions();
+	if (!cc.getProblems())
+		await cc.loadProblems();
+	const problems = cc.getProblems();
+
+	if (!cc.getLanguages())
+		await cc.loadLanguages();
+	const languages = cc.getLanguages();
+
 	if (!cc.getSubmissions())
 		await cc.loadSubmissions();
 	const submissions2 = cc.getSubmissions();
 
 	const submissions = submissions2?.filter(s => s.team_id === team.id);
+
+	if (!cc.getJudgements())
+		await cc.loadJudgements();
+	const judgements = cc.getJudgements();
+
+	if (!cc.getJudgementTypes())
+		await cc.loadJudgementTypes();
+	const judgementTypes = cc.getJudgementTypes();
+	
+	const submissionData = submissions?.map((s)=> {
+		const jud = util.findManyBySubmissionId(judgements, s.id);
+		let j: JudgementJSON | undefined;
+		if (jud && jud.length > 0) {
+			// find current judgement
+			j = jud.find(jj => jj.current);
+
+			// otherwise it is the first one
+			if (!j)
+				j = jud[0];
+		}
+		
+		let judge = '';
+		if (j) {
+			const jt = util.findById(judgementTypes, j.judgement_type_id);
+			judge = jt?.id + ': ';
+			if (j.score != undefined)
+				judge += j.score + '';
+			else
+				judge += jt?.solved + '';
+		}
+		return {
+			time: timeToMin(s.contest_time),
+			problem: util.findById(problems, s.problem_id)?.label,
+			language: util.findById(languages, s.language_id)?.name,
+			judgement: judge,
+		};
+	});
+
+	let country;
+	if (org?.country) {
+		//countries.registerLocale(en);
+		//country = countries.getName(org.country, 'en');
+		country = org.country;
+	}
 
 	return {
 		team: team,
@@ -51,8 +106,7 @@ export const load = async (params) => {
 		logo: logo,
 		coaches: coaches,
 		contestants: contestants,
-		submissions: submissions,
-		judgements: undefined,
-		judgementTypes: undefined,
+		submissions: submissionData,
+		country: country,
 	};
 };

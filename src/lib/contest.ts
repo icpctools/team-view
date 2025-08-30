@@ -162,8 +162,8 @@ export class Contest {
 	}
 
 	async loadLanguages(): Promise<LanguageJSON[] | undefined> {
-		this.problems = await this.loadObject('problems');
-		return this.problems;
+		this.languages = await this.loadObject('languages');
+		return this.languages;
 	}
 
 	async loadJudgementTypes(): Promise<JudgementTypeJSON[] | undefined> {
