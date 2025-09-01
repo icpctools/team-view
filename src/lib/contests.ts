@@ -5,6 +5,7 @@ import type { HttpsOptions, OptionsOfTextResponseBody } from 'got';
 import got from 'got';
 import type { ContestJSON } from './contest-types.ts';
 import { Contest } from './contest.ts';
+import { CONTEST } from './hardcoded.svelte.js';
 
 export class Contests {
 	contests: ContestJSON[] | undefined;
@@ -50,7 +51,7 @@ export class Contests {
 				secureConnect: 2000,
 				socket: 2000,
 				send: 10000,
-				response: 1000
+				response: 2000
 			}
 		};
 
@@ -75,7 +76,12 @@ export class Contests {
 		}
 		let baseURL = this.baseURL;
 		if (!baseURL.endsWith('/')) baseURL += '/';
-		let contestURL = baseURL + 'contests/' + this.contests[0].id;
+		let contestURL = baseURL + 'contests/';
+		if (CONTEST.contest) {
+			contestURL += CONTEST.contest;
+		} else {
+			contestURL += this.contests[0].id;
+		}
 		const c: Contest = new Contest(contestURL);
 		return c;
 	}
