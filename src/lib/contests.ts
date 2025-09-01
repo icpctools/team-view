@@ -3,9 +3,9 @@
  */
 import type { HttpsOptions, OptionsOfTextResponseBody } from 'got';
 import got from 'got';
-import type { ContestJSON } from './contest-types.ts';
-import { Contest } from './contest.ts';
-import { CONTEST } from './hardcoded.svelte.js';
+import type { ContestJSON } from './contest-types';
+import { Contest } from './contest';
+import { CONTEST } from './hardcoded.svelte';
 
 export class Contests {
 	contests: ContestJSON[] | undefined;
