@@ -77,8 +77,8 @@ export class Contests {
 		let baseURL = this.baseURL;
 		if (!baseURL.endsWith('/')) baseURL += '/';
 		let contestURL = baseURL + 'contests/';
-		if (CONTEST.contest) {
-			contestURL += CONTEST.contest;
+		if (CONTEST.contest_id) {
+			contestURL += CONTEST.contest_id;
 		} else {
 			contestURL += this.contests[0].id;
 		}
