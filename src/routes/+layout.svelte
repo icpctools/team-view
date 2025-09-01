@@ -23,7 +23,7 @@
 	<div class="text-lg"><a href="/scoreboard">Scoreboard</a></div>
   </div>
 
-  <div class="overflow-auto flex flex-col gap-2">
+  <div class="overflow-auto flex flex-col gap-2 w-full h-full">
 	{@render children()}
 
 	{#if data.banner && data.banner.length > 0}

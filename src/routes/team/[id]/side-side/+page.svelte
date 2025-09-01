@@ -4,12 +4,11 @@
 	let { data } = $props();
 </script>
 
-<div class="flex flex-row relative">
+<div class="flex flex-row justify-items-stretch w-full h-full">
 	<div class="w-full h-full">
 		<Video ref={data.team.desktop} type="desktop"/>
-
-		<div class="w-84 h-56 absolute top-8 right-0">
-			<Video ref={data.team.webcam} type="webcam"/>
-		</div>
+	</div>
+	<div class="w-full h-full">
+		<Video ref={data.team.webcam} type="webcam"/>
 	</div>
 </div>

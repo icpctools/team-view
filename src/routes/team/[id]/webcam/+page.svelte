@@ -4,6 +4,6 @@
 	let { data } = $props();
 </script>
 
-<div class="w-full h-full bg-green-200 p-2">
+<div class="w-full h-full">
 	<Video ref={data.team.webcam} type="webcam"/>
 </div>

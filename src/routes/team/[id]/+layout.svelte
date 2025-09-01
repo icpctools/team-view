@@ -25,6 +25,12 @@
 		{#if data.team.desktop && data.team.webcam}
 		<div><a href="/team/{data.team.id}/pip">Picture in Picture</a></div>
 		{/if}
+		{#if data.team.desktop && data.team.webcam}
+		<div><a href="/team/{data.team.id}/rpip">Reverse PiP</a></div>
+		{/if}
+		{#if data.team.desktop && data.team.webcam}
+		<div><a href="/team/{data.team.id}/side-side">Both</a></div>
+		{/if}
 	</div>
 </div>
 
