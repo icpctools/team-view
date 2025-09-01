@@ -1,6 +1,5 @@
 import { error } from '@sveltejs/kit';
 import { ContestUtil } from '$lib/contest-util';
-import type { TeamJSON } from '$lib/contest-types.js';
 import { contest } from '$lib/state.svelte.js';
 
 export const load = async (_params) => {

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Person from '$lib/ui/Person.svelte';
+	import Photo from '$lib/ui/Photo.svelte';
 	
 	let { data } = $props();
 </script>
@@ -66,6 +67,15 @@
   <div role="cell" class="">{submission.judgement}</div>
 </div>
 {/each}
+</div>
+{/if}
+
+{#if data.team.photo}
+<div class="flex flex-col">
+	<div class="text-xl">Photo</div>
+	<div class="flex flex-row gap-2">
+		<Photo ref={data.team.photo} size={48} />
+	</div>
 </div>
 {/if}
 
