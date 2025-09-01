@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { FileReferenceJSON } from '$lib/contest-types';
+	import Mpegts from 'mpegts.js';
 
 	import { onMount, onDestroy } from 'svelte';
 	import videojs from 'video.js';
@@ -28,12 +29,31 @@
 	};
 
 	onMount(() => {
-		player = videojs(videoNode, options, function onPlayerReady() {
+		/*var videoElement = document.getElementById('videoElement');
+        var player = mpegts.createPlayer({
+            type: 'mse',  // could also be mpegts, m2ts, flv
+            isLive: true,
+            url: 'http://example.com/live/livestream.ts'
+        });
+        player.attachMediaElement(videoElement);
+        player.load();
+        player.play();*/
+
+		/*player = videojs(videoNode, options, function onPlayerReady() {
 			// player ready
 		});
 		if (src) {
 			player.src(src);
-		}
+		}*/
+		var videoElement = document.getElementById('videoElement-'+type);
+		var player = Mpegts.createPlayer({
+            type: 'mpegts',
+            isLive: true,
+            url: src
+        });
+        player.attachMediaElement(videoElement);
+        player.load();
+        player.play();
 	});
 
 	onDestroy(() => {
@@ -45,7 +65,9 @@
 
 {#if src}
 	<!-- svelte-ignore a11y_media_has_caption -->
-	<video bind:this={videoNode} class="video-js vjs-default-skin"></video>
+	<!--<video bind:this={videoNode} class="video-js vjs-default-skin"></video>-->
+	<!-- svelte-ignore a11y_media_has_caption -->
+	<video class="w-full h-full border border-black bg-slate-900" id="videoElement-{type}"></video>
 {:else}
 	<span class="self-center">({type} unavailable)</span>
 {/if}

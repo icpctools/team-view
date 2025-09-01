@@ -39,6 +39,7 @@
 	"dependencies": {
 		"got": "^14.4.6",
 		"video.js": "^8.23.4",
+		"mpegts.js": "1.8.0",
 		"i18n-iso-countries": "^7.14.0"
 	}
 }
