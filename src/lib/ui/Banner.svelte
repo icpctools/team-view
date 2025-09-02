@@ -4,7 +4,7 @@
 
 	interface Props {
 		ref?: FileReferenceJSON[];
-		size: 16 | 24 | 32 | 64;
+		size?: 16 | 24 | 32 | 64;
 	}
 
 	let { ref, size = 16 }: Props = $props();
