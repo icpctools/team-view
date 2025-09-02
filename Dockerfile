@@ -7,8 +7,8 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install
+# Install dependencies and tini
+RUN npm install && apk add --no-cache tini
 
 # Copy source code
 COPY . .
@@ -35,5 +35,6 @@ ENV CONTEST_PASSWORD=adm1n
 # Expose the configurable port
 EXPOSE $PORT
 
-# Run the application
+# Run the application with tini as init
+ENTRYPOINT ["tini", "--"]
 CMD ["node", "build"]
