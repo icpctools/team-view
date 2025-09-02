@@ -13,7 +13,7 @@
 
 	let { ref, type }: Props = $props();
 
-	let src = $derived((ref && ref.length > 0) ? ref[0].href : undefined);
+	let src = $derived((ref && ref.length > 0) ? (ref[0].fullHref ?? ref[0].href) : undefined);
 
 	let videoNode = $state<HTMLElement | string>('');
 	let player = $state<Player>();

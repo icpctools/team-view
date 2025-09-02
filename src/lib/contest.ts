@@ -110,7 +110,7 @@ export class Contest {
 			const obj = JSON.parse(response.body);
 			const endTime = performance.now();
 			console.log(`Fetched ${url} in ${endTime - startTime}ms`);
-			return obj;
+			return this.processObjectForFileRefs(obj);
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (requestErr: any) {
 			// unable to fetch the extensions
@@ -322,7 +322,7 @@ export class Contest {
 
 	getTimeDelta() {
 		if (this.timeDelta.length == 0) return 0;
-		var total = 0;
+		let total = 0;
 		this.timeDelta.forEach(function (item) {
 			total += item;
 		});
@@ -331,8 +331,45 @@ export class Contest {
 
 	resolveURL(ref: FileReferenceJSON | undefined): string | undefined {
 		if (!ref || !ref.href) return undefined;
-		// TODO: for now, hack off part of the URL
+		// If href is already absolute, return as-is
+		if (ref.href.startsWith('http://') || ref.href.startsWith('https://')) {
+			return ref.href;
+		}
+		// For relative URLs, prefix with contest URL base
 		return this.contestURL.substring(0, CONTEST.url.length) + ref.href;
+	}
+
+	private addFullHrefToFileRef<T extends FileReferenceJSON>(fileRef: T): T {
+		return {
+			...fileRef,
+			fullHref: this.resolveURL(fileRef) || fileRef.href
+		};
+	}
+
+	private addFullHrefToArray<T extends FileReferenceJSON>(fileRefs: T[]): T[] {
+		return fileRefs?.map(ref => this.addFullHrefToFileRef(ref));
+	}
+
+	private processObjectForFileRefs<T>(obj: T): T {
+		if (!obj || typeof obj !== 'object') return obj;
+		
+		if (Array.isArray(obj)) {
+			return obj.map(item => this.processObjectForFileRefs(item)) as T;
+		}
+
+		const result = { ...obj } as any;
+		
+		for (const key in result) {
+			const value = result[key];
+			
+			if (Array.isArray(value) && value.length > 0 && value[0] && typeof value[0] === 'object' && 'href' in value[0]) {
+				result[key] = this.addFullHrefToArray(value);
+			} else if (value && typeof value === 'object' && 'href' in value) {
+				result[key] = this.addFullHrefToFileRef(value);
+			}
+		}
+		
+		return result;
 	}
 
 	clear() {

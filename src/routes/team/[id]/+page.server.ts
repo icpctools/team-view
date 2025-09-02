@@ -1,13 +1,13 @@
 import { error } from '@sveltejs/kit';
 import { ContestUtil } from '$lib/contest-util';
-import { contest } from '$lib/state.svelte.js';
+import { loadContest } from '$lib/state.svelte.js';
 import { timeToMin } from '$lib/contest-time-util.js';
 import type { JudgementJSON } from '$lib/contest-types.js';
 import * as countries from 'i18n-iso-countries';
 import en from 'i18n-iso-countries/langs/en.json';
 
 export const load = async (params) => {
-	const cc = contest
+	const cc = await loadContest();
 	if (!cc) throw error(404);
 
 	if (!cc.getTeams())

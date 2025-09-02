@@ -1,13 +1,13 @@
-import { contest } from '$lib/state.svelte.js';
+import { loadContest } from '$lib/state.svelte.js';
 import { error } from '@sveltejs/kit';
 
 export const load = async (_params) => {
-	const cc = contest;
+	const cc = await loadContest();
 	if (!cc) throw error(404);
 
 	if (!cc.getInfo())
 		await cc.loadInfo();
-	let info = cc.getInfo();
+	const info = cc.getInfo();
 	if (!info) throw error(404);
 
 	return {

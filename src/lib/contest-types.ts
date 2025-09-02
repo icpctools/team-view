@@ -36,6 +36,7 @@ export interface FileReferenceJSON {
 	hash?: string;
 	width?: number;
 	height?: number;
+	fullHref?: string;
 }
 
 export interface ContestStateJSON {
