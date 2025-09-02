@@ -68,7 +68,7 @@
 	<!-- svelte-ignore a11y_media_has_caption -->
 	<!--<video bind:this={videoNode} class="video-js vjs-default-skin"></video>-->
 	<!-- svelte-ignore a11y_media_has_caption -->
-	<video class="w-full h-full border border-black bg-slate-900" id="videoElement-{type}"></video>
+	<video playsinline class="w-full h-full border border-black bg-slate-900" id="videoElement-{type}"></video>
 {:else}
 	<span class="self-center">({type} unavailable)</span>
 {/if}
