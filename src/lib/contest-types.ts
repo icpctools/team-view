@@ -104,8 +104,8 @@ export interface SubmissionJSON {
 	team_id: Id;
 	time: Time;
 	contest_time: RelTime;
-	files: FileReferenceJSON;
-	reaction?: FileReferenceJSON;
+	files: FileReferenceJSON[];
+	reaction?: FileReferenceJSON[];
 }
 
 export interface JudgementTypeJSON {
@@ -187,7 +187,15 @@ export interface AccountJSON {
 }
 
 export interface ClarificationJSON {
-	id: Id; // todo
+	id: Id;
+	from_team_id?: Id;
+	to_team_ids?: Id[];
+	to_group_ids?: Id[];
+	reply_to_id?: Id;
+	problem_id?: Id;
+	text: string;
+	time: Time;
+	contest_time: RelTime;
 }
 
 export interface CommentaryJSON {
