@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { FileReferenceJSON } from '$lib/contest-types';
-	import Mpegts from 'mpegts.js';
 
 	import { onMount, onDestroy } from 'svelte';
 	import videojs from 'video.js';
@@ -28,7 +27,7 @@
 		preload: 'auto'
 	};
 
-	onMount(() => {
+	onMount(async () => {
 		/*var videoElement = document.getElementById('videoElement');
         var player = mpegts.createPlayer({
             type: 'mse',  // could also be mpegts, m2ts, flv
@@ -45,6 +44,8 @@
 		if (src) {
 			player.src(src);
 		}*/
+		const obj = await import("mpegts.js");
+		const Mpegts = obj.default;
 		var videoElement = document.getElementById('videoElement-'+type);
 		var player = Mpegts.createPlayer({
             type: 'mpegts',
