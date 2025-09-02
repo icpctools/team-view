@@ -342,7 +342,7 @@ export class Contest {
 	private addFullHrefToFileRef<T extends FileReferenceJSON>(fileRef: T): T {
 		return {
 			...fileRef,
-			fullHref: this.resolveURL(fileRef) || fileRef.href
+			href: this.resolveURL(fileRef) || fileRef.href
 		};
 	}
 

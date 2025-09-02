@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { FileReferenceJSON } from '$lib/contest-types';
-	import { resolveFileRef } from '$lib/fileref-util';
 	import { ContestUtil } from '../contest-util';
 
 	interface Props {
@@ -12,7 +11,7 @@
 
 	const util = new ContestUtil();
 	const bestRef = util.bestSquareLogo(ref, size * 20);
-	const imgSrc = resolveFileRef(bestRef);
+	const imgSrc = bestRef?.href;
 </script>
 
 {#if bestRef}
