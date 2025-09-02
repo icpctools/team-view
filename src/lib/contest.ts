@@ -110,7 +110,8 @@ export class Contest {
 			const obj = JSON.parse(response.body);
 			const endTime = performance.now();
 			console.log(`Fetched ${url} in ${endTime - startTime}ms`);
-			return this.processObjectForFileRefs(obj);
+			this.processFileReferences(obj);
+			return obj;
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (requestErr: any) {
 			// unable to fetch the extensions
@@ -339,37 +340,34 @@ export class Contest {
 		return this.contestURL.substring(0, CONTEST.url.length) + ref.href;
 	}
 
-	private addFullHrefToFileRef<T extends FileReferenceJSON>(fileRef: T): T {
-		return {
-			...fileRef,
-			href: this.resolveURL(fileRef) || fileRef.href
-		};
+	private isFileReference(obj: any): obj is FileReferenceJSON {
+		if (!(typeof obj === 'object' && 'href' in obj && 'mime' in obj))
+			return false;
+		return true;
 	}
 
-	private addFullHrefToArray<T extends FileReferenceJSON>(fileRefs: T[]): T[] {
-		return fileRefs?.map(ref => this.addFullHrefToFileRef(ref));
-	}
-
-	private processObjectForFileRefs<T>(obj: T): T {
-		if (!obj || typeof obj !== 'object') return obj;
-		
+	private processFileReferences(obj: any) {
+		// We get either one object or an array of objects, handle both cases
+		let objs: any[]
 		if (Array.isArray(obj)) {
-			return obj.map(item => this.processObjectForFileRefs(item)) as T;
+			objs = obj;
+		} else {
+			objs = [obj];
 		}
+		for (const obj of objs) {
+			for (const key in obj) {
+				const prop = obj[key];
+				if (!Array.isArray(prop)) {
+					continue;
+				}
 
-		const result = { ...obj } as any;
-		
-		for (const key in result) {
-			const value = result[key];
-			
-			if (Array.isArray(value) && value.length > 0 && value[0] && typeof value[0] === 'object' && 'href' in value[0]) {
-				result[key] = this.addFullHrefToArray(value);
-			} else if (value && typeof value === 'object' && 'href' in value) {
-				result[key] = this.addFullHrefToFileRef(value);
+				for (const item of prop) {
+					if (this.isFileReference(item)) {
+						item.href = this.resolveURL(item) || item.href;
+					}
+				}
 			}
 		}
-		
-		return result;
 	}
 
 	clear() {
