@@ -173,7 +173,10 @@ export class Contest {
 	}
 
 	async loadProblems(): Promise<ProblemJSON[] | undefined> {
-		this.problems = await this.loadObject('problems');
+		const problems2: ProblemJSON[] = await this.loadObject('problems');
+		problems2.sort((a, b) => (a.ordinal > b.ordinal ? 1 : b.ordinal > a.ordinal ? -1 : 0));
+
+		this.problems = problems2;
 		return this.problems;
 	}
 
@@ -188,19 +191,20 @@ export class Contest {
 	}
 
 	async loadTeams(): Promise<TeamJSON[] | undefined> {
-		this.teams = await this.loadObject('teams');
+		const teams2: TeamJSON[] = await this.loadObject('teams');
+		// sort by team id
+		teams2.sort((a, b) => {
+			// try parsing as number first
+			const an = parseInt(a.id);
+			const bn = parseInt(b.id);
+			if (!Number.isNaN(an) && !Number.isNaN(bn)) {
+				return an - bn;
+			}
+			// otherwise compare by locale
+			return a.id.localeCompare(b.id);
+		});
+		this.teams = teams2;
 		return this.teams;
-
-		/*return this.loadObject('teams', (result) => {
-			var teams2 = result;
-			teams2.sort(function(a,b) {
-				if (!isNaN(a.id) && !isNaN(b.id))
-					return Number(a.id) > Number(b.id);
-				else
-					return a.id.localeCompare(b.id);
-			})
-			this.teams = teams2;
-		});*/
 	}
 
 	async loadPersons(): Promise<PersonJSON[] | undefined> {
@@ -244,7 +248,12 @@ export class Contest {
 	}
 
 	async loadScoreboard(): Promise<ScoreboardJSON | undefined> {
-		this.scoreboard = await this.loadObject('scoreboard');
+		const scoreboard2: ScoreboardJSON = await this.loadObject('scoreboard');
+		scoreboard2.rows.sort((a, b) => {
+			return a.rank - b.rank;
+		});
+
+		this.scoreboard = scoreboard2;
 		return this.scoreboard;
 	}
 
