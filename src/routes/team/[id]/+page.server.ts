@@ -2,7 +2,7 @@ import { error } from '@sveltejs/kit';
 import { ContestUtil } from '$lib/contest-util';
 import { loadContest } from '$lib/state.svelte.js';
 import { timeToMin } from '$lib/contest-time-util.js';
-import type { JudgementJSON } from '$lib/contest-types.js';
+import type { JudgementJSON, JudgementTypeJSON } from '$lib/contest-types.js';
 import * as countries from 'i18n-iso-countries';
 import en from 'i18n-iso-countries/langs/en.json';
 
@@ -76,19 +76,18 @@ export const load = async (params) => {
 		}
 		
 		let judge = '';
+		let jt: JudgementTypeJSON | undefined;
 		if (j) {
-			const jt = util.findById(judgementTypes, j.judgement_type_id);
-			judge = jt?.id + ': ';
+			jt = util.findById(judgementTypes, j.judgement_type_id);
 			if (j.score != undefined)
 				judge += j.score + '';
-			else
-				judge += jt?.solved + '';
 		}
 		return {
 			time: timeToMin(s.contest_time),
-			problem: util.findById(problems, s.problem_id)?.label,
+			problem: util.findById(problems, s.problem_id),
 			language: util.findById(languages, s.language_id)?.name,
 			judgement: judge,
+			judgement_type: jt,
 		};
 	});
 

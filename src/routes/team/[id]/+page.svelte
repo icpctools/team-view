@@ -1,6 +1,8 @@
 <script lang="ts">
+	import JudgementType from '$lib/ui/JudgementType.svelte';
 	import Person from '$lib/ui/Person.svelte';
 	import Photo from '$lib/ui/Photo.svelte';
+	import Problem from '$lib/ui/Problem.svelte';
 	
 	let { data } = $props();
 </script>
@@ -62,9 +64,9 @@
 {#each data.submissions as submission}
 <div class="grid grid-table" style="grid-template-columns: 1fr 1fr 1fr 1fr" role="row">
   <div role="cell" class="">{submission.time}</div>
-  <div role="cell" class="">{submission.problem}</div>
+  <div role="cell" class="w-16"><Problem problem={submission.problem}/></div>
   <div role="cell" class="">{submission.language}</div>
-  <div role="cell" class="">{submission.judgement}</div>
+  <div role="cell" class=""><JudgementType judgement_type={submission.judgement_type} />{submission.judgement}</div>
 </div>
 {/each}
 </div>

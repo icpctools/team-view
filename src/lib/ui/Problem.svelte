@@ -3,13 +3,13 @@
 	import type { ProblemJSON } from '$lib/contest-types';
 
 	interface Props {
-		problem: ProblemJSON;
+		problem?: ProblemJSON;
 	}
 
 	let { problem }: Props = $props();
 
 	let pStyle = $state('');
-	let rgb = problem.rgb;
+	const rgb = problem?.rgb;
 	if (rgb) {
 		let col = parseHexColor(rgb);
 		let fg = '#fff';
@@ -27,4 +27,4 @@
 	}
 </script>
 
-<div class="justify-self-center text-center border-[1px] rounded-sm w-full h-full" style={pStyle}>{problem.label}</div>
+<div class="justify-self-center text-center border-[1px] rounded-sm w-full h-full" style={pStyle}>{problem?.label}</div>
