@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { parseHexColor, darker, rgbToHex } from '$lib/color-util.js';
 	import type { ProblemJSON } from '$lib/contest-types.js';
+	import Problem from './Problem.svelte';
 	import { getColumns } from './scoreboard-util';
 
 	interface Props {
@@ -12,25 +12,6 @@
 	let { scoreboard_type = 'pass-fail', problems, showLogo = true }: Props = $props();
 
 	let col = getColumns(scoreboard_type, problems?.length, showLogo);
-
-	let pStyle: string[] = [];
-	problems.forEach((p) => {
-		if (p.rgb) {
-			let col = parseHexColor(p.rgb);
-			let fg = '#fff';
-			if (col && col[0] + col[1] + col[2] > 450) {
-				fg = '#000';
-			}
-			let border = p.rgb;
-			if (col) {
-				border = rgbToHex(darker(col));
-			}
-
-			pStyle.push('background-color:' + p.rgb + ';color:' + fg + ';border-color:' + border + ';');
-		} else {
-			pStyle.push('background-color:#fff;color:#000;border:#000;');
-		}
-	});
 </script>
 
 <div role="rowgroup" class="sticky top-0 bg-white/90 font-semibold">
@@ -49,15 +30,12 @@
 		{:else if scoreboard_type === 'score'}
 			<div role="cell" class="justify-self-center">Score</div>
 		{/if}
-		{#each problems as problem, ind}
-			<a class="justify-self-center" href="/problem/{problem.id}">
-				<div
-					role="cell"
-					class="text-center uppercase border-[1px] rounded-md w-12 h-6"
-					style={pStyle[ind]}>
-					{problem.label}
-				</div>
-			</a>
+		{#each problems as problem}
+		    <div role="cell" class="justify-self-center w-12">
+				<a href="/problem/{problem.id}">
+					<Problem problem={problem}/>
+				</a>
+			</div>
 		{/each}
 	</div>
 </div>

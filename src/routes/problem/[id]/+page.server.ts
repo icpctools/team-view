@@ -6,7 +6,7 @@ export const load = async (params) => {
 	if (!cc) throw error(404);
 
 	if (!cc.getProblems())
-		await cc.loadTeams();
+		await cc.loadProblems();
 	const problems = cc.getProblems();
 
 	const problem = problems?.find((p) => p.id && p.id === params.params.id);
