@@ -1,10 +1,11 @@
 
-export function getColumns(scoreboard_type: 'pass-fail' | 'score', num_problems: number, showLogo: boolean): string {
+export function getColumns(scoreboard_type: 'pass-fail' | 'score', num_problems: number, showLogo: boolean, mode: 'full' | 'summary'): string {
 	let cols: string[] = ['40px'];
-	if (showLogo) {
+	if (showLogo && mode === 'full') {
 		cols.push('40px');
 	}
-	cols.push('425px');
+	if (mode != 'summary')
+		cols.push('425px');
 
 	if (scoreboard_type === 'pass-fail') {
 		cols.push('60px');

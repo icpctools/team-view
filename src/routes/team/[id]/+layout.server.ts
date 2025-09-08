@@ -17,11 +17,21 @@ export const load = async (params) => {
 		await cc.loadOrganizations();
 	const orgs = cc.getOrganizations();
 
+	if (!cc.getProblems())
+		await cc.loadProblems();
+	const problems = cc.getProblems();
+
 	const util = new ContestUtil();
 	const logo = util.findById(orgs, team.organization_id)?.logo;
 
+	let scoreboard = await cc.loadScoreboard();
+	const row = scoreboard?.rows?.find((r) => r.team_id === team.id);
+
 	return {
 		team: team,
-		logo: logo
+		logo: logo,
+		problems: problems,
+		row: row,
+		scoreboard_type: cc.getInfo()?.scoreboard_type
 	};
 };

@@ -12,11 +12,12 @@
 		problems: ProblemJSON[];
 		team?: TeamJSON;
 		logo?: FileReferenceJSON[];
+		mode: 'full' | 'summary';
 	}
 
-	let { scoreboard_type = 'pass-fail', problems, row, team, logo, showLogo = true }: Props = $props();
+	let { scoreboard_type = 'pass-fail', problems, row, team, logo, showLogo = true, mode = 'full' }: Props = $props();
 
-	let col = getColumns(scoreboard_type, problems?.length, showLogo);
+	let col = getColumns(scoreboard_type, problems?.length, showLogo, mode);
 
 	function scoreBg(rp: ScoreboardProblemJSON, problem: ProblemJSON):string {
 		if (rp.num_pending > 0) {
@@ -58,13 +59,15 @@
 	class="grid grid-table items-center min-h-7 even:bg-white odd:bg-gray-100 my-0.5 gap-x-0.5"
 	style="grid-template-columns: {col}">
 	<div role="cell" class="justify-self-center pr-1">{row.rank}</div>
-	{#if showLogo}
+	{#if showLogo && mode === 'full'}
 		<div role="cell" class="w-4 justify-self-center"><Logo ref={logo} /></div>
 	{/if}
+	{#if mode != 'summary'}
 	<div role="cell" class="text-nowrap overflow-hidden text-ellipsis">
 		<a href="/team/{team?.id}"
 			>{team?.display_name || team?.name}</a>
 	</div>
+	{/if}
 
 	{#if scoreboard_type === 'pass-fail'}
 		<div role="cell" class="justify-self-center text-xl">
@@ -105,7 +108,7 @@
 				<div role="cell"></div>
 			{/if}
 		{:else}
-			<div role="cell" class="text-center"></div>
+			<div role="cell" class="text-center text-sm text-gray-300">{#if mode === 'summary'}{problem.label}{/if}</div>
 		{/if}
 	{/each}
 </div>

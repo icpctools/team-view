@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Logo from '$lib/ui/Logo.svelte';
+	import ScoreboardRow from '$lib/ui/ScoreboardRow.svelte';
 
 	let { data, children } = $props();
 </script>
@@ -32,6 +33,16 @@
 		<div><a href="/team/{data.team.id}/side-side">Both</a></div>
 		{/if}
 	</div>
+</div>
+
+<div class="w-full align-center border-b-[1px] border-gray-500">
+	<ScoreboardRow
+					scoreboard_type={data.scoreboard_type}
+					problems={data.problems}
+					row={data.row}
+					team={data.team}
+					logo={data.logo}
+					mode='summary'/>
 </div>
 
 <div class="overflow-auto w-full h-full">
