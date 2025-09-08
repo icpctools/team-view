@@ -64,7 +64,7 @@
 {#each data.submissions as submission}
 <div class="grid grid-table" style="grid-template-columns: 1fr 1fr 1fr 1fr" role="row">
   <div role="cell" class="">{submission.time}</div>
-  <div role="cell" class="w-16"><Problem problem={submission.problem}/></div>
+  <div role="cell" class="w-16"><a href="/problem/{submission.problem?.id}"><Problem problem={submission.problem}/></a></div>
   <div role="cell" class="">{submission.language}</div>
   <div role="cell" class=""><JudgementType judgement_type={submission.judgement_type} />{submission.judgement}</div>
 </div>
