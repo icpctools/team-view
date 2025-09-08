@@ -1,83 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { invalidateAll } from '$app/navigation';
-	import Logo from '$lib/ui/Logo.svelte';
 	import { flip } from 'svelte/animate';
-	import { parseHexColor, darker, rgbToHex, FAILED, SOLVED, PENDING, SCORING_MID } from '$lib/color-util.js';
-	import { timeToMin } from '$lib/contest-time-util.js';
-	import type { ProblemJSON, ScoreboardProblemJSON } from '$lib/contest-types.js';
+	import ScoreboardHeader from '$lib/ui/ScoreboardHeader.svelte';
+	import ScoreboardRow from '$lib/ui/ScoreboardRow.svelte';
 
 	let { data } = $props();
-
-	let cols: string[] = ['40px'];
-	if (data.hasLogos) {
-		cols.push('40px');
-	}
-	cols.push('425px');
-
-	if (data.scoreboard_type === 'pass-fail') {
-		cols.push('60px');
-		cols.push('60px');
-	} else if (data.scoreboard_type === 'score') {
-		cols.push('80px');
-	}
-
-	data.problems.forEach((_p) => cols.push('1fr'));
-
-	let col = cols.join(' ');
-
-	let pStyle: string[] = [];
-	data.problems.forEach((p) => {
-		if (p.rgb) {
-			let col = parseHexColor(p.rgb);
-			let fg = '#fff';
-			if (col && col[0] + col[1] + col[2] > 450) {
-				fg = '#000';
-			}
-			let border = p.rgb;
-			if (col) {
-				border = rgbToHex(darker(col));
-			}
-
-			pStyle.push('background-color:' + p.rgb + ';color:' + fg + ';border-color:' + border + ';');
-		} else {
-			pStyle.push('background-color:#fff;color:#000;border:#000;');
-		}
-	});
-
-	function scoreBg(rp: ScoreboardProblemJSON, problem: ProblemJSON):string {
-		if (rp.num_pending > 0) {
-			return PENDING;
-		}
-		if (data.scoreboard_type === 'pass-fail') {
-			if (rp.solved)
-				return SOLVED;
-		} else if (data.scoreboard_type === 'score') {
-			if (rp.score) {
-				if (problem.max_score) {
-					const percent = (rp.score ?? 0) / problem.max_score;
-
-					const c1 = parseHexColor(FAILED);
-					const c2 = parseHexColor(SCORING_MID);
-					const c3 = parseHexColor(SOLVED);
-					let cr = [0,0,0];
-					for (let i = 0; i < 3; i++) {
-						if (percent <= 0.5) {
-							cr[i] = c1[i] * (1 - percent * 2) + c2[i] * percent * 2;
-						} else {
-							cr[i] = c2[i] * (1 - (percent - 0.5) * 2) + c3[i] * (percent - 0.5) * 2;
-						}
-					}
-					return rgbToHex(cr);
-				} else {
-					return SOLVED;
-				}
-			}
-		}
-		if (rp.num_judged > 0 && rp.num_pending === 0)
-			return FAILED;
-		return '#333';
-	}
 
 	onMount(() => {
 		const interval = setInterval(() => {
@@ -91,95 +19,21 @@
 </script>
 
 <div class="w-full text-sm p-2" role="table" aria-label="scoreboard">
-	<!-- Table header -->
-	<div role="rowgroup" class="sticky top-0 bg-white/90 font-semibold">
-		<div
-			role="row"
-			class="grid grid-table gap-x-0.5 min-h-7 py-2"
-			style="grid-template-columns: {col}">
-			<div role="cell">Rank</div>
-			{#if data.hasLogos}
-				<div role="cell"></div>
-			{/if}
-			<div role="cell">Team</div>
-			{#if data.scoreboard_type === 'pass-fail'}
-			  <div role="cell" class="justify-self-center">Solved</div>
-			  <div role="cell" class="justify-self-center">Penalty</div>
-			{:else if data.scoreboard_type === 'score'}
-			  <div role="cell" class="justify-self-center">Score</div>
-			{/if}
-			{#each data.problems as problem, ind}
-				<a class="justify-self-center" href="/problem/{problem.id}">
-					<div
-						role="cell"
-						class="text-center uppercase border-[1px] rounded-md w-12 h-6"
-						style={pStyle[ind]}>
-						{problem.label}
-					</div>
-				</a>
-			{/each}
-		</div>
-	</div>
+	<ScoreboardHeader
+		hasLogos={data.hasLogos}
+		scoreboard_type={data.scoreboard_type}
+		problems={data.problems} />
 
-	<!-- Table rows -->
 	<div role="rowgroup">
 		{#each data.scoreboard.rows as row, i (row.team_id)}
-			<div
-				role="row"
-				class="grid grid-table items-center min-h-7 even:bg-white odd:bg-gray-100 my-0.5 gap-x-0.5"
-				style="grid-template-columns: {col}"
-				animate:flip>
-				<div role="cell" class="justify-self-center pr-1">{row.rank}</div>
-				{#if data.hasLogos}
-					<div role="cell" class="w-4 justify-self-center"><Logo ref={data.logos[i]} /></div>
-				{/if}
-				<div role="cell" class="text-nowrap overflow-hidden text-ellipsis">
-					<a href="/team/{data.teams[i]?.id}"
-						>{data.teams[i]?.display_name || data.teams[i]?.name}</a>
-				</div>
-
-				{#if data.scoreboard_type === 'pass-fail'}
-					<div role="cell" class="justify-self-center text-xl">
-						{row.score.num_solved && row.score.num_solved > 0 ? row.score.num_solved : ''}
-					</div>
-					<div role="cell" class="justify-self-center">
-						{timeToMin(row.score.total_time)}
-					</div>
-				{:else if data.scoreboard_type === 'score'}
-					<div role="cell" class="justify-self-center">
-						{row.score.score ? row.score.score : ''}
-					</div>
-				{/if}
-
-				{#each data.problems as problem}
-					{@const rp = row.problems?.find((p) => p.problem_id == problem.id)}
-					{#if rp}
-						{#if rp.num_judged > 0 || rp.num_pending > 0}
-							<div
-								role="cell"
-								class="flex flex-row justify-center items-center w-full h-full rounded-md"
-								style="background-color:{scoreBg(rp, problem)}">
-								{#if data.scoreboard_type === 'pass-fail'}
-									<div>
-										{timeToMin(rp.time)}
-										<span class="text-xs text-black/50"
-											>{rp.num_judged + rp.num_pending}</span>
-									</div>
-								{:else if data.scoreboard_type === 'score'}
-									<div>
-										{rp.score}
-										<span class="text-xs text-black/50"
-											>{rp.num_judged + rp.num_pending}</span>
-									</div>
-								{/if}
-							</div>
-						{:else}
-							<div role="cell"></div>
-						{/if}
-					{:else}
-						<div role="cell" class="text-center"></div>
-					{/if}
-				{/each}
+			<div animate:flip>
+				<ScoreboardRow
+					hasLogos={data.hasLogos}
+					scoreboard_type={data.scoreboard_type}
+					problems={data.problems}
+					{row}
+					team={data.teams[i]}
+					logo={data.logos[i]} />
 			</div>
 		{/each}
 	</div>
