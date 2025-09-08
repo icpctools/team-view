@@ -53,8 +53,18 @@ export class ContestUtil {
 		logos: FileReferenceJSON[] | undefined,
 		size: number
 	): FileReferenceJSON | undefined {
-		if (!logos || size < 1) {
+		if (!logos || logos.length == 0 || size < 1) {
 			return undefined;
+		}
+
+		if (logos.length == 1) {
+			return logos[0];
+		}
+
+		// return an svg if possible
+		for (const logo of logos) {
+			if ('image/svg+xml' == logo.mime)
+				return logo;
 		}
 
 		let best: FileReferenceJSON | undefined;
@@ -91,8 +101,18 @@ export class ContestUtil {
 		width: number,
 		height: number
 	): FileReferenceJSON | undefined {
-		if (!logos || width < 1 || height < 1) {
+		if (!logos || logos.length == 0 || width < 1 || height < 1) {
 			return undefined;
+		}
+
+		if (logos.length == 1) {
+			return logos[0];
+		}
+
+		// return an svg if possible
+		for (const logo of logos) {
+			if ('image/svg+xml' == logo.mime)
+				return logo;
 		}
 
 		let best: FileReferenceJSON | undefined;
