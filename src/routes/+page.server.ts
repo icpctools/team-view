@@ -6,16 +6,11 @@ export const load = async (_params) => {
 	const cc = await loadContest();
 	if (!cc) throw error(404);
 
-	if (!cc.getTeams())
-		await cc.loadTeams();
+	await Promise.all([cc.loadTeams(), cc.loadOrganizations()]);
+
 	const teams = cc.getTeams();
-	if (!teams) throw error(404);
 
-	if (!cc.getOrganizations())
-		await cc.loadOrganizations();
 	const orgs = cc.getOrganizations();
-
-	if (!orgs) throw error(404);
 
 	const util = new ContestUtil();
 	const logos = teams?.map((team) => util.findById(orgs, team.organization_id)?.logo);

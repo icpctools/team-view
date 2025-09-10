@@ -10,30 +10,23 @@ export const load = async (params) => {
 	const cc = await loadContest();
 	if (!cc) throw error(404);
 
-	if (!cc.getTeams())
-		await cc.loadTeams();
-	const teams = cc.getTeams();
+	await Promise.all([cc.loadGroups(), cc.loadOrganizations(), cc.loadTeams(), cc.loadPersons(), cc.loadLanguages(), cc.loadProblems(),
+		cc.loadJudgementTypes(), cc.loadSubmissions(), cc.loadJudgements()
+	]);
 
+	const teams = cc.getTeams();
 	const team = teams?.find((t) => t.id && t.id === params.params.id);
 	if (!team) throw error(404);
 
-	if (!cc.getOrganizations())
-		await cc.loadOrganizations();
 	const orgs = cc.getOrganizations();
-
 	const org = orgs?.find((o) => o.id === team.organization_id);
 
-	if (!cc.getGroups())
-		await cc.loadGroups();
 	const groups = cc.getGroups();
-
 	const groups2 = groups?.filter((g) => team.group_ids?.includes(g.id));
 
 	const util = new ContestUtil();
 	const logo = util.findById(orgs, team.organization_id)?.logo;
 
-	if (!cc.getPersons())
-		await cc.loadPersons();
 	const persons = cc.getPersons();
 	
 	const coaches = persons?.filter((p) => p.role === 'coach' && p.team_ids?.includes(team.id));
@@ -41,26 +34,16 @@ export const load = async (params) => {
 		(p) => p.role === 'contestant' && p.team_ids?.includes(team.id)
 	);
 
-	if (!cc.getProblems())
-		await cc.loadProblems();
 	const problems = cc.getProblems();
 
-	if (!cc.getLanguages())
-		await cc.loadLanguages();
 	const languages = cc.getLanguages();
 
-	if (!cc.getSubmissions())
-		await cc.loadSubmissions();
 	const submissions2 = cc.getSubmissions();
 
 	const submissions = submissions2?.filter(s => s.team_id === team.id);
 
-	if (!cc.getJudgements())
-		await cc.loadJudgements();
 	const judgements = cc.getJudgements();
 
-	if (!cc.getJudgementTypes())
-		await cc.loadJudgementTypes();
 	const judgementTypes = cc.getJudgementTypes();
 	
 	const submissionData = submissions?.map((s)=> {

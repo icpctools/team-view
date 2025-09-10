@@ -8,33 +8,23 @@ export const load = async (params) => {
 	const cc = await loadContest();
 	if (!cc) throw error(404);
 
-	if (!cc.getProblems())
-		await cc.loadProblems();
+	await Promise.all([cc.loadTeams(), cc.loadLanguages(), cc.loadProblems(),
+		cc.loadJudgementTypes(), cc.loadSubmissions(), cc.loadJudgements()
+	]);
+
 	const problems = cc.getProblems();
 
 	const problem = problems?.find((p) => p.id && p.id === params.params.id);
 	if (!problem) throw error(404);
-	
-	if (!cc.getLanguages())
-		await cc.loadLanguages();
+
 	const languages = cc.getLanguages();
 
-	if (!cc.getTeams())
-		await cc.loadTeams();
 	const teams = cc.getTeams();
 
-	if (!cc.getSubmissions())
-		await cc.loadSubmissions();
 	const submissions2 = cc.getSubmissions();
-
 	const submissions = submissions2?.filter(s => s.problem_id === problem.id);
 
-	if (!cc.getJudgements())
-		await cc.loadJudgements();
 	const judgements = cc.getJudgements();
-
-	if (!cc.getJudgementTypes())
-		await cc.loadJudgementTypes();
 	const judgementTypes = cc.getJudgementTypes();
 	
 	const util = new ContestUtil();

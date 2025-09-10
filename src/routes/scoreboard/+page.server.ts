@@ -6,31 +6,22 @@ export const load = async (_params) => {
 	const cc = await loadContest();
 	if (!cc) throw error(404);
 
-	if (!cc.getInfo())
-		await cc.loadInfo();
+	await Promise.all([cc.loadInfo(), cc.loadTeams(), cc.loadOrganizations(), cc.loadProblems(), cc.loadScoreboard()]);
+
 	let info = cc.getInfo();
 	if (!info) throw error(404);
 
-	let scoreboard = await cc.loadScoreboard();
+	let scoreboard = cc.getScoreboard();
 	if (!scoreboard) throw error(404);
 
-	if (!cc.getTeams())
-		await cc.loadTeams();
 	const teams = cc.getTeams();
-	if (!teams) throw error(404);
 
-	if (!cc.getProblems())
-		await cc.loadProblems();
 	const problems = cc.getProblems();
-
-	if (!problems) throw error(404);
 
 	// sort teams by scoreboard row
 	const util = new ContestUtil();
 	let sortedTeams = scoreboard.rows?.map((row) => util.findById(teams, row.team_id));
 
-	if (!cc.getOrganizations())
-		await cc.loadOrganizations();
 	const orgs = cc.getOrganizations();
 
 	let logos = sortedTeams?.map(team => util.findById(orgs, team?.organization_id)?.logo);

@@ -142,128 +142,126 @@ export class Contest {
 		});*/
 	}
 
-	async loadInfo(): Promise<ContestJSON | undefined> {
-		this.info = await this.loadObject('');
-		return this.info;
+	async loadInfo(force?: boolean): Promise<void> {
+		if (force || !this.info)
+			this.info = await this.loadObject('');
 	}
 
-	async loadAccess(): Promise<StartStatusJSON | undefined> {
-		this.access = await this.loadObject('access');
-		return this.access;
+	async loadAccess(force?: boolean): Promise<void> {
+		if (force || !this.access)
+			this.access = await this.loadObject('access');
 	}
 
-	async loadState(): Promise<ContestStateJSON | undefined> {
-		this.state = await this.loadObject('state');
-		return this.state;
+	async loadState(force?: boolean): Promise<void> {
+		if (force || !this.state)
+			this.state = await this.loadObject('state');
 	}
 
-	async loadStartStatus(): Promise<StartStatusJSON[] | undefined> {
-		this.startStatus = await this.loadObject('start-status');
-		return this.startStatus;
+	async loadStartStatus(force?: boolean): Promise<void> {
+		if (force || !this.startStatus)
+			this.startStatus = await this.loadObject('start-status');
 	}
 
-	async loadLanguages(): Promise<LanguageJSON[] | undefined> {
-		this.languages = await this.loadObject('languages');
-		return this.languages;
+	async loadLanguages(force?:boolean): Promise<void>{
+		if (force || !this.languages)
+			this.languages = await this.loadObject('languages');
 	}
 
-	async loadJudgementTypes(): Promise<JudgementTypeJSON[] | undefined> {
-		this.judgementTypes = await this.loadObject('judgement-types');
-		return this.judgementTypes;
+	async loadJudgementTypes(force?: boolean): Promise<void> {
+		if (force || !this.judgementTypes)
+			this.judgementTypes = await this.loadObject('judgement-types');
 	}
 
-	async loadProblems(): Promise<ProblemJSON[] | undefined> {
-		const problems2: ProblemJSON[] = await this.loadObject('problems');
-		problems2.sort((a, b) => (a.ordinal > b.ordinal ? 1 : b.ordinal > a.ordinal ? -1 : 0));
-
-		this.problems = problems2;
-		return this.problems;
+	async loadProblems(force?: boolean): Promise<void> {
+		if (force || !this.problems) {
+			const problems2: ProblemJSON[] = await this.loadObject('problems');
+			problems2.sort((a, b) => (a.ordinal > b.ordinal ? 1 : b.ordinal > a.ordinal ? -1 : 0));
+			this.problems = problems2;
+		}
 	}
 
-	async loadGroups(): Promise<GroupJSON[] | undefined> {
-		this.groups = await this.loadObject('groups');
-		return this.groups;
+	async loadGroups(force?: boolean): Promise<void> {
+		if (force || !this.groups)
+			this.groups = await this.loadObject('groups');
 	}
 
-	async loadOrganizations(): Promise<OrganizationJSON[] | undefined> {
-		this.organizations = await this.loadObject('organizations');
-		return this.organizations;
+	async loadOrganizations(force?: boolean): Promise<void> {
+		if (force || !this.organizations)
+			this.organizations = await this.loadObject('organizations');
 	}
 
-	async loadTeams(): Promise<TeamJSON[] | undefined> {
-		const teams2: TeamJSON[] = await this.loadObject('teams');
-		// sort by team id
-		teams2.sort((a, b) => {
-			// try parsing as number first
-			const an = parseInt(a.id);
-			const bn = parseInt(b.id);
-			if (!Number.isNaN(an) && !Number.isNaN(bn)) {
-				return an - bn;
-			}
-			// otherwise compare by locale
-			return a.id.localeCompare(b.id);
-		});
-		this.teams = teams2;
-		return this.teams;
+	async loadTeams(force?: boolean): Promise<void> {
+		if (force || !this.teams) {
+			const teams2: TeamJSON[] = await this.loadObject('teams');
+			// sort by team id
+			teams2.sort((a, b) => {
+				// try parsing as number first
+				const an = parseInt(a.id);
+				const bn = parseInt(b.id);
+				if (!Number.isNaN(an) && !Number.isNaN(bn)) {
+					return an - bn;
+				}
+				// otherwise compare by locale
+				return a.id.localeCompare(b.id);
+			});
+			this.teams = teams2;
+		}
 	}
 
-	async loadPersons(): Promise<PersonJSON[] | undefined> {
-		this.persons = await this.loadObject('persons');
-		return this.persons;
+	async loadPersons(force?: boolean): Promise<void> {
+		if (force || !this.persons)
+			this.persons = await this.loadObject('persons');
 	}
 
-	async loadAccounts(): Promise<AccountJSON[] | undefined> {
-		this.accounts = await this.loadObject('accounts');
-		return this.accounts;
+	async loadAccounts(force?: boolean): Promise<void> {
+		if (force || !this.accounts)
+			this.accounts = await this.loadObject('accounts');
 	}
 
-	async loadAccount(): Promise<AccountJSON | undefined> {
-		this.account = await this.loadObject('account');
-		return this.account;
+	async loadAccount(force?: boolean): Promise<void> {
+		if (force || !this.account)
+			this.account = await this.loadObject('account');
 	}
 
-	async loadSubmissions(): Promise<SubmissionJSON[] | undefined> {
-		this.submissions = await this.loadObject('submissions');
-		return this.submissions;
+	async loadSubmissions(force?: boolean): Promise<void> {
+		if (force || !this.submissions)
+			this.submissions = await this.loadObject('submissions');
 	}
 
-	async loadJudgements(): Promise<JudgementJSON[] | undefined> {
-		this.judgements = await this.loadObject('judgements');
-		return this.judgements;
+	async loadJudgements(force?: boolean): Promise<void> {
+		if (force || !this.judgements)
+			this.judgements = await this.loadObject('judgements');
 	}
 
-	async loadRuns(): Promise<RunJSON[] | undefined> {
-		this.runs = await this.loadObject('runs');
-		return this.runs;
+	async loadRuns(force?: boolean): Promise<void> {
+		if (force || !this.runs)
+			this.runs = await this.loadObject('runs');
 	}
 
-	async loadClarifications(): Promise<ClarificationJSON[] | undefined> {
-		this.clarifications = await this.loadObject('clarifications');
-		return this.clarifications;
+	async loadClarifications(force?: boolean): Promise<void> {
+		if (force || !this.clarifications)
+			this.clarifications = await this.loadObject('clarifications');
 	}
 
-	async loadCommentary(): Promise<CommentaryJSON[] | undefined> {
-		this.commentary = await this.loadObject('commentary');
-		return this.commentary;
+	async loadCommentary(force?: boolean): Promise<void> {
+		if (force || !this.commentary)
+			this.commentary = await this.loadObject('commentary');
 	}
 
-	async loadScoreboard(): Promise<ScoreboardJSON | undefined> {
-		const scoreboard2: ScoreboardJSON = await this.loadObject('scoreboard');
-		scoreboard2.rows.sort((a, b) => {
-			return a.rank - b.rank;
-		});
+	async loadScoreboard(force?: boolean): Promise<void> {
+		if (force || !this.scoreboard) {
+			const scoreboard2: ScoreboardJSON = await this.loadObject('scoreboard');
+			scoreboard2.rows.sort((a, b) => {
+				return a.rank - b.rank;
+			});
 
-		this.scoreboard = scoreboard2;
-		return this.scoreboard;
+			this.scoreboard = scoreboard2;
+		}
 	}
 
-	clearScoreboard() {
-		this.scoreboard = undefined;
-	}
-
-	async loadAwards(): Promise<AwardJSON[] | undefined> {
-		this.awards = await this.loadObject('awards');
-		return this.awards;
+	async loadAwards(force?: boolean): Promise<void> {
+		if (force || !this.awards)
+			this.awards = await this.loadObject('awards');
 	}
 
 	getContestURL(): string {
@@ -281,53 +279,53 @@ export class Contest {
 	getStartStatus() {
 		return this.startStatus;
 	}
-	getLanguages(): LanguageJSON[] | undefined {
-		return this.languages;
+	getLanguages(): LanguageJSON[] {
+		return this.languages || [];
 	}
-	getJudgementTypes(): JudgementTypeJSON[] | undefined {
-		return this.judgementTypes;
+	getJudgementTypes(): JudgementTypeJSON[] {
+		return this.judgementTypes || [];
 	}
-	getProblems(): ProblemJSON[] | undefined {
-		return this.problems;
+	getProblems(): ProblemJSON[] {
+		return this.problems || [];
 	}
-	getGroups(): GroupJSON[] | undefined {
-		return this.groups;
+	getGroups(): GroupJSON[] {
+		return this.groups || [];
 	}
-	getTeams(): TeamJSON[] | undefined {
-		return this.teams;
+	getTeams(): TeamJSON[] {
+		return this.teams || [];
 	}
-	getOrganizations(): OrganizationJSON[] | undefined {
-		return this.organizations;
+	getOrganizations(): OrganizationJSON[] {
+		return this.organizations || [];
 	}
-	getPersons(): PersonJSON[] | undefined {
-		return this.persons;
+	getPersons(): PersonJSON[] {
+		return this.persons || [];
 	}
-	getAccounts(): AccountJSON[] | undefined {
-		return this.accounts;
+	getAccounts(): AccountJSON[] {
+		return this.accounts || [];
 	}
 	getAccount(): AccountJSON | undefined {
 		return this.account;
 	}
-	getSubmissions(): SubmissionJSON[] | undefined {
-		return this.submissions;
+	getSubmissions(): SubmissionJSON[] {
+		return this.submissions || [];
 	}
-	getJudgements(): JudgementJSON[] | undefined {
-		return this.judgements;
+	getJudgements(): JudgementJSON[] {
+		return this.judgements || [];
 	}
-	getRuns(): RunJSON[] | undefined {
-		return this.runs;
+	getRuns(): RunJSON[] {
+		return this.runs || [];
 	}
-	getClarifications(): ClarificationJSON[] | undefined {
-		return this.clarifications;
+	getClarifications(): ClarificationJSON[] {
+		return this.clarifications || [];
 	}
-	getCommentary(): CommentaryJSON[] | undefined {
-		return this.commentary;
+	getCommentary(): CommentaryJSON[] {
+		return this.commentary || [];
 	}
 	getScoreboard(): ScoreboardJSON | undefined {
 		return this.scoreboard;
 	}
-	getAwards(): AwardJSON[] | undefined {
-		return this.awards;
+	getAwards(): AwardJSON[] {
+		return this.awards || [];
 	}
 
 	getTimeDelta() {
@@ -377,14 +375,5 @@ export class Contest {
 				}
 			}
 		}
-	}
-
-	clear() {
-		this.startStatus = undefined;
-		this.problems = undefined;
-		this.submissions = undefined;
-		this.judgements = undefined;
-		this.clarifications = undefined;
-		this.commentary = undefined;
 	}
 }
