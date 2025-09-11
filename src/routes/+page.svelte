@@ -4,7 +4,8 @@
 	let { data } = $props();
 </script>
 
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 w-full h-full gap-2 p-2 overflow-auto">
+<div
+	class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 w-full h-full gap-2 p-2 overflow-auto">
 	{#each data.teams as team, i}
 		<div class="flex flex-row items-center bg-gray-200 rounded-md">
 			<a href="/team/{team.id}">

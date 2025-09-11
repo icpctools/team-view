@@ -16,6 +16,7 @@ import type {
 	Judgement,
 	JudgementType,
 	Language,
+	MapInfo,
 	Organization,
 	Person,
 	Problem,
@@ -48,6 +49,7 @@ export class ContestAPI {
 	awards?: Award[];
 	startStatus?: StartStatus[];
 	scoreboard?: Scoreboard;
+	mapInfo?: MapInfo;
 
 	contestURL: string;
 
@@ -281,6 +283,12 @@ export class ContestAPI {
 		}
 	}
 
+	async loadMapInfo(force?: boolean): Promise<void> {
+		if (force || !this.mapInfo) {
+			this.mapInfo = await this.loadObject('map-info');
+		}
+	}
+
 	getContestURL(): string {
 		return this.contestURL;
 	}
@@ -343,6 +351,9 @@ export class ContestAPI {
 	}
 	getAwards(): Award[] {
 		return this.awards || [];
+	}
+	getMapInfo(): MapInfo | undefined {
+		return this.mapInfo;
 	}
 
 	getTimeDelta() {

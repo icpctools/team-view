@@ -47,6 +47,13 @@ export interface ContestState {
 	end_of_updates?: Time;
 }
 
+export interface MapInfo {
+	table_width: number;
+	table_depth: number;
+	table_area_width: number;
+	table_area_depth: number;
+}
+
 export interface TeamLocation {
 	x: number;
 	y: number;
@@ -65,7 +72,7 @@ export interface Team {
 	desktop?: FileReference[];
 	webcam?: FileReference[];
 	audio?: FileReference[];
-	location: TeamLocation;
+	location?: TeamLocation;
 }
 
 export interface Problem {
