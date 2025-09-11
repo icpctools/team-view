@@ -1,7 +1,7 @@
 import { error } from '@sveltejs/kit';
 import { loadContest } from '$lib/state.svelte.js';
 import { timeToMin } from '$lib/contest-time-util';
-import type { JudgementJSON, JudgementTypeJSON } from '$lib/contest-types';
+import type { Judgement, JudgementType } from '$lib/contest-types';
 import { ContestUtil } from '$lib/contest-util';
 
 export const load = async (params) => {
@@ -30,7 +30,7 @@ export const load = async (params) => {
 	const util = new ContestUtil();
 	const submissionData = submissions?.map((s)=> {
 		const jud = util.findManyBySubmissionId(judgements, s.id);
-		let j: JudgementJSON | undefined;
+		let j: Judgement | undefined;
 		if (jud && jud.length > 0) {
 			// find current judgement
 			j = jud.find(jj => jj.current);
@@ -41,7 +41,7 @@ export const load = async (params) => {
 		}
 		
 		let judge = '';
-		let jt: JudgementTypeJSON | undefined;
+		let jt: JudgementType | undefined;
 		if (j) {
 			jt = util.findById(judgementTypes, j.judgement_type_id);
 			if (j.score != undefined)

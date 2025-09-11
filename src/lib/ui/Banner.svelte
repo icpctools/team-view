@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { FileReferenceJSON } from '$lib/contest-types';
+	import type { FileReference } from '$lib/contest-types';
 	import Image from './Image.svelte';
 
 	interface Props {
-		ref?: FileReferenceJSON[];
+		ref?: FileReference[];
 		size?: 16 | 24 | 32 | 64;
 	}
 

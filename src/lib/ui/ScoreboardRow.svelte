@@ -2,16 +2,16 @@
 	import Logo from './Logo.svelte';
 	import { parseHexColor, rgbToHex, FAILED, SOLVED, PENDING, SCORING_MID } from '$lib/color-util.js';
 	import { timeToMin } from '$lib/contest-time-util.js';
-	import type { FileReferenceJSON, ProblemJSON, ScoreboardProblemJSON, ScoreboardRowJSON, TeamJSON } from '$lib/contest-types.js';
+	import type { FileReference, Problem, ScoreboardProblem, ScoreboardRow, Team } from '$lib/contest-types.js';
 	import { getColumns } from './scoreboard-util';
 
 	interface Props {
 		showLogo?: boolean;
 		scoreboard_type?: 'pass-fail' | 'score';
-		row: ScoreboardRowJSON;
-		problems: ProblemJSON[];
-		team?: TeamJSON;
-		logo?: FileReferenceJSON[];
+		row: ScoreboardRow;
+		problems: Problem[];
+		team?: Team;
+		logo?: FileReference[];
 		mode: 'full' | 'summary';
 	}
 
@@ -19,7 +19,7 @@
 
 	let col = getColumns(scoreboard_type, problems?.length, showLogo, mode);
 
-	function scoreBg(rp: ScoreboardProblemJSON, problem: ProblemJSON):string {
+	function scoreBg(rp: ScoreboardProblem, problem: Problem):string {
 		if (rp.num_pending > 0) {
 			return PENDING;
 		}

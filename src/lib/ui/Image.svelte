@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { FileReferenceJSON } from '$lib/contest-types';
+	import type { FileReference } from '$lib/contest-types';
 	import { ContestUtil } from '../contest-util';
 
 	interface Props {
-		ref?: FileReferenceJSON[];
+		ref?: FileReference[];
 		size: number;
 	}
 

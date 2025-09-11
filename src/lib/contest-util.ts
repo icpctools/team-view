@@ -1,9 +1,9 @@
 /**
  * Copyright later.
  */
-import type { Contest } from './contest';
+import type { ContestAPI } from './contest-api';
 import { parseRelTime } from './contest-time-util';
-import type { FileReferenceJSON, ProblemJSON, SubmissionJSON } from './contest-types';
+import type { FileReference, Problem, Submission } from './contest-types';
 
 export class ContestUtil {
 	findById<Type extends { id: string }>(arr: Array<Type> | undefined, id: string | undefined): Type | undefined {
@@ -50,9 +50,9 @@ export class ContestUtil {
 	}
 
 	bestSquareLogo(
-		logos: FileReferenceJSON[] | undefined,
+		logos: FileReference[] | undefined,
 		size: number
-	): FileReferenceJSON | undefined {
+	): FileReference | undefined {
 		if (!logos || logos.length == 0 || size < 1) {
 			return undefined;
 		}
@@ -67,7 +67,7 @@ export class ContestUtil {
 				return logo;
 		}
 
-		let best: FileReferenceJSON | undefined;
+		let best: FileReference | undefined;
 		for (var i = 0; i < logos.length; i++) {
 			let ref = logos[i];
 			if (ref.width != ref.height) {
@@ -97,10 +97,10 @@ export class ContestUtil {
 	}
 
 	bestLogo(
-		logos: FileReferenceJSON[] | undefined,
+		logos: FileReference[] | undefined,
 		width: number,
 		height: number
-	): FileReferenceJSON | undefined {
+	): FileReference | undefined {
 		if (!logos || logos.length == 0 || width < 1 || height < 1) {
 			return undefined;
 		}
@@ -115,7 +115,7 @@ export class ContestUtil {
 				return logo;
 		}
 
-		let best: FileReferenceJSON | undefined;
+		let best: FileReference | undefined;
 		for (var i = 0; i < logos.length; i++) {
 			let ref = logos[i];
 			if (best == null) {
@@ -141,7 +141,7 @@ export class ContestUtil {
 		return best;
 	}
 
-	isFirstToSolve(contest: Contest, submission: SubmissionJSON): boolean {
+	isFirstToSolve(contest: ContestAPI, submission: Submission): boolean {
 		const problem_id = submission.problem_id;
 		const submissions = contest.getSubmissions();
 		if (!submissions) {
@@ -170,7 +170,7 @@ export class ContestUtil {
 		return false;
 	}
 
-	sortProblems(problems: ProblemJSON[]): any {
+	sortProblems(problems: Problem[]): any {
 		return problems.sort((a, b) => (a.ordinal > b.ordinal ? 1 : b.ordinal > a.ordinal ? -1 : 0));
 	}
 }

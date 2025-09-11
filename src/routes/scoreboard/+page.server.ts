@@ -6,10 +6,10 @@ export const load = async (_params) => {
 	const cc = await loadContest();
 	if (!cc) throw error(404);
 
-	await Promise.all([cc.loadInfo(), cc.loadTeams(), cc.loadOrganizations(), cc.loadProblems(), cc.loadScoreboard()]);
+	await Promise.all([cc.loadContest(), cc.loadTeams(), cc.loadOrganizations(), cc.loadProblems(), cc.loadScoreboard()]);
 
-	let info = cc.getInfo();
-	if (!info) throw error(404);
+	let contest = cc.getContest();
+	if (!contest) throw error(404);
 
 	let scoreboard = cc.getScoreboard();
 	if (!scoreboard) throw error(404);
@@ -28,8 +28,8 @@ export const load = async (_params) => {
 	const hasLogos = logos.filter(x => x).length > 0;
 
 	return {
-		name: info.name,
-		scoreboard_type: info.scoreboard_type,
+		name: contest.name,
+		scoreboard_type: contest.scoreboard_type,
 		scoreboard: scoreboard,
 		teams: sortedTeams,
 		logos: logos,

@@ -1,12 +1,12 @@
 <script lang="ts">
-	import type { ProblemJSON } from '$lib/contest-types.js';
+	import type { Problem as ProblemObj } from '$lib/contest-types.js';
 	import Problem from './Problem.svelte';
 	import { getColumns } from './scoreboard-util';
 
 	interface Props {
 		showLogo?: boolean;
 		scoreboard_type?: 'pass-fail' | 'score';
-		problems: ProblemJSON[];
+		problems: ProblemObj[];
 	}
 
 	let { scoreboard_type = 'pass-fail', problems, showLogo = true }: Props = $props();

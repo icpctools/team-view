@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { JudgementTypeJSON } from '$lib/contest-types';
+	import type { JudgementType } from '$lib/contest-types';
 
 	interface Props {
-		judgement_type?: JudgementTypeJSON;
+		judgement_type?: JudgementType;
 	}
 
 	let { judgement_type }: Props = $props();

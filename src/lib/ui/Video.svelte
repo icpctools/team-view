@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { FileReferenceJSON } from '$lib/contest-types';
+	import type { FileReference } from '$lib/contest-types';
 
 	import { onMount, onDestroy } from 'svelte';
 	import videojs from 'video.js';
@@ -7,7 +7,7 @@
 	import 'video.js/dist/video-js.css'; // default Video.js CSS
 
 	interface Props {
-		ref?: FileReferenceJSON[];
+		ref?: FileReference[];
 		type: string;
 	}
 

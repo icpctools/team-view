@@ -4,50 +4,50 @@
 import type { HttpsOptions, OptionsOfTextResponseBody } from 'got';
 import got from 'got';
 import type {
-	AccessJSON,
-	AccountJSON,
-	AwardJSON,
-	ClarificationJSON,
-	CommentaryJSON,
-	ContestJSON,
-	ContestStateJSON,
-	FileReferenceJSON,
-	GroupJSON,
-	JudgementJSON,
-	JudgementTypeJSON,
-	LanguageJSON,
-	OrganizationJSON,
-	PersonJSON,
-	ProblemJSON,
-	RunJSON,
-	ScoreboardJSON,
-	StartStatusJSON,
-	SubmissionJSON,
-	TeamJSON
+	Access,
+	Account,
+	Award,
+	Clarification,
+	Commentary,
+	Contest,
+	ContestState,
+	FileReference,
+	Group,
+	Judgement,
+	JudgementType,
+	Language,
+	Organization,
+	Person,
+	Problem,
+	Run,
+	Scoreboard,
+	StartStatus,
+	Submission,
+	Team
 } from './contest-types';
 import { CONTEST } from './hardcoded.svelte';
 
-export class Contest {
-	info?: ContestJSON;
-	access?: AccessJSON;
-	state?: ContestStateJSON;
-	organizations?: OrganizationJSON[];
-	groups?: GroupJSON[];
-	teams?: TeamJSON[];
-	persons?: PersonJSON[];
-	accounts?: AccountJSON[];
-	account?: AccountJSON;
-	languages?: LanguageJSON[];
-	judgementTypes?: JudgementTypeJSON[];
-	problems?: ProblemJSON[];
-	submissions?: SubmissionJSON[];
-	judgements?: JudgementJSON[];
-	runs?: RunJSON[];
-	clarifications?: ClarificationJSON[];
-	commentary?: CommentaryJSON[];
-	awards?: AwardJSON[];
-	startStatus?: StartStatusJSON[];
-	scoreboard?: ScoreboardJSON;
+export class ContestAPI {
+	contest?: Contest;
+	access?: Access;
+	state?: ContestState;
+	organizations?: Organization[];
+	groups?: Group[];
+	teams?: Team[];
+	persons?: Person[];
+	accounts?: Account[];
+	account?: Account;
+	languages?: Language[];
+	judgementTypes?: JudgementType[];
+	problems?: Problem[];
+	submissions?: Submission[];
+	judgements?: Judgement[];
+	runs?: Run[];
+	clarifications?: Clarification[];
+	commentary?: Commentary[];
+	awards?: Award[];
+	startStatus?: StartStatus[];
+	scoreboard?: Scoreboard;
 
 	contestURL: string;
 
@@ -142,9 +142,9 @@ export class Contest {
 		});*/
 	}
 
-	async loadInfo(force?: boolean): Promise<void> {
-		if (force || !this.info)
-			this.info = await this.loadObject('');
+	async loadContest(force?: boolean): Promise<void> {
+		if (force || !this.contest)
+			this.contest = await this.loadObject('');
 	}
 
 	async loadAccess(force?: boolean): Promise<void> {
@@ -174,7 +174,7 @@ export class Contest {
 
 	async loadProblems(force?: boolean): Promise<void> {
 		if (force || !this.problems) {
-			const problems2: ProblemJSON[] = await this.loadObject('problems');
+			const problems2: Problem[] = await this.loadObject('problems');
 			problems2.sort((a, b) => (a.ordinal > b.ordinal ? 1 : b.ordinal > a.ordinal ? -1 : 0));
 			this.problems = problems2;
 		}
@@ -192,7 +192,7 @@ export class Contest {
 
 	async loadTeams(force?: boolean): Promise<void> {
 		if (force || !this.teams) {
-			const teams2: TeamJSON[] = await this.loadObject('teams');
+			const teams2: Team[] = await this.loadObject('teams');
 			// sort by team id
 			teams2.sort((a, b) => {
 				// try parsing as number first
@@ -250,7 +250,7 @@ export class Contest {
 
 	async loadScoreboard(force?: boolean): Promise<void> {
 		if (force || !this.scoreboard) {
-			const scoreboard2: ScoreboardJSON = await this.loadObject('scoreboard');
+			const scoreboard2: Scoreboard = await this.loadObject('scoreboard');
 			scoreboard2.rows.sort((a, b) => {
 				return a.rank - b.rank;
 			});
@@ -267,64 +267,64 @@ export class Contest {
 	getContestURL(): string {
 		return this.contestURL;
 	}
-	getInfo(): ContestJSON | undefined {
-		return this.info;
+	getContest(): Contest | undefined {
+		return this.contest;
 	}
 	getAccess() {
 		return this.access;
 	}
-	getState(): ContestStateJSON | undefined {
+	getState(): ContestState | undefined {
 		return this.state;
 	}
 	getStartStatus() {
 		return this.startStatus;
 	}
-	getLanguages(): LanguageJSON[] {
+	getLanguages(): Language[] {
 		return this.languages || [];
 	}
-	getJudgementTypes(): JudgementTypeJSON[] {
+	getJudgementTypes(): JudgementType[] {
 		return this.judgementTypes || [];
 	}
-	getProblems(): ProblemJSON[] {
+	getProblems(): Problem[] {
 		return this.problems || [];
 	}
-	getGroups(): GroupJSON[] {
+	getGroups(): Group[] {
 		return this.groups || [];
 	}
-	getTeams(): TeamJSON[] {
+	getTeams(): Team[] {
 		return this.teams || [];
 	}
-	getOrganizations(): OrganizationJSON[] {
+	getOrganizations(): Organization[] {
 		return this.organizations || [];
 	}
-	getPersons(): PersonJSON[] {
+	getPersons(): Person[] {
 		return this.persons || [];
 	}
-	getAccounts(): AccountJSON[] {
+	getAccounts(): Account[] {
 		return this.accounts || [];
 	}
-	getAccount(): AccountJSON | undefined {
+	getAccount(): Account | undefined {
 		return this.account;
 	}
-	getSubmissions(): SubmissionJSON[] {
+	getSubmissions(): Submission[] {
 		return this.submissions || [];
 	}
-	getJudgements(): JudgementJSON[] {
+	getJudgements(): Judgement[] {
 		return this.judgements || [];
 	}
-	getRuns(): RunJSON[] {
+	getRuns(): Run[] {
 		return this.runs || [];
 	}
-	getClarifications(): ClarificationJSON[] {
+	getClarifications(): Clarification[] {
 		return this.clarifications || [];
 	}
-	getCommentary(): CommentaryJSON[] {
+	getCommentary(): Commentary[] {
 		return this.commentary || [];
 	}
-	getScoreboard(): ScoreboardJSON | undefined {
+	getScoreboard(): Scoreboard | undefined {
 		return this.scoreboard;
 	}
-	getAwards(): AwardJSON[] {
+	getAwards(): Award[] {
 		return this.awards || [];
 	}
 
@@ -337,7 +337,7 @@ export class Contest {
 		return total / this.timeDelta.length;
 	}
 
-	resolveURL(ref: FileReferenceJSON | undefined): string | undefined {
+	resolveURL(ref: FileReference | undefined): string | undefined {
 		if (!ref || !ref.href) return undefined;
 		// If href is already absolute, return as-is
 		if (ref.href.startsWith('http://') || ref.href.startsWith('https://')) {
@@ -347,7 +347,7 @@ export class Contest {
 		return this.contestURL.substring(0, CONTEST.url.length) + ref.href;
 	}
 
-	private isFileReference(obj: any): obj is FileReferenceJSON {
+	private isFileReference(obj: any): obj is FileReference {
 		if (!(typeof obj === 'object' && 'href' in obj && 'mime' in obj))
 			return false;
 		return true;

@@ -5,15 +5,15 @@ export const load = async (_params) => {
 	const cc = await loadContest();
 	if (!cc) throw error(404);
 
-	if (!cc.getInfo())
-		await cc.loadInfo();
-	const info = cc.getInfo();
-	if (!info) throw error(404);
+	await Promise.all([cc.loadContest()]);
+
+	const contest = cc.getContest();
+	if (!contest) throw error(404);
 
 	return {
-		contest: info,
-		name: info.formal_name || info.name,
-		banner: info.banner,
-		logo: info.logo,
+		contest: contest,
+		name: contest.formal_name || contest.name,
+		banner: contest.banner,
+		logo: contest.logo,
 	};
 };

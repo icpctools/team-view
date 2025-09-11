@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { PersonJSON } from '$lib/contest-types';
+	import type { Person } from '$lib/contest-types';
 	import Image from './Image.svelte';
 
 	interface Props {
-		person: PersonJSON;
+		person: Person;
 	}
 
 	let { person }: Props = $props();

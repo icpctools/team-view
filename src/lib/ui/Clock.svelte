@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { getContestTime, getContestState } from '$lib/contest-time-util';
-	import type { ContestJSON } from '$lib/contest-types';
+	import type { Contest } from '$lib/contest-types';
 	import { onMount } from 'svelte';
 
 	interface Props {
-		contest?: ContestJSON;
+		contest?: Contest;
 	}
 
 	let { contest }: Props = $props();

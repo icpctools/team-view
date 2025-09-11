@@ -3,12 +3,12 @@
  */
 import type { HttpsOptions, OptionsOfTextResponseBody } from 'got';
 import got from 'got';
-import type { ContestJSON } from './contest-types';
-import { Contest } from './contest';
+import type { Contest } from './contest-types';
+import { ContestAPI } from './contest-api';
 import { CONTEST } from './hardcoded.svelte';
 
 export class Contests {
-	contests: ContestJSON[] | undefined;
+	contests: Contest[] | undefined;
 	contestObjs: Contest[] | undefined;
 	baseURL: string;
 
@@ -22,7 +22,7 @@ export class Contests {
 		const startTime = performance.now();
 		try {
 			const response = await got.get(this.baseURL + 'contests', this.getHttpOptions());
-			this.contests = JSON.parse(response.body) as ContestJSON[];
+			this.contests = JSON.parse(response.body) as Contest[];
 			const endTime = performance.now();
 			console.log(`Fetched ${this.baseURL} in ${endTime - startTime}ms`);
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -66,11 +66,11 @@ export class Contests {
 		return this.baseURL;
 	}
 
-	getContests(): ContestJSON[] | undefined {
+	getContests(): Contest[] | undefined {
 		return this.contests;
 	}
 
-	getContest(): Contest | undefined {
+	getContest(): ContestAPI | undefined {
 		if (!this.contests || this.contests.length === 0) {
 			return undefined;
 		}
@@ -82,7 +82,7 @@ export class Contests {
 		} else {
 			contestURL += this.contests[0].id;
 		}
-		const c: Contest = new Contest(contestURL);
+		const c: ContestAPI = new ContestAPI(contestURL);
 		return c;
 	}
 

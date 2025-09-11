@@ -1,6 +1,6 @@
 <script lang="ts">
 	import JudgementType from '$lib/ui/JudgementType.svelte';
-import Problem from '$lib/ui/Problem.svelte';
+	import Problem from '$lib/ui/Problem.svelte';
 
 	let { data } = $props();
 </script>

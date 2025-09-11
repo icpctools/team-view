@@ -8,12 +8,12 @@ export type RelTime = string;
 
 export type Time = string;
 
-export interface ContestLocationJSON {
+export interface ContestLocation {
 	latitude: number;
 	longitude: number;
 }
 
-export interface ContestJSON {
+export interface Contest {
 	id: Id;
 	name: string;
 	formal_name?: string;
@@ -23,13 +23,13 @@ export interface ContestJSON {
 	scoreboard_type: 'pass-fail' | 'score';
 	penalty_time?: number | RelTime; // 2023-06 | draft
 	countdown_pause_time?: RelTime;
-	banner?: FileReferenceJSON[];
-	logo?: FileReferenceJSON[];
-	location?: ContestLocationJSON;
+	banner?: FileReference[];
+	logo?: FileReference[];
+	location?: ContestLocation;
 	time_multiplier?: number;
 }
 
-export interface FileReferenceJSON {
+export interface FileReference {
 	href: string;
 	filename: string;
 	mime: string;
@@ -38,7 +38,7 @@ export interface FileReferenceJSON {
 	height?: number;
 }
 
-export interface ContestStateJSON {
+export interface ContestState {
 	started?: Time;
 	frozen?: Time;
 	ended?: Time;
@@ -48,28 +48,28 @@ export interface ContestStateJSON {
 }
 
 
-export interface TeamLocationJSON {
+export interface TeamLocation {
 	x: number;
 	y: number;
 	rotation: number;
 }
 
-export interface TeamJSON {
+export interface Team {
 	id: Id;
 	label: string;
 	name: string;
 	display_name: string;
 	organization_id: string;
 	group_ids?: string[];
-	photo?: FileReferenceJSON[];
-	video?: FileReferenceJSON[];
-	desktop?: FileReferenceJSON[];
-	webcam?: FileReferenceJSON[];
-	audio?: FileReferenceJSON[];
-	location: TeamLocationJSON;
+	photo?: FileReference[];
+	video?: FileReference[];
+	desktop?: FileReference[];
+	webcam?: FileReference[];
+	audio?: FileReference[];
+	location: TeamLocation;
 }
 
-export interface ProblemJSON {
+export interface Problem {
 	id: Id;
 	uuid?: string;
 	label: string;
@@ -78,49 +78,49 @@ export interface ProblemJSON {
 	rgb?: string;
 	color?: string;
     max_score?: number;
-	statement: FileReferenceJSON[];
+	statement: FileReference[];
 }
 
-export interface GroupJSON {
+export interface Group {
 	id: Id;
 	name: string;
 	type?: string;
 }
 
-export interface OrganizationJSON {
+export interface Organization {
 	id: Id;
 	name: string;
 	formal_name?: string;
 	country?: string;
 	twitter_hashtag?: string;
 	url?: string;
-	logo?: FileReferenceJSON[];
+	logo?: FileReference[];
 }
 
-export interface SubmissionJSON {
+export interface Submission {
 	id: Id;
 	language_id: Id;
 	problem_id: Id;
 	team_id: Id;
 	time: Time;
 	contest_time: RelTime;
-	files: FileReferenceJSON[];
-	reaction?: FileReferenceJSON[];
+	files: FileReference[];
+	reaction?: FileReference[];
 }
 
-export interface JudgementTypeJSON {
+export interface JudgementType {
 	id: Id;
 	name: string;
 	penalty: boolean;
 	solved: boolean;
 }
 
-export interface LanguageJSON {
+export interface Language {
 	id: Id;
 	name: string;
 }
 
-export interface PersonJSON {
+export interface Person {
 	id: Id;
 	name: string;
 	team_ids?: Id[];
@@ -128,31 +128,31 @@ export interface PersonJSON {
 	email?: string;
 	sex?: string;
 	role: 'contestant' | 'coach' | 'staff' | 'other';
-	photo?: FileReferenceJSON[];
+	photo?: FileReference[];
 }
 
-export interface ScoreboardJSON {
+export interface Scoreboard {
 	time: Time;
 	contest_time: RelTime;
-	state: ContestStateJSON;
-	rows: ScoreboardRowJSON[];
+	state: ContestState;
+	rows: ScoreboardRow[];
 }
 
-export interface ScoreboardScoreJSON {
+export interface ScoreboardScore {
 	num_solved?: number;
 	total_time?: number | RelTime; // 2023-06 | draft
 	score?: number;
 	time?: RelTime;
 }
 
-export interface ScoreboardRowJSON {
+export interface ScoreboardRow {
 	rank: number;
 	team_id: Id;
-	score: ScoreboardScoreJSON;
-	problems?: ScoreboardProblemJSON[];
+	score: ScoreboardScore;
+	problems?: ScoreboardProblem[];
 }
 
-export interface ScoreboardProblemJSON {
+export interface ScoreboardProblem {
 	problem_id: Id;
 	num_judged: number;
 	num_pending: number;
@@ -161,7 +161,7 @@ export interface ScoreboardProblemJSON {
 	time?: number | RelTime; // 2023-06 | draft
 }
 
-export interface JudgementJSON {
+export interface Judgement {
 	id: Id;
 	submission_id: Id;
 	judgement_type_id: Id;
@@ -174,19 +174,19 @@ export interface JudgementJSON {
 	max_run_time: number;
 }
 
-export interface AwardJSON {
+export interface Award {
 	id: Id; // todo
 }
 
-export interface RunJSON {
+export interface Run {
 	id: Id; // todo
 }
 
-export interface AccountJSON {
+export interface Account {
 	id: Id; // todo
 }
 
-export interface ClarificationJSON {
+export interface Clarification {
 	id: Id;
 	from_team_id?: Id;
 	to_team_ids?: Id[];
@@ -198,14 +198,14 @@ export interface ClarificationJSON {
 	contest_time: RelTime;
 }
 
-export interface CommentaryJSON {
+export interface Commentary {
 	id: Id; // todo
 }
 
-export interface AccessJSON {
+export interface Access {
 	id: Id; // todo
 }
 
-export interface StartStatusJSON {
+export interface StartStatus {
 	id: Id; // todo
 }

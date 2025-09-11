@@ -1,7 +1,7 @@
 /**
  * Copyright later.
  */
-import type { ContestJSON, RelTime } from './contest-types';
+import type { Contest, RelTime } from './contest-types';
 
 function isNumber(value: any): value is number {
 	return typeof value === 'number';
@@ -64,7 +64,7 @@ function formatTimeInMin(timeMs: number | undefined) {
 	return sb.join("");
 }
 
-export function getContestState(contest: ContestJSON | undefined): 'unscheduled' | 'countdown' | 'paused' | 'running' | 'frozen' | 'finished' {
+export function getContestState(contest: Contest | undefined): 'unscheduled' | 'countdown' | 'paused' | 'running' | 'frozen' | 'finished' {
 	if (contest == null) {
 		return 'unscheduled';
 	}
@@ -98,7 +98,7 @@ export function getContestState(contest: ContestJSON | undefined): 'unscheduled'
 	return 'running';
 }
 
-export function getContestTime(contest: ContestJSON | undefined, short: boolean): string | undefined {
+export function getContestTime(contest: Contest | undefined, short: boolean): string | undefined {
 	if (contest == null) {
 		return undefined;
 	}
