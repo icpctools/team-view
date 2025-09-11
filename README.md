@@ -35,3 +35,7 @@ pnpm build
 You can preview the production build with `pnpm preview`.
 
 > To deploy the app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+
+## License
+
+This project is licensed under the terms of the MIT license.
