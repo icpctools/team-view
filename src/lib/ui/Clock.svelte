@@ -27,8 +27,8 @@
 </script>
 
 <span
-    class:text-gray-400={state === 'unscheduled'}
-    class:text-green-300={state === 'countdown'}
+	class:text-gray-400={state === 'unscheduled'}
+	class:text-green-300={state === 'countdown'}
 	class:text-blue-200={state === 'frozen'}
 	class:text-gray-300={state === 'finished'}
 	class:text-yellow-500={state === 'paused'}>

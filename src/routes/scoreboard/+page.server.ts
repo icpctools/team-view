@@ -6,7 +6,13 @@ export const load = async (_params) => {
 	const cc = await loadContest();
 	if (!cc) throw error(404);
 
-	await Promise.all([cc.loadContest(), cc.loadTeams(), cc.loadOrganizations(), cc.loadProblems(), cc.loadScoreboard()]);
+	await Promise.all([
+		cc.loadContest(),
+		cc.loadTeams(),
+		cc.loadOrganizations(),
+		cc.loadProblems(),
+		cc.loadScoreboard()
+	]);
 
 	let contest = cc.getContest();
 	if (!contest) throw error(404);
@@ -24,8 +30,8 @@ export const load = async (_params) => {
 
 	const orgs = cc.getOrganizations();
 
-	let logos = sortedTeams?.map(team => util.findById(orgs, team?.organization_id)?.logo);
-	const hasLogos = logos.filter(x => x).length > 0;
+	let logos = sortedTeams?.map((team) => util.findById(orgs, team?.organization_id)?.logo);
+	const hasLogos = logos.filter((x) => x).length > 0;
 
 	return {
 		name: contest.name,
@@ -34,6 +40,6 @@ export const load = async (_params) => {
 		teams: sortedTeams,
 		logos: logos,
 		problems: problems,
-		hasLogos: hasLogos,
+		hasLogos: hasLogos
 	};
 };

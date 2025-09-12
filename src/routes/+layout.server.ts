@@ -14,6 +14,6 @@ export const load = async (_params) => {
 		contest: contest,
 		name: contest.formal_name || contest.name,
 		banner: contest.banner,
-		logo: contest.logo,
+		logo: contest.logo
 	};
 };

@@ -19,13 +19,12 @@
 
 	let col = getColumns(scoreboard_type, problems?.length, showLogo, mode);
 
-	function scoreBg(rp: ScoreboardProblem, problem: Problem):string {
+	function scoreBg(rp: ScoreboardProblem, problem: Problem): string {
 		if (rp.num_pending > 0) {
 			return PENDING;
 		}
 		if (scoreboard_type === 'pass-fail') {
-			if (rp.solved)
-				return SOLVED;
+			if (rp.solved) return SOLVED;
 		} else if (scoreboard_type === 'score') {
 			if (rp.score) {
 				if (problem.max_score) {
@@ -34,7 +33,7 @@
 					const c1 = parseHexColor(FAILED);
 					const c2 = parseHexColor(SCORING_MID);
 					const c3 = parseHexColor(SOLVED);
-					let cr = [0,0,0];
+					let cr = [0, 0, 0];
 					for (let i = 0; i < 3; i++) {
 						if (percent <= 0.5) {
 							cr[i] = c1[i] * (1 - percent * 2) + c2[i] * percent * 2;
@@ -48,8 +47,9 @@
 				}
 			}
 		}
-		if (rp.num_judged > 0 && rp.num_pending === 0)
+		if (rp.num_judged > 0 && rp.num_pending === 0) {
 			return FAILED;
+		}
 		return '#333';
 	}
 </script>
@@ -63,10 +63,9 @@
 		<div role="cell" class="w-4 justify-self-center"><Logo ref={logo} /></div>
 	{/if}
 	{#if mode != 'summary'}
-	<div role="cell" class="text-nowrap overflow-hidden text-ellipsis">
-		<a href="/team/{team?.id}"
-			>{team?.display_name || team?.name}</a>
-	</div>
+		<div role="cell" class="text-nowrap overflow-hidden text-ellipsis">
+			<a href="/team/{team?.id}">{team?.display_name || team?.name}</a>
+		</div>
 	{/if}
 
 	{#if scoreboard_type === 'pass-fail'}
@@ -93,14 +92,12 @@
 					{#if scoreboard_type === 'pass-fail'}
 						<div>
 							{timeToMin(rp.time)}
-							<span class="text-xs text-black/50"
-								>{rp.num_judged + rp.num_pending}</span>
+							<span class="text-xs text-black/50">{rp.num_judged + rp.num_pending}</span>
 						</div>
 					{:else if scoreboard_type === 'score'}
 						<div>
 							{rp.score}
-							<span class="text-xs text-black/50"
-								>{rp.num_judged + rp.num_pending}</span>
+							<span class="text-xs text-black/50">{rp.num_judged + rp.num_pending}</span>
 						</div>
 					{/if}
 				</div>
@@ -108,7 +105,9 @@
 				<div role="cell"></div>
 			{/if}
 		{:else}
-			<div role="cell" class="text-center text-sm text-gray-300">{#if mode === 'summary'}{problem.label}{/if}</div>
+			<div role="cell" class="text-center text-sm text-gray-300">
+				{#if mode === 'summary'}{problem.label}{/if}
+			</div>
 		{/if}
 	{/each}
 </div>

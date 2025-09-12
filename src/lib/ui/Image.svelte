@@ -15,5 +15,5 @@
 </script>
 
 {#if bestRef}
-  <img src={imgSrc} alt="logo" class="w-full h-full object-scale-down rounded-md" />
+	<img src={imgSrc} alt="logo" class="w-full h-full object-scale-down rounded-md" />
 {/if}

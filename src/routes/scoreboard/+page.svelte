@@ -19,10 +19,7 @@
 </script>
 
 <div class="w-full text-sm p-2" role="table" aria-label="scoreboard">
-	<ScoreboardHeader
-		hasLogos={data.hasLogos}
-		scoreboard_type={data.scoreboard_type}
-		problems={data.problems} />
+	<ScoreboardHeader hasLogos={data.hasLogos} scoreboard_type={data.scoreboard_type} problems={data.problems} />
 
 	<div role="rowgroup">
 		{#each data.scoreboard.rows as row, i (row.team_id)}

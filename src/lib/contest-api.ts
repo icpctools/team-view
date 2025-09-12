@@ -143,33 +143,39 @@ export class ContestAPI {
 	}
 
 	async loadContest(force?: boolean): Promise<void> {
-		if (force || !this.contest)
+		if (force || !this.contest) {
 			this.contest = await this.loadObject('');
+		}
 	}
 
 	async loadAccess(force?: boolean): Promise<void> {
-		if (force || !this.access)
+		if (force || !this.access) {
 			this.access = await this.loadObject('access');
+		}
 	}
 
 	async loadState(force?: boolean): Promise<void> {
-		if (force || !this.state)
+		if (force || !this.state) {
 			this.state = await this.loadObject('state');
+		}
 	}
 
 	async loadStartStatus(force?: boolean): Promise<void> {
-		if (force || !this.startStatus)
+		if (force || !this.startStatus) {
 			this.startStatus = await this.loadObject('start-status');
+		}
 	}
 
-	async loadLanguages(force?:boolean): Promise<void>{
-		if (force || !this.languages)
+	async loadLanguages(force?: boolean): Promise<void> {
+		if (force || !this.languages) {
 			this.languages = await this.loadObject('languages');
+		}
 	}
 
 	async loadJudgementTypes(force?: boolean): Promise<void> {
-		if (force || !this.judgementTypes)
+		if (force || !this.judgementTypes) {
 			this.judgementTypes = await this.loadObject('judgement-types');
+		}
 	}
 
 	async loadProblems(force?: boolean): Promise<void> {
@@ -181,13 +187,15 @@ export class ContestAPI {
 	}
 
 	async loadGroups(force?: boolean): Promise<void> {
-		if (force || !this.groups)
+		if (force || !this.groups) {
 			this.groups = await this.loadObject('groups');
+		}
 	}
 
 	async loadOrganizations(force?: boolean): Promise<void> {
-		if (force || !this.organizations)
+		if (force || !this.organizations) {
 			this.organizations = await this.loadObject('organizations');
+		}
 	}
 
 	async loadTeams(force?: boolean): Promise<void> {
@@ -209,43 +217,51 @@ export class ContestAPI {
 	}
 
 	async loadPersons(force?: boolean): Promise<void> {
-		if (force || !this.persons)
+		if (force || !this.persons) {
 			this.persons = await this.loadObject('persons');
+		}
 	}
 
 	async loadAccounts(force?: boolean): Promise<void> {
-		if (force || !this.accounts)
+		if (force || !this.accounts) {
 			this.accounts = await this.loadObject('accounts');
+		}
 	}
 
 	async loadAccount(force?: boolean): Promise<void> {
-		if (force || !this.account)
+		if (force || !this.account) {
 			this.account = await this.loadObject('account');
+		}
 	}
 
 	async loadSubmissions(force?: boolean): Promise<void> {
-		if (force || !this.submissions)
+		if (force || !this.submissions) {
 			this.submissions = await this.loadObject('submissions');
+		}
 	}
 
 	async loadJudgements(force?: boolean): Promise<void> {
-		if (force || !this.judgements)
+		if (force || !this.judgements) {
 			this.judgements = await this.loadObject('judgements');
+		}
 	}
 
 	async loadRuns(force?: boolean): Promise<void> {
-		if (force || !this.runs)
+		if (force || !this.runs) {
 			this.runs = await this.loadObject('runs');
+		}
 	}
 
 	async loadClarifications(force?: boolean): Promise<void> {
-		if (force || !this.clarifications)
+		if (force || !this.clarifications) {
 			this.clarifications = await this.loadObject('clarifications');
+		}
 	}
 
 	async loadCommentary(force?: boolean): Promise<void> {
-		if (force || !this.commentary)
+		if (force || !this.commentary) {
 			this.commentary = await this.loadObject('commentary');
+		}
 	}
 
 	async loadScoreboard(force?: boolean): Promise<void> {
@@ -260,8 +276,9 @@ export class ContestAPI {
 	}
 
 	async loadAwards(force?: boolean): Promise<void> {
-		if (force || !this.awards)
+		if (force || !this.awards) {
 			this.awards = await this.loadObject('awards');
+		}
 	}
 
 	getContestURL(): string {
@@ -338,7 +355,9 @@ export class ContestAPI {
 	}
 
 	resolveURL(ref: FileReference | undefined): string | undefined {
-		if (!ref || !ref.href) return undefined;
+		if (!ref || !ref.href) {
+			return undefined;
+		}
 		// If href is already absolute, return as-is
 		if (ref.href.startsWith('http://') || ref.href.startsWith('https://')) {
 			return ref.href;
@@ -348,14 +367,15 @@ export class ContestAPI {
 	}
 
 	private isFileReference(obj: any): obj is FileReference {
-		if (!(typeof obj === 'object' && 'href' in obj && 'mime' in obj))
+		if (!(typeof obj === 'object' && 'href' in obj && 'mime' in obj)) {
 			return false;
+		}
 		return true;
 	}
 
 	private processFileReferences(obj: any) {
 		// We get either one object or an array of objects, handle both cases
-		let objs: any[]
+		let objs: any[];
 		if (Array.isArray(obj)) {
 			objs = obj;
 		} else {

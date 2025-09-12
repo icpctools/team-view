@@ -13,8 +13,8 @@
 
 	let { ref, type }: Props = $props();
 
-	let src = $derived((ref && ref.length > 0) ? ref[0].href : undefined);
-	let mime = $derived((ref && ref.length > 0) ? ref[0].mime : undefined);
+	let src = $derived(ref && ref.length > 0 ? ref[0].href : undefined);
+	let mime = $derived(ref && ref.length > 0 ? ref[0].mime : undefined);
 
 	let videoNode = $state<HTMLElement | string>('');
 	let player = $state<Player>();
@@ -30,13 +30,13 @@
 			mediaDataSource: {
 				isLive: true,
 				cors: true,
-				withCredentials: false,
-			},
-		},
+				withCredentials: false
+			}
+		}
 	};
 
 	onMount(async () => {
-		await import("videojs-mpegtsjs");
+		await import('videojs-mpegtsjs');
 
 		player = videojs(videoNode, options, function onPlayerReady() {
 			// player ready
@@ -48,7 +48,7 @@
 			}
 			let srcObj = {
 				src: src,
-				type: mime,
+				type: mime
 			};
 			player.src(srcObj);
 		}

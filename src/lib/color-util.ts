@@ -45,8 +45,9 @@ export function darker(color: number[]): number[] {
 	darker.push(Math.max(color[0] - 64, 0));
 	darker.push(Math.max(color[1] - 64, 0));
 	darker.push(Math.max(color[2] - 64, 0));
-	if (color.length === 4)
+	if (color.length === 4) {
 		darker.push(color[3]);
+	}
 
 	return darker;
 }
@@ -57,5 +58,5 @@ export function rgbToHex(color: number[]): string {
 
 export function colorToHex(c: number): string {
 	const hex = Math.floor(c).toString(16);
-	return hex.length === 1 ? "0" + hex : hex;
+	return hex.length === 1 ? '0' + hex : hex;
 }

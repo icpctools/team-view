@@ -10,13 +10,14 @@
 			<a href="/team/{team.id}">
 				<div class="flex flex-row gap-2 items-center">
 					{#if data.logos[i]}
-					  <div class="bg-gray-400 rounded-md max-w-12 min-w-12 max-h-12 min-h-12 w-12 h-12 p-1 flex place-content-center">
-						<Logo ref={data.logos[i]} />
-					  </div>
+						<div
+							class="bg-gray-400 rounded-md max-w-12 min-w-12 max-h-12 min-h-12 w-12 h-12 p-1 flex place-content-center">
+							<Logo ref={data.logos[i]} />
+						</div>
 					{/if}
 
 					<div class="p-1 min-w-6">{team.id}</div>
-					
+
 					<div>{team.display_name || team.name}</div>
 				</div>
 			</a>

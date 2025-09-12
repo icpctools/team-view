@@ -15,10 +15,7 @@
 </script>
 
 <div role="rowgroup" class="sticky top-0 bg-white/90 font-semibold">
-	<div
-		role="row"
-		class="grid grid-table gap-x-0.5 min-h-7 py-2"
-		style="grid-template-columns: {col}">
+	<div role="row" class="grid grid-table gap-x-0.5 min-h-7 py-2" style="grid-template-columns: {col}">
 		<div role="cell">Rank</div>
 		{#if showLogo}
 			<div role="cell"></div>
@@ -31,9 +28,9 @@
 			<div role="cell" class="justify-self-center">Score</div>
 		{/if}
 		{#each problems as problem}
-		    <div role="cell" class="justify-self-center w-12">
+			<div role="cell" class="justify-self-center w-12">
 				<a href="/problem/{problem.id}">
-					<Problem problem={problem}/>
+					<Problem {problem} />
 				</a>
 			</div>
 		{/each}

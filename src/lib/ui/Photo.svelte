@@ -11,5 +11,5 @@
 </script>
 
 <div class="max-h-{size} max-w-{size} h-{size} w-{size} flex place-content-center">
-  <Image {ref} size={size} />
+	<Image {ref} {size} />
 </div>

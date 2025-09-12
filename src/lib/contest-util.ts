@@ -19,7 +19,10 @@ export class ContestUtil {
 		return undefined;
 	}
 
-	findManyById<Type extends { id: string }>(arr: Array<Type> | undefined, ids: string | undefined): Array<Type> | undefined {
+	findManyById<Type extends { id: string }>(
+		arr: Array<Type> | undefined,
+		ids: string | undefined
+	): Array<Type> | undefined {
 		if (!arr || arr.length === 0 || !ids || ids.length == 0) {
 			return undefined;
 		}
@@ -35,7 +38,10 @@ export class ContestUtil {
 		return list;
 	}
 
-	findManyBySubmissionId<Type extends { submission_id: string }>(arr: Array<Type> | undefined, id: string | undefined): Array<Type> | undefined {
+	findManyBySubmissionId<Type extends { submission_id: string }>(
+		arr: Array<Type> | undefined,
+		id: string | undefined
+	): Array<Type> | undefined {
 		if (!arr || arr.length === 0 || !id) {
 			return undefined;
 		}
@@ -49,10 +55,7 @@ export class ContestUtil {
 		return list;
 	}
 
-	bestSquareLogo(
-		logos: FileReference[] | undefined,
-		size: number
-	): FileReference | undefined {
+	bestSquareLogo(logos: FileReference[] | undefined, size: number): FileReference | undefined {
 		if (!logos || logos.length == 0 || size < 1) {
 			return undefined;
 		}
@@ -63,8 +66,7 @@ export class ContestUtil {
 
 		// return an svg if possible
 		for (const logo of logos) {
-			if ('image/svg+xml' == logo.mime)
-				return logo;
+			if ('image/svg+xml' == logo.mime) return logo;
 		}
 
 		let best: FileReference | undefined;
@@ -78,13 +80,11 @@ export class ContestUtil {
 			} else if (best) {
 				if (best.width && best.width < size && best.height && best.height < size) {
 					// current best image is too small - is this one better (larger than current)?
-					if ((ref.width && ref.width > best.width) || (ref.height && ref.height > best.height))
-						best = ref;
+					if ((ref.width && ref.width > best.width) || (ref.height && ref.height > best.height)) best = ref;
 					else if (best.width > size && best.height > size) {
 						// current image is too big - is this one better (smaller but still big enough)?
 						if ((ref.width && ref.width < best.width) || (ref.height && ref.height < best.height)) {
-							if ((ref.width && ref.width >= size) || (ref.height && ref.height >= size))
-								best = ref;
+							if ((ref.width && ref.width >= size) || (ref.height && ref.height >= size)) best = ref;
 						}
 					}
 				}
@@ -96,11 +96,7 @@ export class ContestUtil {
 		return this.bestLogo(logos, size, size);
 	}
 
-	bestLogo(
-		logos: FileReference[] | undefined,
-		width: number,
-		height: number
-	): FileReference | undefined {
+	bestLogo(logos: FileReference[] | undefined, width: number, height: number): FileReference | undefined {
 		if (!logos || logos.length == 0 || width < 1 || height < 1) {
 			return undefined;
 		}
@@ -111,8 +107,7 @@ export class ContestUtil {
 
 		// return an svg if possible
 		for (const logo of logos) {
-			if ('image/svg+xml' == logo.mime)
-				return logo;
+			if ('image/svg+xml' == logo.mime) return logo;
 		}
 
 		let best: FileReference | undefined;
@@ -123,16 +118,12 @@ export class ContestUtil {
 			} else {
 				if (best.width && best.width < width && best.height && best.height < height) {
 					// current best image is too small - is this one better (larger than current)?
-					if (
-						(ref.width && best.width && ref.width > best.width) ||
-						(ref.height && ref.height > best.height)
-					)
+					if ((ref.width && best.width && ref.width > best.width) || (ref.height && ref.height > best.height))
 						best = ref;
 					else if (best.width > width && best.height > height) {
 						// current image is too big - is this one better (smaller but still big enough)?
 						if ((ref.width && ref.width < best.width) || (ref.height && ref.height < best.height)) {
-							if ((ref.width && ref.width >= width) || (ref.height && ref.height >= height))
-								best = ref;
+							if ((ref.width && ref.width >= width) || (ref.height && ref.height >= height)) best = ref;
 						}
 					}
 				}

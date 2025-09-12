@@ -16,15 +16,17 @@
 		if (col && col[0] + col[1] + col[2] > 450) {
 			fg = '#000';
 		}
-		let border =rgb;
+		let border = rgb;
 		if (col) {
 			border = rgbToHex(darker(col));
 		}
 
-		pStyle = 'background-color:'+rgb+';color:'+fg+ ';border-color:'+border+';';
+		pStyle = 'background-color:' + rgb + ';color:' + fg + ';border-color:' + border + ';';
 	} else {
 		pStyle = 'background-color:#fff;color:#000;border:#000;';
 	}
 </script>
 
-<div class="justify-self-center text-center border-[1px] rounded-sm w-full h-full" style={pStyle}>{problem?.label}</div>
+<div class="justify-self-center text-center border-[1px] rounded-sm w-full h-full" style={pStyle}>
+	{problem?.label}
+</div>

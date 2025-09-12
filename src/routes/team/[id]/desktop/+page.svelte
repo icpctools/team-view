@@ -5,5 +5,5 @@
 </script>
 
 <div class="w-full h-full">
-	<Video ref={data.team.desktop} type="desktop"/>
+	<Video ref={data.team.desktop} type="desktop" />
 </div>

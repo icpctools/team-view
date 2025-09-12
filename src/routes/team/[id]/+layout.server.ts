@@ -6,7 +6,13 @@ export const load = async (params) => {
 	const cc = await loadContest();
 	if (!cc) throw error(404);
 
-	await Promise.all([cc.loadContest(), cc.loadTeams(), cc.loadOrganizations(), cc.loadProblems(), cc.loadScoreboard()]);
+	await Promise.all([
+		cc.loadContest(),
+		cc.loadTeams(),
+		cc.loadOrganizations(),
+		cc.loadProblems(),
+		cc.loadScoreboard()
+	]);
 
 	const teams = cc.getTeams();
 	const team = teams?.find((t) => t.id && t.id === params.params.id);

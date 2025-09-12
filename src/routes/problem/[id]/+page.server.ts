@@ -8,8 +8,13 @@ export const load = async (params) => {
 	const cc = await loadContest();
 	if (!cc) throw error(404);
 
-	await Promise.all([cc.loadTeams(), cc.loadLanguages(), cc.loadProblems(),
-		cc.loadJudgementTypes(), cc.loadSubmissions(), cc.loadJudgements()
+	await Promise.all([
+		cc.loadTeams(),
+		cc.loadLanguages(),
+		cc.loadProblems(),
+		cc.loadJudgementTypes(),
+		cc.loadSubmissions(),
+		cc.loadJudgements()
 	]);
 
 	const problems = cc.getProblems();
@@ -22,30 +27,28 @@ export const load = async (params) => {
 	const teams = cc.getTeams();
 
 	const submissions2 = cc.getSubmissions();
-	const submissions = submissions2?.filter(s => s.problem_id === problem.id);
+	const submissions = submissions2?.filter((s) => s.problem_id === problem.id);
 
 	const judgements = cc.getJudgements();
 	const judgementTypes = cc.getJudgementTypes();
-	
+
 	const util = new ContestUtil();
-	const submissionData = submissions?.map((s)=> {
+	const submissionData = submissions?.map((s) => {
 		const jud = util.findManyBySubmissionId(judgements, s.id);
 		let j: Judgement | undefined;
 		if (jud && jud.length > 0) {
 			// find current judgement
-			j = jud.find(jj => jj.current);
+			j = jud.find((jj) => jj.current);
 
 			// otherwise it is the first one
-			if (!j)
-				j = jud[0];
+			if (!j) j = jud[0];
 		}
-		
+
 		let judge = '';
 		let jt: JudgementType | undefined;
 		if (j) {
 			jt = util.findById(judgementTypes, j.judgement_type_id);
-			if (j.score != undefined)
-				judge += j.score + '';
+			if (j.score != undefined) judge += j.score + '';
 		}
 		return {
 			time: timeToMin(s.contest_time),
@@ -58,6 +61,6 @@ export const load = async (params) => {
 
 	return {
 		problem: problem,
-		submissions: submissionData,
+		submissions: submissionData
 	};
 };

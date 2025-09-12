@@ -5,5 +5,5 @@
 </script>
 
 <div class="w-full h-full">
-	<Video ref={data.team.webcam} type="webcam"/>
+	<Video ref={data.team.webcam} type="webcam" />
 </div>

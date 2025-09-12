@@ -47,7 +47,6 @@ export interface ContestState {
 	end_of_updates?: Time;
 }
 
-
 export interface TeamLocation {
 	x: number;
 	y: number;
@@ -77,7 +76,7 @@ export interface Problem {
 	ordinal: number;
 	rgb?: string;
 	color?: string;
-    max_score?: number;
+	max_score?: number;
 	statement: FileReference[];
 }
 
