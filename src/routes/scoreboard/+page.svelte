@@ -18,7 +18,7 @@
 	});
 </script>
 
-<div class="w-full text-sm p-2" role="table" aria-label="scoreboard">
+<div class="w-full h-full overflow-auto text-sm p-2" role="table" aria-label="scoreboard">
 	<ScoreboardHeader hasLogos={data.hasLogos} scoreboard_type={data.scoreboard_type} problems={data.problems} />
 
 	<div role="rowgroup">

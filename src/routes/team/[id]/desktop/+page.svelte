@@ -4,6 +4,4 @@
 	let { data } = $props();
 </script>
 
-<div class="w-full h-full">
-	<Video ref={data.team.desktop} type="desktop" />
-</div>
+<Video ref={data.team.desktop} type="desktop" />

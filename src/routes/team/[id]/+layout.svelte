@@ -5,7 +5,7 @@
 	let { data, children } = $props();
 </script>
 
-<div class="w-full h-full overflow-hidden flex flex-col">
+<div class="w-full h-full max-w-full max-h-full overflow-hidden flex flex-col">
 	<div class="flex flex-row gap-4 bg-gray-700 text-white px-4 py-2 items-center">
 		{#if data.logo}
 			<div class="w-16 h-16">
@@ -47,7 +47,7 @@
 			mode="summary" />
 	</div>
 
-	<div class="overflow-auto w-full h-full">
+	<div class="gap-2 w-full grow overflow-hidden">
 		{@render children()}
 	</div>
 </div>

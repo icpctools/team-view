@@ -7,7 +7,7 @@
 	let { data } = $props();
 </script>
 
-<div class="flex flex-col p-2 gap-1">
+<div class="flex flex-col p-2 gap-1 h-full overflow-auto">
 	<div class="flex flex-col">
 		<div class="text-xl">Name</div>
 		<div>{data.team.name}</div>

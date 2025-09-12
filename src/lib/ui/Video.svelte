@@ -23,7 +23,7 @@
 		autoplay: true,
 		controls: false,
 		responsive: true,
-		fluid: true,
+		fluid: false,
 		poster: '/images/icpc-logo.png',
 		preload: 'auto',
 		mpegtsjs: {
@@ -63,7 +63,7 @@
 
 {#if src}
 	<!-- svelte-ignore a11y_media_has_caption -->
-	<video bind:this={videoNode} class="video-js vjs-default-skin"></video>
+	<video bind:this={videoNode} class="video-js vjs-default-skin w-full h-full"></video>
 {:else}
 	<span class="self-center">({type} unavailable)</span>
 {/if}
