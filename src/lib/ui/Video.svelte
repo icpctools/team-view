@@ -14,6 +14,7 @@
 	let { ref, type }: Props = $props();
 
 	let src = $derived((ref && ref.length > 0) ? ref[0].href : undefined);
+	let mime = $derived((ref && ref.length > 0) ? ref[0].mime : undefined);
 
 	let videoNode = $state<HTMLElement | string>('');
 	let player = $state<Player>();
@@ -24,37 +25,33 @@
 		responsive: true,
 		fluid: true,
 		poster: '/images/icpc-logo.png',
-		preload: 'auto'
+		preload: 'auto',
+		mpegtsjs: {
+			mediaDataSource: {
+				isLive: true,
+				cors: true,
+				withCredentials: false,
+			},
+		},
 	};
 
 	onMount(async () => {
-		/*var videoElement = document.getElementById('videoElement');
-        var player = mpegts.createPlayer({
-            type: 'mse',  // could also be mpegts, m2ts, flv
-            isLive: true,
-            url: 'http://example.com/live/livestream.ts'
-        });
-        player.attachMediaElement(videoElement);
-        player.load();
-        player.play();*/
+		await import("videojs-mpegtsjs");
 
-		/*player = videojs(videoNode, options, function onPlayerReady() {
+		player = videojs(videoNode, options, function onPlayerReady() {
 			// player ready
 		});
 		if (src) {
-			player.src(src);
-		}*/
-		const obj = await import("mpegts.js");
-		const Mpegts = obj.default;
-		var videoElement = document.getElementById('videoElement-'+type);
-		var player = Mpegts.createPlayer({
-            type: 'mpegts',
-            isLive: true,
-            url: src
-        });
-        player.attachMediaElement(videoElement);
-        player.load();
-        player.play();
+			if (mime === 'video/m2ts') {
+				// Video.js mpegts.js expects a different mime type
+				mime = 'video/mp2t';
+			}
+			let srcObj = {
+				src: src,
+				type: mime,
+			};
+			player.src(srcObj);
+		}
 	});
 
 	onDestroy(() => {
@@ -66,9 +63,7 @@
 
 {#if src}
 	<!-- svelte-ignore a11y_media_has_caption -->
-	<!--<video bind:this={videoNode} class="video-js vjs-default-skin"></video>-->
-	<!-- svelte-ignore a11y_media_has_caption -->
-	<video playsinline class="w-full h-full border border-black bg-slate-900" id="videoElement-{type}"></video>
+	<video bind:this={videoNode} class="video-js vjs-default-skin"></video>
 {:else}
 	<span class="self-center">({type} unavailable)</span>
 {/if}

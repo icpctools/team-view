@@ -20,6 +20,9 @@ importers:
       video.js:
         specifier: ^8.23.4
         version: 8.23.4
+      videojs-mpegtsjs:
+        specifier: ^1.0.0
+        version: 1.0.0(mpegts.js@1.8.0)(video.js@8.23.4)
     devDependencies:
       '@playwright/test':
         specifier: ^1.51.1
@@ -1759,6 +1762,12 @@ packages:
   videojs-font@4.2.0:
     resolution: {integrity: sha512-YPq+wiKoGy2/M7ccjmlvwi58z2xsykkkfNMyIg4xb7EZQQNwB71hcSsB3o75CqQV7/y5lXkXhI/rsGAS7jfEmQ==}
 
+  videojs-mpegtsjs@1.0.0:
+    resolution: {integrity: sha512-DispLuHoXuhrGUlk5kXMsjYg6GW3ZHzTw3QEHS5AeSdnCS8vNynXKB6V2AQcFKEE7oWY7we0W//B0QrVe8VSBQ==}
+    peerDependencies:
+      mpegts.js: ^1.6.7
+      video.js: ^7.0.1
+
   videojs-vtt.js@0.15.5:
     resolution: {integrity: sha512-yZbBxvA7QMYn15Lr/ZfhhLPrNpI/RmCSCqgIff57GC2gIrV5YfyzLfLyZMj0NnZSAz8syB4N0nHXpZg9MyrMOQ==}
 
@@ -3419,6 +3428,11 @@ snapshots:
       video.js: 8.23.4
 
   videojs-font@4.2.0: {}
+
+  videojs-mpegtsjs@1.0.0(mpegts.js@1.8.0)(video.js@8.23.4):
+    dependencies:
+      mpegts.js: 1.8.0
+      video.js: 8.23.4
 
   videojs-vtt.js@0.15.5:
     dependencies:
