@@ -1,5 +1,6 @@
 # Use Node.js LTS as base image
-FROM node:18-alpine
+FROM node:22-alpine
+RUN npm install -g pnpm && apk add --no-cache tini git
 
 # Set working directory
 WORKDIR /app
@@ -8,7 +9,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies and tini
-RUN npm install && apk add --no-cache tini
+RUN pnpm install
 
 # Copy source code
 COPY . .
@@ -17,7 +18,7 @@ COPY . .
 ENV NODE_ENV=production
 
 # Build the application
-RUN npm run build
+RUN pnpm run build
 
 # Create a non-root user
 RUN addgroup -g 1001 -S nodejs
