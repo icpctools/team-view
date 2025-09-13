@@ -12,7 +12,7 @@
 		problems: Problem[];
 		team?: Team;
 		logo?: FileReference[];
-		mode: 'full' | 'summary';
+		mode?: 'full' | 'summary';
 	}
 
 	let { scoreboard_type = 'pass-fail', problems, row, team, logo, showLogo = true, mode = 'full' }: Props = $props();

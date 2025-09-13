@@ -19,13 +19,13 @@
 </script>
 
 <div class="w-full h-full overflow-auto text-sm p-2" role="table" aria-label="scoreboard">
-	<ScoreboardHeader hasLogos={data.hasLogos} scoreboard_type={data.scoreboard_type} problems={data.problems} />
+	<ScoreboardHeader showLogo={data.hasLogos} scoreboard_type={data.scoreboard_type} problems={data.problems} />
 
 	<div role="rowgroup">
 		{#each data.scoreboard.rows as row, i (row.team_id)}
 			<div animate:flip>
 				<ScoreboardRow
-					hasLogos={data.hasLogos}
+					showLogo={data.hasLogos}
 					scoreboard_type={data.scoreboard_type}
 					problems={data.problems}
 					{row}
