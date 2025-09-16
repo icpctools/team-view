@@ -50,26 +50,34 @@ export class ContestAPI {
 	scoreboard?: Scoreboard;
 
 	contestURL: string;
+	baseURL: string;
+	serverURL: string;
 
 	timeDelta = [];
 
-	/*constructor(baseURL: string, contestId: string) {
-		if (!baseURL.endsWith('/'))
-			baseURL += '/';
-		this.contestURL = baseURL + 'contests/' + contestId;
-		console.log("Contest URL: " + this.contestURL);
-	}*/
-
 	constructor(contestURL: string) {
+		if (!contestURL.endsWith('/')) {
+			contestURL += '/';
+		}
 		this.contestURL = contestURL;
+
+		// base url, e.g. http://example.com/api/
+		const bInd = this.contestURL.indexOf('/api/contests/');
+		this.baseURL = this.contestURL.substring(0, bInd + 5);
+
+		// server url, e.g. http://example.com
+		const sInd = this.contestURL.indexOf('//');
+		const sInd2 = this.contestURL.indexOf('/', sInd + 2);
+		this.serverURL = this.contestURL.substring(0, sInd2);
+
 		console.log('Contest URL: ' + this.contestURL);
 	}
 
 	getURL(type: any, id?: string) {
 		if (id == null) {
-			return this.contestURL + '/' + type;
+			return this.contestURL + type;
 		}
-		return this.contestURL + '/' + type + '/' + id;
+		return this.contestURL + type + '/' + id;
 	}
 
 	getHttpOptions(): OptionsOfTextResponseBody {
@@ -362,8 +370,12 @@ export class ContestAPI {
 		if (ref.href.startsWith('http://') || ref.href.startsWith('https://')) {
 			return ref.href;
 		}
-		// For relative URLs, prefix with contest URL base
-		return this.contestURL.substring(0, CONTEST.url.length) + ref.href;
+		// Prepend server-relative URLs
+		if (ref.href.startsWith('/')) {
+			return this.serverURL + ref.href;
+		}
+		// ... and base-relative URLs
+		return this.baseURL + ref.href;
 	}
 
 	private isFileReference(obj: any): obj is FileReference {

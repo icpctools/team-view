@@ -13,7 +13,9 @@ export class Contests {
 	baseURL: string;
 
 	constructor(baseURL: string) {
-		if (!baseURL.endsWith('/')) baseURL += '/';
+		if (!baseURL.endsWith('/')) {
+			baseURL += '/';
+		}
 		this.baseURL = baseURL;
 		console.log('Contest API URL: ' + this.baseURL);
 	}
@@ -74,16 +76,13 @@ export class Contests {
 		if (!this.contests || this.contests.length === 0) {
 			return undefined;
 		}
-		let baseURL = this.baseURL;
-		if (!baseURL.endsWith('/')) baseURL += '/';
-		let contestURL = baseURL + 'contests/';
-		if (CONTEST.contest_id) {
+		let contestURL = this.baseURL + 'contests/';
+		if (CONTEST.contest_id && CONTEST.contest_id.length > 0) {
 			contestURL += CONTEST.contest_id;
 		} else {
 			contestURL += this.contests[0].id;
 		}
-		const c: ContestAPI = new ContestAPI(contestURL);
-		return c;
+		return new ContestAPI(contestURL);
 	}
 
 	getContestObjs(): Contest[] | undefined {
