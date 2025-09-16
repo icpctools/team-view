@@ -2,10 +2,22 @@
 	import Banner from '$lib/ui/Banner.svelte';
 	import Clock from '$lib/ui/Clock.svelte';
 	import Logo from '$lib/ui/Logo.svelte';
+	import { onMount } from 'svelte';
 	import '../app.css';
 	import '../tailwind.css';
+	import { invalidate } from '$app/navigation';
 
 	let { data, children } = $props();
+
+	onMount(() => {
+		const interval = setInterval(() => {
+			invalidate('data:contest');
+		}, 5000);
+
+		return () => {
+			clearInterval(interval);
+		};
+	});
 </script>
 
 <div class="flex flex-col w-screen h-screen max-w-screen max-h-screen">

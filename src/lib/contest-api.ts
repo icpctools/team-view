@@ -57,6 +57,8 @@ export class ContestAPI {
 
 	timeDelta = [];
 
+	interval: any;
+
 	constructor(contestURL: string) {
 		if (!contestURL.endsWith('/')) {
 			contestURL += '/';
@@ -418,5 +420,30 @@ export class ContestAPI {
 				}
 			}
 		}
+	}
+
+	watch(): void {
+		if (this.interval) {
+			return this.interval;
+		}
+		console.log('watching');
+		this.interval = setInterval(async () => {
+			console.log('invalidating');
+			if (this.contest)
+				await this.loadContest(true);
+			if (this.submissions)
+				await this.loadSubmissions(true);
+			if (this.judgements)
+				await this.loadJudgements(true);
+			if (this.scoreboard)
+				await this.loadScoreboard(true);
+		}, 5000);
+	}
+
+	unwatch(): void {
+		if (!this.interval) {
+			return;
+		}
+		clearInterval(this.interval);
 	}
 }
