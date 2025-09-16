@@ -11,9 +11,13 @@
 
 	const util = new ContestUtil();
 	const bestRef = util.bestSquareLogo(ref, size * 20);
-	const imgSrc = bestRef?.href;
+	let imgSrc = $state(bestRef?.href);
+	
+	function onError(event: any): void {
+		imgSrc = '/images/icpc-logo.png';
+	}
 </script>
 
 {#if bestRef}
-	<img src={imgSrc} alt="logo" class="w-full h-full object-scale-down rounded-md" />
+	<img src={imgSrc} alt="logo" class="w-full h-full object-scale-down rounded-md" onerror={onError} />
 {/if}
