@@ -5,11 +5,12 @@
 	interface Props {
 		ref?: FileReference[];
 		size?: 16 | 24 | 32 | 64;
+		tag?: string;
 	}
 
-	let { ref, size = 16 }: Props = $props();
+	let { ref, size = 16, tag }: Props = $props();
 </script>
 
 <div class="max-h-{size} h-{size} flex place-content-center">
-	<Image {ref} {size} />
+	<Image {ref} {size} {tag} />
 </div>

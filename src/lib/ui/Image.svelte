@@ -5,12 +5,13 @@
 	interface Props {
 		ref?: FileReference[];
 		size: number;
+		tag?: string;
 	}
 
-	let { ref, size }: Props = $props();
+	let { ref, size, tag }: Props = $props();
 
 	const util = new ContestUtil();
-	const bestRef = util.bestSquareLogo(ref, size * 20);
+	const bestRef = util.bestSquareLogo(ref, size * 20, tag);
 	let imgSrc = $state(bestRef?.href);
 	
 	function onError(event: any): void {

@@ -12,7 +12,7 @@
 	<div class="flex flex-row gap-8 bg-gray-800 text-white p-4 items-center">
 		{#if data.logo && data.logo.length > 0}
 			<div class="w-12">
-				<Logo ref={data.logo} />
+				<Logo ref={data.logo} tag="dark" />
 			</div>
 		{/if}
 

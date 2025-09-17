@@ -55,7 +55,7 @@ export class ContestUtil {
 		return list;
 	}
 
-	bestSquareLogo(logos: FileReference[] | undefined, size: number): FileReference | undefined {
+	bestSquareLogo(logos: FileReference[] | undefined, size: number, tag?: string): FileReference | undefined {
 		if (!logos || logos.length == 0 || size < 1) {
 			return undefined;
 		}
@@ -64,14 +64,39 @@ export class ContestUtil {
 			return logos[0];
 		}
 
+		if (tag) {
+			// look for images that have the given tag
+			const arr = [];
+			for (const logo of logos) {
+				let found = false;
+				if (logo.tags) {
+					for (const tag2 of logo.tags) {
+						if (tag2 === tag) {
+							found = true;
+							break;
+						}
+					}
+				}
+				if (found) {
+					arr.push(logo);
+				}
+			}
+
+			// use the filtered list - unless it's empty
+			if (arr.length > 0) {
+				logos = arr;
+			}
+		}
+
 		// return an svg if possible
 		for (const logo of logos) {
-			if ('image/svg+xml' == logo.mime) return logo;
+			if ('image/svg+xml' == logo.mime) {
+				return logo;
+			}
 		}
 
 		let best: FileReference | undefined;
-		for (var i = 0; i < logos.length; i++) {
-			let ref = logos[i];
+		for (const ref of logos) {
 			if (ref.width != ref.height) {
 				continue;
 			}
@@ -96,7 +121,7 @@ export class ContestUtil {
 		return this.bestLogo(logos, size, size);
 	}
 
-	bestLogo(logos: FileReference[] | undefined, width: number, height: number): FileReference | undefined {
+	bestLogo(logos: FileReference[] | undefined, width: number, height: number, tag?: string): FileReference | undefined {
 		if (!logos || logos.length == 0 || width < 1 || height < 1) {
 			return undefined;
 		}
@@ -105,14 +130,39 @@ export class ContestUtil {
 			return logos[0];
 		}
 
+		if (tag) {
+			// look for images that have the given tag
+			const arr = [];
+			for (const logo of logos) {
+				let found = false;
+				if (logo.tags) {
+					for (const tag2 of logo.tags) {
+						if (tag2 === tag) {
+							found = true;
+							break;
+						}
+					}
+				}
+				if (found) {
+					arr.push(logo);
+				}
+			}
+
+			// use the filtered list - unless it's empty
+			if (arr.length > 0) {
+				logos = arr;
+			}
+		}
+
 		// return an svg if possible
 		for (const logo of logos) {
-			if ('image/svg+xml' == logo.mime) return logo;
+			if ('image/svg+xml' == logo.mime) {
+				return logo;
+			}
 		}
 
 		let best: FileReference | undefined;
-		for (var i = 0; i < logos.length; i++) {
-			let ref = logos[i];
+		for (const ref of logos) {
 			if (best == null) {
 				best = ref;
 			} else {

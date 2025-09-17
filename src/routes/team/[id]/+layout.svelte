@@ -9,7 +9,7 @@
 	<div class="flex flex-row gap-4 bg-gray-700 text-white px-4 py-2 items-center">
 		{#if data.logo}
 			<div class="w-16 h-16">
-				<Logo ref={data.logo} size={16} />
+				<Logo ref={data.logo} size={16} tag="dark" />
 			</div>
 		{/if}
 
