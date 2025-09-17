@@ -100,7 +100,7 @@ export class ContestAPI {
 				secureConnect: 2000,
 				socket: 2000,
 				send: 10000,
-				response: 1000
+				response: 2000
 			}
 		};
 
