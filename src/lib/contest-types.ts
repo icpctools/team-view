@@ -8,6 +8,29 @@ export type RelTime = string;
 
 export type Time = string;
 
+export interface Provider {
+	name: string;
+	version?: string;
+	logo?: FileReference[];
+}
+
+export interface Info {
+	version: string;
+	version_url: string;
+	provider?: Provider;
+}
+
+export interface Access {
+	id: Id;
+	capabilities: string[];
+	endpoints: Endpoint[];
+}
+
+export interface Endpoint {
+	type: string;
+	properties: string[];
+}
+
 export interface ContestLocation {
 	latitude: number;
 	longitude: number;
@@ -53,11 +76,24 @@ export interface MapInfo {
 	table_depth: number;
 	table_area_width: number;
 	table_area_depth: number;
+	aisles?: Aisle[];
+	spare_teams?: TeamLocation[];
+	printer?: Location;
 }
 
-export interface TeamLocation {
+export interface Aisle {
+	x1: number;
+	y1: number;
+	x2: number;
+	y2: number;
+}
+
+export interface Location {
 	x: number;
 	y: number;
+}
+
+export interface TeamLocation extends Location {
 	rotation: number;
 }
 
@@ -86,12 +122,14 @@ export interface Problem {
 	color?: string;
 	max_score?: number;
 	statement: FileReference[];
+	location?: Location;
 }
 
 export interface Group {
 	id: Id;
 	name: string;
 	type?: string;
+	logo?: FileReference[];
 }
 
 export interface Organization {
@@ -181,16 +219,25 @@ export interface Judgement {
 	max_run_time: number;
 }
 
-export interface Award {
-	id: Id; // todo
-}
-
 export interface Run {
-	id: Id; // todo
+	id: Id;
+	judgement_id: Id;
+	ordinal: number;
+	judgement_type_id: Id;
+	time: Time;
+	contest_time: RelTime;
+	run_time: number;
 }
 
 export interface Account {
-	id: Id; // todo
+	id: Id;
+	username: string;
+	password?: string;
+	name?: string;
+	type: 'team' | 'judge' | 'admin' | 'analyst' | 'staff';
+	ip?: string;
+	team_id?: Id;
+	person_id?: Id;
 }
 
 export interface Clarification {
@@ -206,13 +253,26 @@ export interface Clarification {
 }
 
 export interface Commentary {
-	id: Id; // todo
+	id: Id;
+	time: Time;
+	contest_time: RelTime;
+	message: string;
+	tags: string[];
+	source_id? : Id;
+	team_ids? : Id[];
+	problem_ids?: Id[];
+	submission_ids?: Id[];
 }
 
-export interface Access {
-	id: Id; // todo
+export interface Award {
+	id: Id;
+	citation: string;
+	team_ids?: Id[];
+	display_mode?: string;
 }
 
 export interface StartStatus {
-	id: Id; // todo
+	id: Id;
+	label: string;
+	status: 0 | 1 | 2;
 }
