@@ -11,7 +11,7 @@
 	let { ref, size, tag }: Props = $props();
 
 	const util = new ContestUtil();
-	const bestRef = util.bestSquareLogo(ref, size * 20, tag);
+	const bestRef = util.bestLogo(ref, size * 20, size * 20, tag);
 	let imgSrc = $state(bestRef?.href);
 	
 	function onError(event: any): void {
