@@ -2,7 +2,7 @@ import { error } from '@sveltejs/kit';
 import { ContestUtil } from '$lib/contest-util';
 import { loadContest } from '$lib/state.svelte.js';
 
-export const load = async (_params) => {
+export const load = async () => {
 	const cc = await loadContest();
 	if (!cc) throw error(404);
 

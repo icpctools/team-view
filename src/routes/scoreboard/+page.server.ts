@@ -2,7 +2,7 @@ import { error } from '@sveltejs/kit';
 import { ContestUtil } from '$lib/contest-util';
 import { loadContest } from '$lib/state.svelte.js';
 
-export async function load({ depends }) {
+export const load = async ({ depends }) => {
 	depends('data:scoreboard');
 
 	const cc = await loadContest();

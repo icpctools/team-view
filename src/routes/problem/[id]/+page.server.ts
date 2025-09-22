@@ -4,7 +4,7 @@ import { timeToMin } from '$lib/contest-time-util';
 import type { Judgement, JudgementType } from '$lib/contest-types';
 import { ContestUtil } from '$lib/contest-util';
 
-export const load = async (params) => {
+export const load = async ({ params }) => {
 	const cc = await loadContest();
 	if (!cc) throw error(404);
 
@@ -19,7 +19,7 @@ export const load = async (params) => {
 
 	const problems = cc.getProblems();
 
-	const problem = problems?.find((p) => p.id && p.id === params.params.id);
+	const problem = problems?.find((p) => p.id && p.id === params.id);
 	if (!problem) throw error(404);
 
 	const languages = cc.getLanguages();

@@ -1,7 +1,7 @@
 import { loadContest } from '$lib/state.svelte.js';
 import { error } from '@sveltejs/kit';
 
-export async function load({ depends }) {
+export const load = async ({ depends }) => {
 	const cc = await loadContest();
 	if (!cc) throw error(404);
 

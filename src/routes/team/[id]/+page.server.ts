@@ -6,7 +6,7 @@ import type { Judgement, JudgementType } from '$lib/contest-types.js';
 import * as countries from 'i18n-iso-countries';
 import en from 'i18n-iso-countries/langs/en.json';
 
-export const load = async (params) => {
+export const load = async ({ params }) => {
 	const cc = await loadContest();
 	if (!cc) throw error(404);
 
@@ -23,7 +23,7 @@ export const load = async (params) => {
 	]);
 
 	const teams = cc.getTeams();
-	const team = teams?.find((t) => t.id && t.id === params.params.id);
+	const team = teams?.find((t) => t.id && t.id === params.id);
 	if (!team) throw error(404);
 
 	const orgs = cc.getOrganizations();
