@@ -1,44 +1,62 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import type { MapInfo, Team } from '$lib/contest-types';
 
 	interface Props {
 		mapInfo?: MapInfo;
 		teams: Team[];
-		selected?: string;
+		selected?: Team;
+		onclick?: (team: Team) => void;
 	}
 
-	let { mapInfo, teams, selected = $bindable() }: Props = $props();
+	let { mapInfo, teams, selected = $bindable(), onclick }: Props = $props();
 
 	let canvas: HTMLCanvasElement;
-	let areas = [{}];
+	let scale: number = 1;
+	let ix: number = 0;
+	let iy: number = 0;
 
-	// TODO selection area needs to be a shape/rotated, not just x/y/w/h
 	function onMouseMove(event: MouseEvent): void {
-		if (!areas || !canvas) {
+		if (!canvas) {
 			return;
 		}
 
-		let s: string | undefined = undefined;
-		let x = event.pageX - canvas.offsetLeft;
-		let y = event.pageY - canvas.offsetTop;
+		//let x = event.pageX - canvas.offsetLeft;
+		//let y = event.pageY - canvas.offsetTop;
+		let x = event.offsetX;
+		let y = event.offsetY;
 
-		for (const a of areas) {
-			if (x > a.x && y > a.y && x < a.x + a.w && y < a.y + a.h) {
-				s = a.id;
-				break;
+		let area_width = (mapInfo?.table_area_width || 3) * scale;
+		let area_depth = (mapInfo?.table_area_depth || 2.2) * scale;
+		let desk_depth = (mapInfo?.table_depth || 1) * scale;
+
+		x -= ix;
+		y -= iy;
+
+		let select: Team | undefined = undefined;
+		for (const team of teams) {
+			if (team.location) {
+				const l = team.location;
+				let xx = x - l.x * scale;
+				let yy = y - l.y * scale;
+
+				yy -= desk_depth / 2 + 0.21 * scale;
+
+				// TODO rotation
+				//let rotation = ((90 - l.rotation) * Math.PI) / 180;
+				//ctx.rotate(rotation);
+
+				if (xx > -area_width / 2 && xx < area_width / 2) {
+					if (yy > -area_depth / 2 && yy < area_depth / 2) {
+						select = team;
+						break;
+					}
+				}
 			}
 		}
 
-		if (selected !== s) {
-			selected = s;
+		if (selected?.id !== select?.id) {
+			selected = select;
 			drawFloor();
-		}
-	}
-
-	function onClick(): void {
-		if (selected) {
-			goto('/team/' + selected);
 		}
 	}
 
@@ -52,9 +70,15 @@
 			return;
 		}
 
-		c.height = window.innerHeight;
+		// TODO need to set both sizes below to avoid the aspect ratio changing, but
+		// should be a way to do this better
 		c.width = window.innerWidth;
-		var ctx = c.getContext('2d');
+		c.height = window.innerHeight - 250;
+
+		canvas.style.width = `${c.width}px`
+    	canvas.style.height = `${c.height}px`
+
+		let ctx = c.getContext('2d');
 		if (ctx == null) {
 			return;
 		}
@@ -92,16 +116,14 @@
 		maxX += 3;
 		maxY += 3;
 
+		// find the biggest scaling so that everything just fits onscreen
 		let dx = maxX - minX;
 		let dy = maxY - minY;
-		let scale = Math.min(c.width / dx, c.height / dy);
+		scale = Math.min(c.width / dx, c.height / dy);
 
-		// center map on canvas
-		let ix = -minX * scale;
-		let iy = -minY * scale;
-
-		ix += (c.width - dx * scale) / 2;
-		iy += (c.height - dy * scale) / 2;
+		// center map on the canvas
+		ix = -minX * scale + (c.width - dx * scale) / 2;
+		iy = -minY * scale + (c.height - dy * scale) / 2;
 
 		ctx.translate(ix, iy);
 
@@ -110,41 +132,19 @@
 		let area_width = (mapInfo?.table_area_width || 3) * scale;
 		let area_depth = (mapInfo?.table_area_depth || 2.2) * scale;
 
-		// TODO resize font based on canvas size
-		ctx.font = '12px Arial';
+		// resize font based on scale
+		ctx.font = Math.round(scale / 2) + 'px Arial';
 		ctx.lineWidth = 0.75;
 
-		areas = [];
 		for (const team of teams) {
 			if (team.location) {
 				const l = team.location;
-
-				ctx.strokeStyle = 'black';
-
 				ctx.translate(l.x * scale, l.y * scale);
 
 				let rotation = ((90 - l.rotation) * Math.PI) / 180;
 				ctx.rotate(rotation);
 
-				ctx.fillStyle = '#eee';
-				ctx.fillRect(-area_width / 2, -area_depth / 2 + desk_depth / 2 + 0.21 * scale, area_width, area_depth);
-
-				if (team.id === selected) {
-					ctx.fillStyle = 'gray';
-					ctx.fillRect(-desk_width / 2, -desk_depth / 2, desk_width, desk_depth);
-					ctx.fillStyle = 'white';
-				} else {
-					ctx.strokeRect(-desk_width / 2, -desk_depth / 2, desk_width, desk_depth);
-					ctx.fillStyle = 'black';
-				}
-				const r = {
-					x: l.x * scale + ix,
-					y: l.y * scale + iy,
-					w: desk_width,
-					h: desk_depth,
-					id: team.id
-				};
-				areas.push(r);
+				drawTeam(ctx, team.id === selected?.id, area_width, area_depth, desk_width, desk_depth);
 				
 				ctx.rotate(-rotation);
 
@@ -152,6 +152,43 @@
 				ctx.translate(-l.x * scale, -l.y * scale);
 			}
 		}
+
+		if (mapInfo?.spare_teams) {
+			for (const l of mapInfo?.spare_teams) {
+				ctx.translate(l.x * scale, l.y * scale);
+
+				let rotation = ((90 - l.rotation) * Math.PI) / 180;
+				ctx.rotate(rotation);
+
+				drawTeam(ctx, false, area_width, area_depth, desk_width, desk_depth);
+				
+				ctx.rotate(-rotation);
+				//ctx.fillText('S', 0, 0);
+				ctx.translate(-l.x * scale, -l.y * scale);
+			}
+		}
+	}
+
+	function drawTeam(ctx: CanvasRenderingContext2D, selected: boolean, area_width:number, area_depth:number, desk_width:number, desk_depth:number): void {
+		ctx.fillStyle = '#eee';
+		ctx.fillRect(-area_width / 2, -area_depth / 2 + desk_depth / 2 + 0.21 * scale, area_width, area_depth);
+
+		ctx.strokeStyle = 'black';
+		if (selected) {
+			ctx.fillStyle = 'gray';
+			ctx.fillRect(-desk_width / 2, -desk_depth / 2, desk_width, desk_depth);
+			ctx.fillStyle = 'white';
+		} else {
+			ctx.strokeRect(-desk_width / 2, -desk_depth / 2, desk_width, desk_depth);
+			ctx.fillStyle = 'black';
+		}
+	}
+
+	function onClick(): void {
+		if (!selected) {
+			return;
+		}
+		onclick?.(selected);
 	}
 </script>
 

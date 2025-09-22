@@ -32,6 +32,10 @@
 
 		<div class="w-48"><Clock contest={data.contest} /></div>
 
+		{#if data.map}
+			<div class="text-lg"><a href="/map">Map</a></div>
+		{/if}
+
 		<div class="text-lg"><a href="/scoreboard">Scoreboard</a></div>
 	</div>
 

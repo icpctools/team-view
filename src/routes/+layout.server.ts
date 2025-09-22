@@ -9,6 +9,12 @@ export async function load({ depends }) {
 
 	await Promise.all([cc.loadContest()]);
 
+	try {
+		await Promise.all([cc.loadMapInfo()]);
+	} catch (err) {
+		// TODO ignore failure to load map data for now. avoid (re)loading in the future
+	}
+
 	const contest = cc.getContest();
 	if (!contest) throw error(404);
 
@@ -16,6 +22,7 @@ export async function load({ depends }) {
 		contest: contest,
 		name: contest.formal_name || contest.name,
 		banner: contest.banner,
-		logo: contest.logo
+		logo: contest.logo,
+		map: cc.getMapInfo()
 	};
 };
