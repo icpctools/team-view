@@ -4,4 +4,4 @@
 	let { data } = $props();
 </script>
 
-<Video ref={data.team.webcam} type="webcam" />
+<Video ref={data.team.webcam?.[0]} type="webcam" />

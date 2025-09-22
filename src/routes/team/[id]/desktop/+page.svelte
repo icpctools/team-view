@@ -4,4 +4,4 @@
 	let { data } = $props();
 </script>
 
-<Video ref={data.team.desktop} type="desktop" />
+<Video ref={data.team.desktop?.[0]} type="desktop" />

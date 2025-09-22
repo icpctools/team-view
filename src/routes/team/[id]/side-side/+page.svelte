@@ -5,6 +5,6 @@
 </script>
 
 <div class="flex flex-row justify-items-stretch w-full h-full">
-	<Video ref={data.team.desktop} type="desktop" />
-	<Video ref={data.team.webcam} type="webcam" />
+	<Video ref={data.team.desktop?.[0]} type="desktop" />
+	<Video ref={data.team.webcam?.[0]} type="webcam" />
 </div>

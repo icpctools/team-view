@@ -7,14 +7,14 @@
 	import 'video.js/dist/video-js.css'; // default Video.js CSS
 
 	interface Props {
-		ref?: FileReference[];
+		ref?: FileReference;
 		type: string;
 	}
 
 	let { ref, type }: Props = $props();
 
-	let src = $derived(ref && ref.length > 0 ? ref[0].href : undefined);
-	let mime = $derived(ref && ref.length > 0 ? ref[0].mime : undefined);
+	let src = $derived(ref ? ref.href : undefined);
+	let mime = $derived(ref ? ref.mime : undefined);
 
 	let videoNode = $state<HTMLElement | string>('');
 	let player = $state<Player>();
