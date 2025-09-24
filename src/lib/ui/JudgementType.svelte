@@ -16,4 +16,8 @@
 		class:bg-cyan-600={!judgement_type.solved && !judgement_type.penalty}>
 		{judgement_type.id}
 	</div>
+{:else}
+	<div class="justify-self-center text-center text-sm w-10">
+		...
+	</div>
 {/if}
