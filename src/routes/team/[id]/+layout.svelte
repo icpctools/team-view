@@ -37,15 +37,17 @@
 		</div>
 	</div>
 
-	<div class="w-full align-center border-b-[1px] border-gray-500">
-		<ScoreboardRow
-			scoreboard_type={data.scoreboard_type}
-			problems={data.problems}
-			row={data.row}
-			team={data.team}
-			logo={data.logo}
-			mode="summary" />
-	</div>
+	{#if data.problems && data.row}
+		<div class="w-full align-center border-b-[1px] border-gray-500">
+			<ScoreboardRow
+				scoreboard_type={data.scoreboard_type}
+				problems={data.problems}
+				row={data.row}
+				team={data.team}
+				logo={data.logo}
+				mode="summary" />
+		</div>
+	{/if}
 
 	<div class="gap-2 w-full grow overflow-hidden">
 		{@render children()}
