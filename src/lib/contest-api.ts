@@ -2,7 +2,7 @@
  * Copyright later.
  */
 import type { HttpsOptions, OptionsOfTextResponseBody } from 'got';
-import got from 'got';
+import got, { HTTPError, RequestError } from 'got';
 import type {
 	Access,
 	Account,
@@ -51,6 +51,7 @@ export class ContestAPI {
 	scoreboard?: Scoreboard;
 	mapInfo?: MapInfo;
 
+	id: string;
 	contestURL: string;
 	baseURL: string;
 	serverURL: string;
@@ -68,6 +69,7 @@ export class ContestAPI {
 		// base url, e.g. http://example.com/api/
 		const bInd = this.contestURL.indexOf('/api/contests/');
 		this.baseURL = this.contestURL.substring(0, bInd + 5);
+		this.id = this.contestURL.substring(bInd + 14, this.contestURL.length - 1);
 
 		// server url, e.g. http://example.com
 		const sInd = this.contestURL.indexOf('//');
@@ -77,7 +79,7 @@ export class ContestAPI {
 		console.log('Contest URL: ' + this.contestURL);
 	}
 
-	getURL(type: any, id?: string) {
+	getURL(type: string, id?: string): string {
 		if (id == null) {
 			return this.contestURL + type;
 		}
@@ -113,25 +115,24 @@ export class ContestAPI {
 		return options;
 	}
 
-	async loadObject(type: any): Promise<any> {
-		console.log('Loading contest ' + type);
+	async loadObject(type: string): Promise<any> {
 		const startTime = performance.now();
+		const url = this.getURL(type);
 		try {
-			const url = this.getURL(type);
 			const response = await got.get(url, this.getHttpOptions());
 			const obj = JSON.parse(response.body);
 			const endTime = performance.now();
-			console.log(`Fetched ${url} in ${endTime - startTime}ms`);
+			console.log(`Fetched ${url} in ${(endTime - startTime).toFixed(1)}ms`);
 			this.processFileReferences(obj);
 			return obj;
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		} catch (requestErr: any) {
-			// unable to fetch the extensions
-			// extract only the error message
-			if (requestErr.message) {
-				throw new Error(`Unable to fetch contests: ${String(requestErr.message)}`);
+		} catch (error: any) {
+			if (error instanceof HTTPError) {
+				throw new Error(`HTTP error ${error.response.statusCode} loading ${url}: ${error.response.statusMessage}`);
+			} else if (error instanceof RequestError) {
+				throw new Error(`Error loading ${url}: ${error.code}`);
 			} else {
-				throw new Error(`Unable to fetch contests: ${String(requestErr)}`);
+				throw new Error(`Unexpected error loading ${url}: ${error}`);
 			}
 		}
 		/*return $.ajax({
@@ -426,9 +427,9 @@ export class ContestAPI {
 		if (this.interval) {
 			return this.interval;
 		}
-		console.log('watching');
+		console.log(`Watching ${this.id}`);
 		this.interval = setInterval(async () => {
-			console.log('invalidating');
+			console.log(`Invalidating ${this.id}`);
 			if (this.contest)
 				await this.loadContest(true);
 			if (this.submissions)

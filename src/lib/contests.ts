@@ -2,7 +2,7 @@
  * Copyright later.
  */
 import type { HttpsOptions, OptionsOfTextResponseBody } from 'got';
-import got from 'got';
+import got, { HTTPError, RequestError } from 'got';
 import type { Contest } from './contest-types';
 import { ContestAPI } from './contest-api';
 import { CONTEST } from './hardcoded.svelte';
@@ -26,15 +26,15 @@ export class Contests {
 			const response = await got.get(this.baseURL + 'contests', this.getHttpOptions());
 			this.contests = JSON.parse(response.body) as Contest[];
 			const endTime = performance.now();
-			console.log(`Fetched ${this.baseURL} in ${endTime - startTime}ms`);
+			console.log(`Fetched ${this.baseURL} in ${(endTime - startTime).toFixed(1)}ms`);
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		} catch (requestErr: any) {
-			// unable to fetch the extensions
-			// extract only the error message
-			if (requestErr.message) {
-				throw new Error(`Unable to fetch contests: ${String(requestErr.message)}`);
+		} catch (error: any) {
+			if (error instanceof HTTPError) {
+				throw new Error(`HTTP error ${error.response.statusCode} loading contests: ${error.response.statusMessage}`);
+			} else if (error instanceof RequestError) {
+				throw new Error(`Error loading contests: ${error.code}`);
 			} else {
-				throw new Error(`Unable to fetch contests: ${String(requestErr)}`);
+				throw new Error(`Unexpected error loading contests: ${error}`);
 			}
 		}
 	}
