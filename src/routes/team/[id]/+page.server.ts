@@ -6,7 +6,8 @@ import type { Judgement, JudgementType } from '$lib/contest-types.js';
 import * as countries from 'i18n-iso-countries';
 import en from 'i18n-iso-countries/langs/en.json';
 
-export const load = async ({ params }) => {
+export const load = async ({ params, depends }) => {
+	depends('data:team');
 	const cc = await loadContest();
 	if (!cc) throw error(404);
 

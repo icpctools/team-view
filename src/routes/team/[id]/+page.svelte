@@ -1,10 +1,22 @@
 <script lang="ts">
+	import { invalidate } from '$app/navigation';
 	import JudgementType from '$lib/ui/JudgementType.svelte';
 	import Person from '$lib/ui/Person.svelte';
 	import Photo from '$lib/ui/Photo.svelte';
 	import Problem from '$lib/ui/Problem.svelte';
+	import { onMount } from 'svelte';
 
 	let { data } = $props();
+
+	onMount(() => {
+		const interval = setInterval(() => {
+			invalidate('data:team');
+		}, 3000);
+
+		return () => {
+			clearInterval(interval);
+		};
+	});
 </script>
 
 <div class="flex flex-col p-2 gap-1 h-full overflow-auto">

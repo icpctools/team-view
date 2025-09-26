@@ -2,7 +2,8 @@ import { error } from '@sveltejs/kit';
 import { ContestUtil } from '$lib/contest-util';
 import { loadContest } from '$lib/state.svelte.js';
 
-export const load = async ({ params }) => {
+export const load = async ({ params, depends }) => {
+	depends('data:team-layout');
 	const cc = await loadContest();
 	if (!cc) throw error(404);
 

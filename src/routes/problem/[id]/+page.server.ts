@@ -4,7 +4,8 @@ import { timeToMin } from '$lib/contest-time-util';
 import type { Judgement, JudgementType } from '$lib/contest-types';
 import { ContestUtil } from '$lib/contest-util';
 
-export const load = async ({ params }) => {
+export const load = async ({ params, depends }) => {
+	depends('data:problem');
 	const cc = await loadContest();
 	if (!cc) throw error(404);
 

@@ -1,11 +1,23 @@
 <script lang="ts">
+	import { invalidate } from '$app/navigation';
 	import JudgementType from '$lib/ui/JudgementType.svelte';
 	import Problem from '$lib/ui/Problem.svelte';
+	import { onMount } from 'svelte';
 
 	let { data } = $props();
+
+	onMount(() => {
+		const interval = setInterval(() => {
+			invalidate('data:problem');
+		}, 3000);
+
+		return () => {
+			clearInterval(interval);
+		};
+	});
 </script>
 
-<div class="flex flex-col p-2 gap-1">
+<div class="flex flex-col p-2 gap-1 h-full overflow-auto">
 	<div class="flex flex-col">
 		<div class="text-xl">Problem</div>
 		<div class="flex flex-row gap-x-2">
