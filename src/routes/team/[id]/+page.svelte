@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { invalidate } from '$app/navigation';
+	import { goto, invalidate } from '$app/navigation';
 	import JudgementType from '$lib/ui/JudgementType.svelte';
 	import Person from '$lib/ui/Person.svelte';
 	import Photo from '$lib/ui/Photo.svelte';
@@ -76,8 +76,8 @@
 			{#each data.submissions as submission}
 				<div class="grid grid-table" style="grid-template-columns: 1fr 1fr 1fr 1fr" role="row">
 					<div role="cell" class="">{submission.time}</div>
-					<div role="cell" class="w-16">
-						<a href="/problem/{submission.problem?.id}"><Problem problem={submission.problem} /></a>
+					<div role="cell" class="">
+						<Problem problem={submission.problem} onclick={() => goto('/problem/' + submission.problem?.id)}/>
 					</div>
 					<div role="cell" class="">{submission.language}</div>
 					<div role="cell" class="">

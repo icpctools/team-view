@@ -2,6 +2,7 @@
 	import type { Problem as ProblemObj } from '$lib/contest-types.js';
 	import Problem from './Problem.svelte';
 	import { getColumns } from './scoreboard-util';
+	import { goto } from '$app/navigation';
 
 	interface Props {
 		showLogo?: boolean;
@@ -28,10 +29,8 @@
 			<div role="cell" class="justify-self-center">Score</div>
 		{/if}
 		{#each problems as problem}
-			<div role="cell" class="justify-self-center w-12">
-				<a href="/problem/{problem.id}">
-					<Problem {problem} />
-				</a>
+			<div role="cell" class="justify-self-center w-3/4">
+				<Problem {problem} onclick={() => { goto('/problem/' + problem.id)}}/>
 			</div>
 		{/each}
 	</div>

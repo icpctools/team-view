@@ -21,7 +21,7 @@
 	<div class="flex flex-col">
 		<div class="text-xl">Problem</div>
 		<div class="flex flex-row gap-x-2">
-			<div class="w-12 h-6"><Problem problem={data.problem} /></div>
+			<Problem problem={data.problem} />
 			{data.problem.name}
 		</div>
 	</div>

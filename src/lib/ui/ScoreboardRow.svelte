@@ -87,18 +87,14 @@
 			{#if rp.num_judged > 0 || rp.num_pending > 0}
 				<div
 					role="cell"
-					class="flex flex-row justify-center items-center w-full h-full rounded-md"
+					class="flex flex-row justify-center items-center w-full h-full rounded-md @container"
 					style="background-color:{scoreBg(rp, problem)}">
 					{#if scoreboard_type === 'pass-fail'}
-						<div>
-							{timeToMin(rp.time)}
-							<span class="text-xs text-black/50">{rp.num_judged + rp.num_pending}</span>
-						</div>
+						<span class="@max-[30px]:hidden">{timeToMin(rp.time)}</span>
+						<span class="text-xs text-black/50 pl-0.5 @max-[60px]:hidden">{rp.num_judged + rp.num_pending}</span>
 					{:else if scoreboard_type === 'score'}
-						<div>
-							{rp.score}
-							<span class="text-xs text-black/50">{rp.num_judged + rp.num_pending}</span>
-						</div>
+						<span class="@max-[30px]:hidden">{rp.score}</span>
+						<span class="text-xs text-black/50 pl-0.5 @max-[60px]:hidden">{rp.num_judged + rp.num_pending}</span>
 					{/if}
 				</div>
 			{:else}
