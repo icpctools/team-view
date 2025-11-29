@@ -45,7 +45,7 @@
 
 	{#if data.banner && data.banner.length > 0}
 		<div class="self-center p-2">
-			<Banner ref={data.banner} />
+			<Banner ref={data.banner} tag="light" />
 		</div>
 	{/if}
 </div>

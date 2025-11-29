@@ -60,7 +60,7 @@
 	style="grid-template-columns: {col}">
 	<div role="cell" class="justify-self-center pr-1">{row.rank}</div>
 	{#if showLogo && mode === 'full'}
-		<div role="cell" class="w-4 justify-self-center"><Logo ref={logo} /></div>
+		<div role="cell" class="w-4 justify-self-center"><Logo ref={logo} tag="light" /></div>
 	{/if}
 	{#if mode != 'summary'}
 		<div role="cell" class="text-nowrap overflow-hidden text-ellipsis">
