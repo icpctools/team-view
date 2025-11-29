@@ -55,49 +55,74 @@ export class ContestUtil {
 		return list;
 	}
 
+	getOppositeTag(tag: string): string | undefined {
+		if ('light' === tag)
+			return 'dark';
+		else if ('dark' === tag)
+			return 'light';
+		return undefined;
+	}
+
 	bestLogo(logos: FileReference[] | undefined, width: number, height: number, tag?: string): FileReference | undefined {
-		if (!logos || logos.length == 0 || width < 1 || height < 1) {
+		if (!logos || logos.length === 0 || width < 1 || height < 1) {
 			return undefined;
 		}
 
-		if (logos.length == 1) {
+		if (logos.length === 1) {
 			return logos[0];
 		}
 
+		const matchingTags = [];
+		const nonOppositeTags = [];
+		// filter looking for files with matching tag
 		if (tag) {
-			// look for images that have the given tag
-			const arr = [];
 			for (const logo of logos) {
-				let found = false;
 				if (logo.tags) {
+					let found = false;
 					for (const tag2 of logo.tags) {
 						if (tag2 === tag) {
+							matchingTags.push(logo);
+							found = true;
+							break;
+						} else if (tag2 === this.getOppositeTag(tag)) {
 							found = true;
 							break;
 						}
 					}
-				}
-				if (found) {
-					arr.push(logo);
+					if (!found) {
+						nonOppositeTags.push(logo);
+					}
+				} else {
+					nonOppositeTags.push(logo);
 				}
 			}
-
-			// use the filtered list - unless it's empty
-			if (arr.length > 0) {
-				logos = arr;
+		} else {
+			for (const logo of logos) {
+				if (!logo.tags || logo.tags.length === 0) {
+					matchingTags.push(logo);
+				}
 			}
 		}
 
+		let logos2 = logos;
+		if (matchingTags.length > 0) {
+			// If we have at least one file with the tag, use it
+			logos2 = matchingTags;
+		} else if (nonOppositeTags.length > 0) {
+			// Otherwise, use the list of files without any tag, if not empty
+			logos2 = nonOppositeTags;
+		}
+
 		// return an svg if possible
-		for (const logo of logos) {
-			if ('image/svg+xml' == logo.mime) {
+		for (const logo of logos2) {
+			if ('image/svg+xml' === logo.mime) {
 				return logo;
 			}
 		}
 
 		let best: FileReference | undefined;
-		for (const ref of logos) {
-			if (best == null) {
+		for (const ref of logos2) {
+			if (!best) {
 				best = ref;
 			} else {
 				if (best.width && best.width < width && best.height && best.height < height) {
@@ -128,16 +153,13 @@ export class ContestUtil {
 			if (time && time >= 0 && submissions[i].problem_id == problem_id) {
 				// TODO: should we check if this is a public team too?
 				const judgements = this.findManyBySubmissionId(contest.getJudgements(), submissions[i].id);
-				if (judgements != null && judgements.length > 0) {
+				if (judgements && judgements.length > 0) {
 					const jt = this.findById(
 						contest.getJudgementTypes(),
 						judgements[judgements.length - 1].judgement_type_id
 					);
-					if (jt != null) {
-						if (jt.solved) {
-							if (submission == submissions[i]) return true;
-							return false;
-						}
+					if (jt && jt.solved) {
+						return (submission == submissions[i]);
 					}
 				}
 			}
