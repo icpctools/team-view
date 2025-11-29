@@ -430,14 +430,18 @@ export class ContestAPI {
 		console.log(`Watching ${this.id}`);
 		this.interval = setInterval(async () => {
 			console.log(`Invalidating ${this.id}`);
-			if (this.contest)
-				await this.loadContest(true);
-			if (this.submissions)
-				await this.loadSubmissions(true);
-			if (this.judgements)
-				await this.loadJudgements(true);
-			if (this.scoreboard)
-				await this.loadScoreboard(true);
+			try {
+				if (this.contest)
+					await this.loadContest(true);
+				if (this.submissions)
+					await this.loadSubmissions(true);
+				if (this.judgements)
+					await this.loadJudgements(true);
+				if (this.scoreboard)
+					await this.loadScoreboard(true);
+			} catch (error: any) {
+				console.error(`Error reloading contest data: ${error}`);
+			}
 		}, 5000);
 	}
 
