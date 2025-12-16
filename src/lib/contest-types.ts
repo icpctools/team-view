@@ -21,7 +21,6 @@ export interface Info {
 }
 
 export interface Access {
-	id: Id;
 	capabilities: string[];
 	endpoints: Endpoint[];
 }
@@ -44,7 +43,7 @@ export interface Contest {
 	duration: RelTime;
 	scoreboard_freeze_duration?: RelTime;
 	scoreboard_type: 'pass-fail' | 'score';
-	penalty_time?: number | RelTime; // 2023-06 | draft
+	penalty_time?: number | RelTime; // 2023-06 | draft spec
 	countdown_pause_time?: RelTime;
 	banner?: FileReference[];
 	logo?: FileReference[];
@@ -59,7 +58,7 @@ export interface FileReference {
 	hash?: string;
 	width?: number;
 	height?: number;
-	tags?: string[];
+	tags?: string[]; // draft spec
 }
 
 export interface ContestState {
@@ -123,6 +122,10 @@ export interface Problem {
 	max_score?: number;
 	statement: FileReference[];
 	location?: Location;
+	memory_limit?: number; // draft spec
+	output_limit?: number; // draft spec
+	code_limit?: number; // draft spec
+	attachments?: FileReference[]; // draft spec
 }
 
 export interface Group {
@@ -146,7 +149,8 @@ export interface Submission {
 	id: Id;
 	language_id: Id;
 	problem_id: Id;
-	team_id: Id;
+	team_id?: Id; // optional in draft spec
+	account_id?: Id; // draft spec
 	time: Time;
 	contest_time: RelTime;
 	files: FileReference[];
@@ -185,9 +189,9 @@ export interface Scoreboard {
 
 export interface ScoreboardScore {
 	num_solved?: number;
-	total_time?: number | RelTime; // 2023-06 | draft
 	score?: number;
-	time?: RelTime;
+	time?: number | RelTime; // 2023-06 | draft spec
+	total_time?: number | RelTime; // 2023-06 | draft spec
 }
 
 export interface ScoreboardRow {
@@ -203,15 +207,16 @@ export interface ScoreboardProblem {
 	num_pending: number;
 	solved?: boolean;
 	score?: number;
-	time?: number | RelTime; // 2023-06 | draft
+	time?: number | RelTime; // 2023-06 | draft spec
 }
 
 export interface Judgement {
 	id: Id;
 	submission_id: Id;
 	judgement_type_id: Id;
+	simplified_judgement_type_id?: Id; // draft spec
 	score?: number;
-	current?: boolean;
+	current?: boolean; // draft spec
 	start_time: Time;
 	start_contest_time: RelTime;
 	end_time: Time;
@@ -243,8 +248,9 @@ export interface Account {
 export interface Clarification {
 	id: Id;
 	from_team_id?: Id;
-	to_team_ids?: Id[];
-	to_group_ids?: Id[];
+	to_team_id?: Id[]; // 2023-06 spec
+	to_team_ids?: Id[]; // draft spec
+	to_group_ids?: Id[]; // draft spec
 	reply_to_id?: Id;
 	problem_id?: Id;
 	text: string;
@@ -275,4 +281,11 @@ export interface StartStatus {
 	id: Id;
 	label: string;
 	status: 0 | 1 | 2;
+}
+
+export interface Notification {
+	type: string;
+	id?: Id;
+	data?: [] | {};
+	token?: string;
 }
