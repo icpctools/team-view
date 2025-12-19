@@ -39,6 +39,7 @@
 		"vitest": "^2.1.9"
 	},
 	"dependencies": {
+		"contest-api": "workspace:*",
 		"got": "^14.4.9",
 		"i18n-iso-countries": "^7.14.0",
 		"mpegts.js": "1.8.0",

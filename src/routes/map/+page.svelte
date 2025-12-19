@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import type { Team } from '$lib/contest-types.js';
+	import type { Team } from 'contest-api';
 	import FloorMap from '$lib/ui/FloorMap.svelte';
 
 	let { data } = $props();

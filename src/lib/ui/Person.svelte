@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Person } from '$lib/contest-types';
+	import type { Person } from 'contest-api';
 	import Image from './Image.svelte';
 
 	interface Props {

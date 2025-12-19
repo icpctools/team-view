@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { FileReference } from '$lib/contest-types';
+	import type { FileReference } from 'contest-api';
 
 	import { onMount, onDestroy } from 'svelte';
 	import videojs from 'video.js';

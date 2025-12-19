@@ -1,5 +1,5 @@
-import type { ContestAPI } from './contest-api';
-import { Contests } from './contests';
+import type { ContestAPI } from 'contest-api';
+import { Contests } from 'contest-api';
 import { CONTEST } from './hardcoded.svelte';
 
 let contest: ContestAPI | undefined;
@@ -35,14 +35,21 @@ export async function loadContest() {
 		if (contest)
     		return contest;
 
-		const contestsImpl = new Contests(CONTEST.url);
-		await contestsImpl.loadContests();
+		if (!CONTEST.url) {
+			throw new Error('CONTEST.url is not defined');
+		}
+		
+		const contests = new Contests(CONTEST.url, {
+			user: CONTEST.user,
+			password: CONTEST.password
+		});
+		await contests.loadContests();
 
-		if (!contestsImpl) {
+		if (!contests) {
 			console.log('error loading contests');
 		}
 
-		contest = contestsImpl.getContest();
+		contest = contests.getContest(CONTEST?.contest_id);
 		contest?.watch();
 		return contest;
 	} finally {

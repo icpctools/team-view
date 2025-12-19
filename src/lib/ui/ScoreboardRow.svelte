@@ -1,8 +1,8 @@
 <script lang="ts">
 	import Logo from './Logo.svelte';
 	import { parseHexColor, rgbToHex, FAILED, SOLVED, PENDING, SCORING_MID } from '$lib/color-util.js';
-	import { timeToMin } from '$lib/contest-time-util.js';
-	import type { FileReference, Problem, ScoreboardProblem, ScoreboardRow, Team } from '$lib/contest-types.js';
+	import { timeToMin } from 'contest-api';
+	import type { FileReference, Problem, ScoreboardProblem, ScoreboardRow, Team } from 'contest-api';
 	import { getColumns } from './scoreboard-util';
 
 	interface Props {

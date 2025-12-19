@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { parseHexColor, darker, rgbToHex } from '$lib/color-util.js';
-	import type { Problem } from '$lib/contest-types';
+	import type { Problem } from 'contest-api';
 
 	interface Props {
 		problem?: Problem;

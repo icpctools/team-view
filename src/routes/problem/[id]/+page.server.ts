@@ -1,8 +1,7 @@
 import { error } from '@sveltejs/kit';
 import { loadContest } from '$lib/state.svelte.js';
-import { timeToMin } from '$lib/contest-time-util';
-import type { Judgement, JudgementType } from '$lib/contest-types';
-import { ContestUtil } from '$lib/contest-util';
+import { timeToMin, ContestUtil } from 'contest-api';
+import type { Judgement, JudgementType } from 'contest-api';
 
 export const load = async ({ params, depends }) => {
 	depends('data:problem');

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { MapInfo, Team } from '$lib/contest-types';
+	import type { MapInfo, Team } from 'contest-api';
 
 	interface Props {
 		mapInfo?: MapInfo;
