@@ -4,19 +4,20 @@
 import type { HttpsOptions, OptionsOfTextResponseBody } from 'got';
 import got, { HTTPError, RequestError } from 'got';
 import type { Contest } from './contest-types';
-import { ContestAPI } from './contest-api';
-import { CONTEST } from './hardcoded.svelte';
+import { ContestAPI, type Credentials } from './contest-api';
 
 export class Contests {
 	contests: Contest[] | undefined;
 	contestObjs: Contest[] | undefined;
 	baseURL: string;
+	credentials?: Credentials;
 
-	constructor(baseURL: string) {
+	constructor(baseURL: string, credentials?: Credentials) {
 		if (!baseURL.endsWith('/')) {
 			baseURL += '/';
 		}
 		this.baseURL = baseURL;
+		this.credentials = credentials;
 		console.log('Contest API URL: ' + this.baseURL);
 	}
 
@@ -43,9 +44,13 @@ export class Contests {
 		const httpsOptions: HttpsOptions = {
 			rejectUnauthorized: false
 		};
+		const user = this.credentials?.user;
+		const password = this.credentials?.password;
 		const options: OptionsOfTextResponseBody = {
 			https: httpsOptions,
 			retry: { limit: 0 },
+			username: user,
+			password: password,
 			// specify short timeout
 			timeout: {
 				lookup: 2000,
@@ -72,17 +77,17 @@ export class Contests {
 		return this.contests;
 	}
 
-	getContest(): ContestAPI | undefined {
+	getContest(contestId?: string): ContestAPI | undefined {
 		if (!this.contests || this.contests.length === 0) {
 			return undefined;
 		}
 		let contestURL = this.baseURL + 'contests/';
-		if (CONTEST.contest_id && CONTEST.contest_id.length > 0) {
-			contestURL += CONTEST.contest_id;
+		if (contestId && contestId.length > 0) {
+			contestURL += contestId;
 		} else {
 			contestURL += this.contests[0].id;
 		}
-		return new ContestAPI(contestURL);
+		return new ContestAPI(contestURL, this.credentials);
 	}
 
 	getContestObjs(): Contest[] | undefined {
@@ -102,3 +107,4 @@ export class Contests {
 		this.contests = [];
 	}
 }
+

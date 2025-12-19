@@ -61,3 +61,4 @@ test('load groups', async () => {
 	expect(groups[2].id).toBe('3');
 	expect(groups[2].name).toBe('Rest');
 });
+

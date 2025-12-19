@@ -171,3 +171,4 @@ export class ContestUtil {
 		return problems.sort((a, b) => (a.ordinal > b.ordinal ? 1 : b.ordinal > a.ordinal ? -1 : 0));
 	}
 }
+

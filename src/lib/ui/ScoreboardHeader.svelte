@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Problem as ProblemObj } from '$lib/contest-types.js';
+	import type { Problem as ProblemObj } from 'contest-api';
 	import Problem from './Problem.svelte';
 	import { getColumns } from './scoreboard-util';
 	import { goto } from '$app/navigation';

@@ -1,8 +1,8 @@
 import { error } from '@sveltejs/kit';
-import { ContestUtil } from '$lib/contest-util';
+import { ContestUtil } from 'contest-api';
 import { loadContest } from '$lib/state.svelte.js';
-import { timeToMin } from '$lib/contest-time-util.js';
-import type { Judgement, JudgementType } from '$lib/contest-types.js';
+import { timeToMin } from 'contest-api';
+	import type { Judgement, JudgementType } from 'contest-api';
 import * as countries from 'i18n-iso-countries';
 import en from 'i18n-iso-countries/langs/en.json';
 

@@ -26,7 +26,11 @@ import type {
 	Submission,
 	Team
 } from './contest-types';
-import { CONTEST } from './hardcoded.svelte';
+
+export interface Credentials {
+	user?: string;
+	password?: string;
+}
 
 export class ContestAPI {
 	contest?: Contest;
@@ -55,16 +59,18 @@ export class ContestAPI {
 	contestURL: string;
 	baseURL: string;
 	serverURL: string;
+	credentials?: Credentials;
 
 	timeDelta = [];
 
 	interval: any;
 
-	constructor(contestURL: string) {
+	constructor(contestURL: string, credentials?: Credentials) {
 		if (!contestURL.endsWith('/')) {
 			contestURL += '/';
 		}
 		this.contestURL = contestURL;
+		this.credentials = credentials;
 
 		// base url, e.g. http://example.com/api/
 		const bInd = this.contestURL.indexOf('/api/contests/');
@@ -90,8 +96,8 @@ export class ContestAPI {
 		const httpsOptions: HttpsOptions = {
 			rejectUnauthorized: false
 		};
-		const user = CONTEST.user;
-		const password = CONTEST.password;
+		const user = this.credentials?.user;
+		const password = this.credentials?.password;
 		const options: OptionsOfTextResponseBody = {
 			https: httpsOptions,
 			retry: { limit: 0 },
@@ -452,3 +458,4 @@ export class ContestAPI {
 		clearInterval(this.interval);
 	}
 }
+

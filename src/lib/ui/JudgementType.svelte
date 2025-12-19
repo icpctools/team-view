@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { JudgementType } from '$lib/contest-types';
+	import type { JudgementType } from 'contest-api';
 
 	interface Props {
 		judgement_type?: JudgementType;

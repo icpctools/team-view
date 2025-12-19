@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { FileReference } from '$lib/contest-types';
-	import { ContestUtil } from '../contest-util';
+	import type { FileReference } from 'contest-api';
+	import { ContestUtil } from 'contest-api';
 
 	interface Props {
 		ref?: FileReference[];

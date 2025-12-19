@@ -1,5 +1,5 @@
 import { error } from '@sveltejs/kit';
-import { ContestUtil } from '$lib/contest-util';
+import { ContestUtil } from 'contest-api';
 import { loadContest } from '$lib/state.svelte.js';
 
 export const load = async ({ depends }) => {
