@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { MapInfo, Team } from 'contest-api';
+	import { mode } from "mode-watcher";
 
 	interface Props {
 		mapInfo?: MapInfo;
@@ -170,17 +171,19 @@
 	}
 
 	function drawTeam(ctx: CanvasRenderingContext2D, selected: boolean, area_width:number, area_depth:number, desk_width:number, desk_depth:number): void {
-		ctx.fillStyle = '#eee';
+		let isDark = mode.current === 'dark';
+		console.log(isDark);
+		ctx.fillStyle = isDark ? '#222' : '#eee';
 		ctx.fillRect(-area_width / 2, -area_depth / 2 + desk_depth / 2 + 0.21 * scale, area_width, area_depth);
 
-		ctx.strokeStyle = 'black';
+		ctx.strokeStyle = isDark ? 'white' : 'black';
 		if (selected) {
-			ctx.fillStyle = 'gray';
+			ctx.fillStyle = isDark ? '#eee' : 'gray';
 			ctx.fillRect(-desk_width / 2, -desk_depth / 2, desk_width, desk_depth);
-			ctx.fillStyle = 'white';
+			ctx.fillStyle = isDark ? 'black' : 'white';
 		} else {
 			ctx.strokeRect(-desk_width / 2, -desk_depth / 2, desk_width, desk_depth);
-			ctx.fillStyle = 'black';
+			ctx.fillStyle = isDark ? 'white' : 'black';
 		}
 	}
 

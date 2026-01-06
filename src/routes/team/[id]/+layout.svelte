@@ -17,11 +17,11 @@
 	});
 </script>
 
-<div class="w-full h-full max-w-full max-h-full overflow-hidden flex flex-col">
-	<div class="flex flex-row gap-4 bg-gray-700 text-white px-4 py-2 items-center">
+<div class="w-full h-full max-w-full max-h-full overflow-hidden flex flex-col bg-white dark:bg-gray-900">
+	<div class="flex flex-row gap-4 bg-gray-700 dark:bg-gray-800 text-white px-4 py-2 items-center">
 		{#if data.logo}
 			<div class="w-16 h-16">
-				<Logo ref={data.logo} size={16} tag="dark" />
+				<Logo ref={data.logo} size={16}/>
 			</div>
 		{/if}
 
@@ -50,7 +50,7 @@
 	</div>
 
 	{#if data.problems && data.row}
-		<div class="w-full align-center border-b-[1px] border-gray-500">
+		<div class="w-full align-center border-b-[1px] border-gray-500 dark:border-gray-600">
 			<ScoreboardRow
 				scoreboard_type={data.scoreboard_type}
 				problems={data.problems}
@@ -61,7 +61,7 @@
 		</div>
 	{/if}
 
-	<div class="gap-2 w-full grow overflow-hidden">
+	<div class="gap-2 w-full grow overflow-hidden bg-white dark:bg-gray-900">
 		{@render children()}
 	</div>
 </div>

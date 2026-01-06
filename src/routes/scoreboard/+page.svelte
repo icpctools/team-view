@@ -18,12 +18,12 @@
 	});
 </script>
 
-<div class="w-full h-full overflow-auto text-sm p-2" role="table" aria-label="scoreboard">
+<div class="w-full h-full overflow-auto text-sm p-2 bg-white dark:bg-gray-900" role="table" aria-label="scoreboard">
 	<ScoreboardHeader showLogo={data.hasLogos} scoreboard_type={data.scoreboard_type} problems={data.problems} />
 
 	<div role="rowgroup">
 		{#each data.scoreboard.rows as row, i (row.team_id)}
-			<div animate:flip>
+			<div animate:flip class="even:bg-white dark:even:bg-gray-800 odd:bg-gray-100 dark:odd:bg-gray-700">
 				<ScoreboardRow
 					showLogo={data.hasLogos}
 					scoreboard_type={data.scoreboard_type}

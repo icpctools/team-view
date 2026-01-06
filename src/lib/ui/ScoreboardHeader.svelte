@@ -15,8 +15,8 @@
 	let col = getColumns(scoreboard_type, problems?.length, showLogo, 'full');
 </script>
 
-<div role="rowgroup" class="sticky top-0 bg-white/90 font-semibold">
-	<div role="row" class="grid grid-table gap-x-0.5 min-h-7 py-2" style="grid-template-columns: {col}">
+<div role="rowgroup" class="sticky top-0 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm font-semibold">
+	<div role="row" class="grid grid-table gap-x-0.5 min-h-7 py-2 text-gray-900 dark:text-gray-100" style="grid-template-columns: {col}">
 		<div role="cell">Rank</div>
 		{#if showLogo}
 			<div role="cell"></div>

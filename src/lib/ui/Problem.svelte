@@ -30,6 +30,6 @@
 
 <!-- svelte-ignore a11y_interactive_supports_focus -->
 <!-- svelte-ignore a11y_click_events_have_key_events -->
-<div class="grid grid-row justify-self-center border-[1px] rounded-sm min-w-4 w-full max-w-12 @container" role="link" style={pStyle} {onclick}>
+<div class="grid grid-row justify-self-center border-[1px] rounded-sm min-w-4 w-full max-w-12 @container dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600" role="link" style={pStyle} {onclick}>
 	<span class="text-center @max-[20px]:invisible">{problem?.label}</span>
 </div>
