@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { FileReference } from 'contest-api';
 	import { ContestUtil } from 'contest-api';
+	import { mode } from "mode-watcher";
 
 	interface Props {
 		ref?: FileReference[];
@@ -10,15 +11,16 @@
 
 	let { ref, size, tag }: Props = $props();
 
+	let tagg: string = $derived(tag ?? (mode.current +''));
+
 	const util = new ContestUtil();
-	const bestRef = util.bestLogo(ref, size * 20, size * 20, tag);
-	let imgSrc = $state(bestRef?.href);
-	
-	function onError(event: any): void {
+	let imgSrc = $derived(util.bestLogo(ref, size * 20, size * 20, tagg)?.href);
+
+	function onError(_event: any): void {
 		imgSrc = '/images/icpc-logo.png';
 	}
 </script>
 
-{#if bestRef}
+{#if imgSrc}
 	<img src={imgSrc} alt="logo" class="w-full h-full object-scale-down rounded-md" onerror={onError} />
 {/if}

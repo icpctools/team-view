@@ -50,21 +50,22 @@
 		if (rp.num_judged > 0 && rp.num_pending === 0) {
 			return FAILED;
 		}
-		return '#333';
+		// Return a color that works in both light and dark mode
+		return 'transparent';
 	}
 </script>
 
 <div
 	role="row"
-	class="grid grid-table items-center min-h-7 even:bg-white odd:bg-gray-100 my-0.5 gap-x-0.5"
+	class="grid grid-table items-center min-h-7 my-0.5 gap-x-0.5 text-gray-900 dark:text-gray-100"
 	style="grid-template-columns: {col}">
 	<div role="cell" class="justify-self-center pr-1">{row.rank}</div>
 	{#if showLogo && mode === 'full'}
-		<div role="cell" class="w-4 justify-self-center"><Logo ref={logo} tag="light" /></div>
+		<div role="cell" class="w-4 justify-self-center"><Logo ref={logo}/></div>
 	{/if}
 	{#if mode != 'summary'}
 		<div role="cell" class="text-nowrap overflow-hidden text-ellipsis">
-			<a href="/team/{team?.id}">{team?.display_name || team?.name}</a>
+			<a href="/team/{team?.id}" class="text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{team?.display_name || team?.name}</a>
 		</div>
 	{/if}
 
@@ -87,21 +88,21 @@
 			{#if rp.num_judged > 0 || rp.num_pending > 0}
 				<div
 					role="cell"
-					class="flex flex-row justify-center items-center w-full h-full rounded-md @container"
+					class="flex flex-row justify-center items-center w-full h-full rounded-md @container text-white dark:text-black"
 					style="background-color:{scoreBg(rp, problem)}">
 					{#if scoreboard_type === 'pass-fail'}
 						<span class="@max-[30px]:hidden">{timeToMin(rp.time)}</span>
-						<span class="text-xs text-black/50 pl-0.5 @max-[60px]:hidden">{rp.num_judged + rp.num_pending}</span>
+						<span class="text-xs text-white/70 pl-0.5 @max-[60px]:hidden">{rp.num_judged + rp.num_pending}</span>
 					{:else if scoreboard_type === 'score'}
 						<span class="@max-[30px]:hidden">{rp.score}</span>
-						<span class="text-xs text-black/50 pl-0.5 @max-[60px]:hidden">{rp.num_judged + rp.num_pending}</span>
+						<span class="text-xs text-white/70 pl-0.5 @max-[60px]:hidden">{rp.num_judged + rp.num_pending}</span>
 					{/if}
 				</div>
 			{:else}
 				<div role="cell"></div>
 			{/if}
 		{:else}
-			<div role="cell" class="text-center text-sm text-gray-300">
+			<div role="cell" class="text-center text-sm text-gray-300 dark:text-gray-600">
 				{#if mode === 'summary'}{problem.label}{/if}
 			</div>
 		{/if}

@@ -43,6 +43,7 @@
 		"contest-api": "workspace:*",
 		"got": "^14.4.9",
 		"i18n-iso-countries": "^7.14.0",
+		"mode-watcher": "^1.1.0",
 		"mpegts.js": "1.8.0",
 		"video.js": "^8.23.4",
 		"videojs-mpegtsjs": "^1.0.0"
