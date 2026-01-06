@@ -5,8 +5,9 @@ RUN npm install -g pnpm && apk add --no-cache tini git
 # Set working directory
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
+# Copy package files and workspace configuration
+COPY package*.json pnpm-workspace.yaml ./
+COPY packages ./packages
 
 # Install dependencies and tini
 RUN pnpm install
