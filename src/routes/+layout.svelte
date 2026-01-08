@@ -5,6 +5,7 @@
 	import { onMount } from 'svelte';
 	import '../app.css';
 	import '../tailwind.css';
+	import '@fortawesome/fontawesome-free/css/all.min.css';
 	import { invalidate } from '$app/navigation';
 
 	let { data, children } = $props();
@@ -33,10 +34,10 @@
 		<div class="w-48"><Clock contest={data.contest} /></div>
 
 		{#if data.map}
-			<div class="text-lg"><a href="/map">Map</a></div>
+			<div class="text-lg"><a href="/map" class="flex flex-row items-center"><i class="fa-regular fa-map pr-2"></i> Map</a></div>
 		{/if}
 
-		<div class="text-lg"><a href="/scoreboard">Scoreboard</a></div>
+		<div class="text-lg"><a href="/scoreboard" class="flex flex-row items-center"><i class="fa-solid fa-square-poll-horizontal pr-2"></i> Scoreboard</a></div>
 	</div>
 
 	<div class="gap-2 w-full grow overflow-hidden">
