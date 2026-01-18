@@ -11,7 +11,7 @@
 
 	let { ref, size, tag }: Props = $props();
 
-	let tagg: string = $derived(tag ?? (mode.current +''));
+	let tagg: string = $derived(tag ?? (mode.current ?? ''));
 
 	const util = new ContestUtil();
 	let imgSrc = $derived(util.bestLogo(ref, size * 20, size * 20, tagg)?.href);

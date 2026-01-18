@@ -172,7 +172,6 @@
 
 	function drawTeam(ctx: CanvasRenderingContext2D, selected: boolean, area_width:number, area_depth:number, desk_width:number, desk_depth:number): void {
 		let isDark = mode.current === 'dark';
-		console.log(isDark);
 		ctx.fillStyle = isDark ? '#222' : '#eee';
 		ctx.fillRect(-area_width / 2, -area_depth / 2 + desk_depth / 2 + 0.21 * scale, area_width, area_depth);
 
