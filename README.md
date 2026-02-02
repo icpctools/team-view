@@ -1,4 +1,4 @@
-## Team View
+# Team View
 
 Team view is a web application for watching ICPC programming contests. It allows you to see
 the teams that are competing, track how they're doing, view the scoreboard, or watch live
@@ -27,25 +27,7 @@ To configure your backend Contest API server, set the following environment vari
 - CONTEST_USER - A user on the contest server.
 - CONTEST_PASSWORD - The user's password.
 
-## Developing
-
-Team view is built using SvelteKit (a framework for building reactive node applications) and Tailwind
-(a CSS styling library).
-
-To start developing, you need to install `pnpm`. Once you've done this, clone the repo locally and use pnpm to pull dependencies:
-
-```bash
-pnpm install
-```
-
-Set environment variables or edit /src/lib/hardcoded.svelte.ts to point to a running Contest API server.
-Then start a local development server:
-
-```bash
-pnpm dev
-```
-
-and open the URL it shows.
+Team view wil work with any server that supports the 2023-06 or 2026-01 Contest API specifications.
 
 ## Building
 
@@ -58,6 +40,16 @@ pnpm build
 You can preview the production build with `pnpm preview`.
 
 > To deploy the app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+
+## Communication
+
+Please feel free to open bugs, issues, or start discussions on GitHub.
+You can also reach us on Slack at https://icpctools.slack.com - we'd love
+to know if you've used these tools at a contest.
+
+## Contributing
+
+Want to get involved? Our contribution guide is [here](CONTRIBUTING.md).
 
 ## License
 
