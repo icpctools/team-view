@@ -23,7 +23,7 @@
 
 	<div role="rowgroup">
 		{#each data.scoreboard.rows as row, i (row.team_id)}
-			<div animate:flip class="even:bg-white dark:even:bg-gray-800 odd:bg-gray-100 dark:odd:bg-gray-700">
+			<div animate:flip class="even:bg-white dark:even:bg-gray-900 odd:bg-gray-100 dark:odd:bg-gray-800">
 				<ScoreboardRow
 					showLogo={data.hasLogos}
 					scoreboard_type={data.scoreboard_type}
