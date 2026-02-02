@@ -187,4 +187,3 @@ export function formatContestTime(time: number, floor: boolean): string {
 	sb.push(seconds);
 	return sb.join('');
 }
-

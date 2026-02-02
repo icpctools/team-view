@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { toggleMode } from "mode-watcher";
-	import { mode } from "mode-watcher";
-	
+	import { toggleMode } from 'mode-watcher';
+	import { mode } from 'mode-watcher';
+
 	let isDark = $derived('dark' === mode.current);
 
 	function handleClick() {
@@ -10,7 +10,7 @@
 </script>
 
 <button
-  type="button"
+	type="button"
 	onclick={toggleMode}
 	class="p-2 rounded-md hover:bg-hover transition-colors"
 	aria-label="Toggle dark mode"

@@ -6,7 +6,9 @@
 	"types": "./src/index.ts",
 	"typesVersions": {
 		"*": {
-			"*": ["./src/index.ts"]
+			"*": [
+				"./src/index.ts"
+			]
 		}
 	},
 	"exports": {
@@ -28,4 +30,3 @@
 		"vitest": "^2.1.9"
 	}
 }
-

@@ -7,13 +7,7 @@ export const load = async ({ params, depends }) => {
 	const cc = await loadContest();
 	if (!cc) throw error(404);
 
-	await Promise.all([
-		cc.loadContest(),
-		cc.loadTeams(),
-		cc.loadOrganizations(),
-		cc.loadProblems(),
-		cc.loadScoreboard()
-	]);
+	await Promise.all([cc.loadContest(), cc.loadTeams(), cc.loadOrganizations(), cc.loadProblems(), cc.loadScoreboard()]);
 
 	const teams = cc.getTeams();
 	const team = teams?.find((t) => t.id && t.id === params.id);
@@ -26,7 +20,7 @@ export const load = async ({ params, depends }) => {
 	const util = new ContestUtil();
 	const logo = util.findById(orgs, team.organization_id)?.logo;
 
-	let scoreboard = cc.getScoreboard();
+	const scoreboard = cc.getScoreboard();
 	const row = scoreboard?.rows?.find((r) => r.team_id === team.id);
 
 	return {

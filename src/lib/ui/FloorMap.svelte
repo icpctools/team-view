@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { MapInfo, Team } from 'contest-api';
-	import { mode } from "mode-watcher";
+	import { mode } from 'mode-watcher';
 
 	interface Props {
 		mapInfo?: MapInfo;
@@ -76,8 +76,8 @@
 		c.width = window.innerWidth;
 		c.height = window.innerHeight - 250;
 
-		canvas.style.width = `${c.width}px`
-    	canvas.style.height = `${c.height}px`
+		canvas.style.width = `${c.width}px`;
+		canvas.style.height = `${c.height}px`;
 
 		let ctx = c.getContext('2d');
 		if (ctx == null) {
@@ -146,7 +146,7 @@
 				ctx.rotate(rotation);
 
 				drawTeam(ctx, team.id === selected?.id, area_width, area_depth, desk_width, desk_depth);
-				
+
 				ctx.rotate(-rotation);
 
 				ctx.fillText(team.label, 0, 0);
@@ -162,7 +162,7 @@
 				ctx.rotate(rotation);
 
 				drawTeam(ctx, false, area_width, area_depth, desk_width, desk_depth);
-				
+
 				ctx.rotate(-rotation);
 				//ctx.fillText('S', 0, 0);
 				ctx.translate(-l.x * scale, -l.y * scale);
@@ -170,7 +170,14 @@
 		}
 	}
 
-	function drawTeam(ctx: CanvasRenderingContext2D, selected: boolean, area_width:number, area_depth:number, desk_width:number, desk_depth:number): void {
+	function drawTeam(
+		ctx: CanvasRenderingContext2D,
+		selected: boolean,
+		area_width: number,
+		area_depth: number,
+		desk_width: number,
+		desk_depth: number
+	): void {
 		let isDark = mode.current === 'dark';
 		ctx.fillStyle = isDark ? '#222' : '#eee';
 		ctx.fillRect(-area_width / 2, -area_depth / 2 + desk_depth / 2 + 0.21 * scale, area_width, area_depth);
@@ -194,11 +201,6 @@
 	}
 </script>
 
-<canvas
-	bind:this={canvas}
-	id="floor"
-	onmousemove={onMouseMove}
-	onclick={onClick}
-	class="w-full h-full"></canvas>
+<canvas bind:this={canvas} id="floor" onmousemove={onMouseMove} onclick={onClick} class="w-full h-full"></canvas>
 
 <svelte:window onresize={drawFloor} />

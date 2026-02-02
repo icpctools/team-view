@@ -1,6 +1,6 @@
 packages:
-    - '*'
-    - 'packages/*'
-    - tests/*
+  - '*'
+  - 'packages/*'
+  - tests/*
 onlyBuiltDependencies:
-    - esbuild
+  - esbuild
