@@ -1,5 +1,14 @@
 /**
- * Copyright later.
+ * Contest API Types
+ *
+ * This file supports both the 2023-06 and 2026-01 Contest API specifications, with optional
+ * extensions from the Contest Data Server (CDS). Inline comments are used to indicate objects
+ * and properties that are unique to any of these.
+ *
+ * References:
+ *  - 2023-06 Contest API: https://ccs-specs.icpc.io/2023-06/
+ *  - 2026-01 Contest API: https://ccs-specs.icpc.io/2026-01/
+ *  - CDS extensions: https://github.com/icpctools/icpctools/blob/main/doc/spec-extensions.md
  */
 
 export type Id = string;
@@ -43,12 +52,12 @@ export interface Contest {
 	duration: RelTime;
 	scoreboard_freeze_duration?: RelTime;
 	scoreboard_type: 'pass-fail' | 'score';
-	penalty_time?: number | RelTime; // 2023-06 | draft spec
+	penalty_time?: number | RelTime; // 2023-06 | 2026-01 spec
 	countdown_pause_time?: RelTime;
 	banner?: FileReference[];
 	logo?: FileReference[];
-	location?: ContestLocation;
-	time_multiplier?: number;
+	location?: ContestLocation; // CDS extension
+	time_multiplier?: number; // CDS extension
 }
 
 export interface FileReference {
@@ -58,7 +67,7 @@ export interface FileReference {
 	hash?: string;
 	width?: number;
 	height?: number;
-	tags?: string[]; // draft spec
+	tags?: string[]; // 2026-01 spec
 }
 
 export interface ContestState {
@@ -70,6 +79,7 @@ export interface ContestState {
 	end_of_updates?: Time;
 }
 
+// CDS extension
 export interface MapInfo {
 	table_width: number;
 	table_depth: number;
@@ -80,6 +90,7 @@ export interface MapInfo {
 	printer?: Location;
 }
 
+// CDS extension
 export interface Aisle {
 	x1: number;
 	y1: number;
@@ -87,11 +98,13 @@ export interface Aisle {
 	y2: number;
 }
 
+// CDS extension
 export interface Location {
 	x: number;
 	y: number;
 }
 
+// CDS extension
 export interface TeamLocation extends Location {
 	rotation: number;
 }
@@ -108,7 +121,7 @@ export interface Team {
 	desktop?: FileReference[];
 	webcam?: FileReference[];
 	audio?: FileReference[];
-	location?: TeamLocation;
+	location?: TeamLocation; // CDS extension
 }
 
 export interface Problem {
@@ -121,18 +134,18 @@ export interface Problem {
 	color?: string;
 	max_score?: number;
 	statement: FileReference[];
-	location?: Location;
-	memory_limit?: number; // draft spec
-	output_limit?: number; // draft spec
-	code_limit?: number; // draft spec
-	attachments?: FileReference[]; // draft spec
+	location?: Location; // CDS extension
+	memory_limit?: number; // 2026-01 spec
+	output_limit?: number; // 2026-01 spec
+	code_limit?: number; // 2026-01 spec
+	attachments?: FileReference[]; // 2026-01 spec
 }
 
 export interface Group {
 	id: Id;
 	name: string;
 	type?: string;
-	logo?: FileReference[];
+	logo?: FileReference[]; // CDS extension
 }
 
 export interface Organization {
@@ -140,17 +153,21 @@ export interface Organization {
 	name: string;
 	formal_name?: string;
 	country?: string;
+	country_subdivision?: string; // 2026-01 spec
+	country_subdivision_flag?: FileReference[]; // 2026-01 spec
 	twitter_hashtag?: string;
 	url?: string;
 	logo?: FileReference[];
+
+	audio?: FileReference[]; // CDS extension
 }
 
 export interface Submission {
 	id: Id;
 	language_id: Id;
 	problem_id: Id;
-	team_id?: Id; // optional in draft spec
-	account_id?: Id; // draft spec
+	team_id?: Id; // optional in 2026-01 spec
+	account_id?: Id; // 2026-01 spec
 	time: Time;
 	contest_time: RelTime;
 	files: FileReference[];
@@ -159,6 +176,7 @@ export interface Submission {
 
 export interface JudgementType {
 	id: Id;
+	simplified_judgement_type_id?: Id; // 2026-01 spec
 	name: string;
 	penalty: boolean;
 	solved: boolean;
@@ -190,8 +208,8 @@ export interface Scoreboard {
 export interface ScoreboardScore {
 	num_solved?: number;
 	score?: number;
-	time?: number | RelTime; // 2023-06 | draft spec
-	total_time?: number | RelTime; // 2023-06 | draft spec
+	time?: number | RelTime; // 2023-06 | 2026-01 spec
+	total_time?: number | RelTime; // 2023-06 | 2026-01 spec
 }
 
 export interface ScoreboardRow {
@@ -207,16 +225,16 @@ export interface ScoreboardProblem {
 	num_pending: number;
 	solved?: boolean;
 	score?: number;
-	time?: number | RelTime; // 2023-06 | draft spec
+	time?: number | RelTime; // 2023-06 | 2026-01 spec
 }
 
 export interface Judgement {
 	id: Id;
 	submission_id: Id;
 	judgement_type_id: Id;
-	simplified_judgement_type_id?: Id; // draft spec
+	simplified_judgement_type_id?: Id; // 2026-01 spec
 	score?: number;
-	current?: boolean; // draft spec
+	current?: boolean; // 2026-01 spec
 	start_time: Time;
 	start_contest_time: RelTime;
 	end_time: Time;
@@ -249,8 +267,8 @@ export interface Clarification {
 	id: Id;
 	from_team_id?: Id;
 	to_team_id?: Id[]; // 2023-06 spec
-	to_team_ids?: Id[]; // draft spec
-	to_group_ids?: Id[]; // draft spec
+	to_team_ids?: Id[]; // 2026-01 spec
+	to_group_ids?: Id[]; // 2026-01 spec
 	reply_to_id?: Id;
 	problem_id?: Id;
 	text: string;
@@ -264,8 +282,8 @@ export interface Commentary {
 	contest_time: RelTime;
 	message: string;
 	tags: string[];
-	source_id? : Id;
-	team_ids? : Id[];
+	source_id?: Id;
+	team_ids?: Id[];
 	problem_ids?: Id[];
 	submission_ids?: Id[];
 }
@@ -274,9 +292,10 @@ export interface Award {
 	id: Id;
 	citation: string;
 	team_ids?: Id[];
-	display_mode?: string;
+	display_mode?: string; // CDS extension
 }
 
+// CDS extension
 export interface StartStatus {
 	id: Id;
 	label: string;
@@ -286,7 +305,6 @@ export interface StartStatus {
 export interface Notification {
 	type: string;
 	id?: Id;
-	data?: [] | {};
+	data?: [] | object;
 	token?: string;
 }
-
