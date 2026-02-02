@@ -64,8 +64,8 @@
 		<div role="cell" class="w-4 justify-self-center"><Logo ref={logo}/></div>
 	{/if}
 	{#if mode != 'summary'}
-		<div role="cell" class="text-nowrap overflow-hidden text-ellipsis">
-			<a href="/team/{team?.id}" class="text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{team?.display_name || team?.name}</a>
+		<div role="cell" class="text-nowrap overflow-hidden text-ellipsis hover:bg-hover rounded">
+			<a href="/team/{team?.id}" class="text-gray-900 dark:text-gray-100 transition-colors">{team?.display_name || team?.name}</a>
 		</div>
 	{/if}
 
@@ -92,7 +92,7 @@
 					style="background-color:{scoreBg(rp, problem)}">
 					{#if scoreboard_type === 'pass-fail'}
 						<span class="@max-[30px]:hidden">{timeToMin(rp.time)}</span>
-						<span class="text-xs text-white/70 pl-0.5 @max-[60px]:hidden">{rp.num_judged + rp.num_pending}</span>
+						<span class="text-xs text-white/70 dark:text-gray-600 pl-0.5 @max-[60px]:hidden">{rp.num_judged + rp.num_pending}</span>
 					{:else if scoreboard_type === 'score'}
 						<span class="@max-[30px]:hidden">{rp.score}</span>
 						<span class="text-xs text-white/70 pl-0.5 @max-[60px]:hidden">{rp.num_judged + rp.num_pending}</span>

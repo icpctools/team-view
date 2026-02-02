@@ -12,7 +12,7 @@
 <button
   type="button"
 	onclick={toggleMode}
-	class="p-2 rounded-md hover:bg-gray-700 dark:hover:bg-gray-600 transition-colors"
+	class="p-2 rounded-md hover:bg-hover transition-colors"
 	aria-label="Toggle dark mode"
 	title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}>
 	{#if isDark}

@@ -33,13 +33,17 @@
 			</div>
 		{/if}
 
+		<div class="text-2xl w-full">{data.name}</div>
 
 		<div class="w-48"><Clock contest={data.contest} /></div>
 
+		<div class="text-lg hover:bg-hover p-2 rounded-md"><a href="/" class="flex flex-row items-center"><i class="fa-regular fa-people-group pr-2"></i>Teams</a></div>
+
 		{#if data.map}
+			<div class="text-lg hover:bg-hover p-2 rounded-md"><a href="/map" class="flex flex-row items-center"><i class="fa-regular fa-map pr-2"></i>Map</a></div>
 		{/if}
 
-		<div class="text-lg"><a href="/scoreboard" class="flex flex-row items-center"><i class="fa-solid fa-square-poll-horizontal pr-2"></i> Scoreboard</a></div>
+		<div class="text-lg hover:bg-hover p-2 rounded-md"><a href="/scoreboard" class="flex flex-row items-center"><i class="fa-regular fa-square-poll-horizontal pr-2"></i>Scoreboard</a></div>
 
 		<DarkModeToggle />
 	</div>
