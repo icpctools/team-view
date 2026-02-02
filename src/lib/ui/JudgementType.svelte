@@ -17,7 +17,5 @@
 		{judgement_type.id}
 	</div>
 {:else}
-	<div class="justify-self-center text-center text-sm w-10">
-		...
-	</div>
+	<div class="justify-self-center text-center text-sm w-10">...</div>
 {/if}

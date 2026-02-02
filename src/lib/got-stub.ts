@@ -3,4 +3,3 @@
 export default {};
 export const HTTPError = class extends Error {};
 export const RequestError = class extends Error {};
-

@@ -15,10 +15,10 @@ class TestContestAPI extends ContestAPI {
 		server = setupServer(
 			http.get(`https://apiServer.org/api/contests/${id}/*`, (x) => {
 				const ind = x.request.url.lastIndexOf('/');
-				const type = x.request.url.substring(ind+1);
+				const type = x.request.url.substring(ind + 1);
 				const file = this.getFile(type);
 				return HttpResponse.json(JSON.parse(file));
-			}),
+			})
 		);
 		server.listen({ onUnhandledRequest: 'error' });
 	}
@@ -34,11 +34,11 @@ class TestContestAPI extends ContestAPI {
 let server: SetupServerApi | undefined = undefined;
 
 beforeEach(() => {
-  vi.clearAllMocks();
+	vi.clearAllMocks();
 });
 
 afterEach(() => {
-  server?.close();
+	server?.close();
 });
 
 test('load contest', async () => {
@@ -46,8 +46,8 @@ test('load contest', async () => {
 
 	await contestAPI.loadContest();
 	const contest = contestAPI.getContest();
-	expect(contest?.id).toBe("test");
-	expect(contest?.name).toBe("Test Contest");
+	expect(contest?.id).toBe('test');
+	expect(contest?.name).toBe('Test Contest');
 });
 
 test('load groups', async () => {
@@ -61,4 +61,3 @@ test('load groups', async () => {
 	expect(groups[2].id).toBe('3');
 	expect(groups[2].name).toBe('Rest');
 });
-

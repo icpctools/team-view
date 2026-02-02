@@ -8,7 +8,7 @@
 	import '../tailwind.css';
 	import '@fortawesome/fontawesome-free/css/all.min.css';
 	import { invalidate } from '$app/navigation';
-	import { ModeWatcher } from "mode-watcher";
+	import { ModeWatcher } from 'mode-watcher';
 
 	let { data, children } = $props();
 
@@ -29,7 +29,7 @@
 	<div class="flex flex-row gap-8 bg-gray-800 dark:bg-gray-950 text-white p-4 items-center">
 		{#if data.logo && data.logo.length > 0}
 			<div class="w-12">
-				<Logo ref={data.logo}/>
+				<Logo ref={data.logo} />
 			</div>
 		{/if}
 
@@ -37,13 +37,20 @@
 
 		<div class="w-48"><Clock contest={data.contest} /></div>
 
-		<div class="text-lg hover:bg-hover p-2 rounded-md"><a href="/" class="flex flex-row items-center"><i class="fa-regular fa-people-group pr-2"></i>Teams</a></div>
+		<div class="text-lg hover:bg-hover p-2 rounded-md">
+			<a href="/" class="flex flex-row items-center"><i class="fa-regular fa-people-group pr-2"></i>Teams</a>
+		</div>
 
 		{#if data.map}
-			<div class="text-lg hover:bg-hover p-2 rounded-md"><a href="/map" class="flex flex-row items-center"><i class="fa-regular fa-map pr-2"></i>Map</a></div>
+			<div class="text-lg hover:bg-hover p-2 rounded-md">
+				<a href="/map" class="flex flex-row items-center"><i class="fa-regular fa-map pr-2"></i>Map</a>
+			</div>
 		{/if}
 
-		<div class="text-lg hover:bg-hover p-2 rounded-md"><a href="/scoreboard" class="flex flex-row items-center"><i class="fa-regular fa-square-poll-horizontal pr-2"></i>Scoreboard</a></div>
+		<div class="text-lg hover:bg-hover p-2 rounded-md">
+			<a href="/scoreboard" class="flex flex-row items-center"
+				><i class="fa-regular fa-square-poll-horizontal pr-2"></i>Scoreboard</a>
+		</div>
 
 		<DarkModeToggle />
 	</div>
@@ -54,7 +61,7 @@
 
 	{#if data.banner && data.banner.length > 0}
 		<div class="self-center p-2">
-			<Banner ref={data.banner}/>
+			<Banner ref={data.banner} />
 		</div>
 	{/if}
 </div>

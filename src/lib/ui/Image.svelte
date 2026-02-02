@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { FileReference } from 'contest-api';
 	import { ContestUtil } from 'contest-api';
-	import { mode } from "mode-watcher";
+	import { mode } from 'mode-watcher';
 
 	interface Props {
 		ref?: FileReference[];
@@ -11,7 +11,7 @@
 
 	let { ref, size, tag }: Props = $props();
 
-	let tagg: string = $derived(tag ?? (mode.current ?? ''));
+	let tagg: string = $derived(tag ?? mode.current ?? '');
 
 	const util = new ContestUtil();
 	let imgSrc = $derived(util.bestLogo(ref, size * 20, size * 20, tagg)?.href);
