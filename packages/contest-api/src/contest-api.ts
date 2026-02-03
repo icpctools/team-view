@@ -131,8 +131,7 @@ export class ContestAPI {
 			console.log(`Fetched ${url} in ${(endTime - startTime).toFixed(1)}ms`);
 			this.processFileReferences(obj);
 			return obj;
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		} catch (error: any) {
+		} catch (error: unknown) {
 			if (error instanceof HTTPError) {
 				throw new Error(`HTTP error ${error.response.statusCode} loading ${url}: ${error.response.statusMessage}`);
 			} else if (error instanceof RequestError) {
@@ -398,14 +397,14 @@ export class ContestAPI {
 		return this.baseURL + ref.href;
 	}
 
-	private isFileReference(obj: any): obj is FileReference {
-		if (!(typeof obj === 'object' && 'href' in obj && 'mime' in obj)) {
+	private isFileReference(obj: unknown): obj is FileReference {
+		if (obj == null || !(typeof obj === 'object' && 'href' in obj && 'mime' in obj)) {
 			return false;
 		}
 		return true;
 	}
 
-	private processFileReferences(obj: any) {
+	private processFileReferences(obj: unknown) {
 		// We get either one object or an array of objects, handle both cases
 		let objs: any[];
 		if (Array.isArray(obj)) {
@@ -437,15 +436,19 @@ export class ContestAPI {
 		this.interval = setInterval(async () => {
 			console.log(`Invalidating ${this.id}`);
 			try {
-				if (this.contest)
+				if (this.contest) {
 					await this.loadContest(true);
-				if (this.submissions)
+				}
+				if (this.submissions) {
 					await this.loadSubmissions(true);
-				if (this.judgements)
+				}
+				if (this.judgements) {
 					await this.loadJudgements(true);
-				if (this.scoreboard)
+				}
+				if (this.scoreboard) {
 					await this.loadScoreboard(true);
-			} catch (error: any) {
+				}
+			} catch (error: unknown) {
 				console.error(`Error reloading contest data: ${error}`);
 			}
 		}, 5000);
@@ -458,4 +461,3 @@ export class ContestAPI {
 		clearInterval(this.interval);
 	}
 }
-

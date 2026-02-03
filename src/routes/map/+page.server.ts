@@ -10,8 +10,8 @@ export const load = async () => {
 	// map endpoint may not exist, so load it separately
 	try {
 		await cc.loadMapInfo();
-	} catch (e: any) {
-		// ignore
+	} catch (error) {
+		console.log(`Could not load map: ${error}`);
 	}
 
 	return {

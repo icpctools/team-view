@@ -3,8 +3,6 @@ import { ContestUtil } from 'contest-api';
 import { loadContest } from '$lib/state.svelte.js';
 import { timeToMin } from 'contest-api';
 import type { Judgement, JudgementType } from 'contest-api';
-import * as countries from 'i18n-iso-countries';
-import en from 'i18n-iso-countries/langs/en.json';
 
 export const load = async ({ params, depends }) => {
 	depends('data:team');

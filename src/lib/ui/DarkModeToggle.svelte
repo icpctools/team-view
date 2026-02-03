@@ -3,10 +3,6 @@
 	import { mode } from 'mode-watcher';
 
 	let isDark = $derived('dark' === mode.current);
-
-	function handleClick() {
-		toggleMode();
-	}
 </script>
 
 <button

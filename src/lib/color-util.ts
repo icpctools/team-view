@@ -41,7 +41,7 @@ export function parseHexColor(hex: string): [number, number, number] | [number, 
 }
 
 export function darker(color: number[]): number[] {
-	let darker: number[] = [];
+	const darker: number[] = [];
 	darker.push(Math.max(color[0] - 64, 0));
 	darker.push(Math.max(color[1] - 64, 0));
 	darker.push(Math.max(color[2] - 64, 0));

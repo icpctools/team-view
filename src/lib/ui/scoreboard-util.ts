@@ -4,7 +4,7 @@ export function getColumns(
 	showLogo: boolean,
 	mode: 'full' | 'summary'
 ): string {
-	let cols: string[] = ['40px'];
+	const cols: string[] = ['40px'];
 	if (showLogo && mode === 'full') {
 		cols.push('40px');
 	}
@@ -19,7 +19,7 @@ export function getColumns(
 		cols.push('80px');
 	}
 
-	for (var i = 0; i < num_problems; i++) {
+	for (let i = 0; i < num_problems; i++) {
 		cols.push('1fr');
 	}
 

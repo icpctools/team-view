@@ -61,11 +61,12 @@
 	style="grid-template-columns: {col}">
 	<div role="cell" class="justify-self-center pr-1">{row.rank}</div>
 	{#if showLogo && mode === 'full'}
-		<div role="cell" class="w-4 justify-self-center"><Logo ref={logo}/></div>
+		<div role="cell" class="w-4 justify-self-center"><Logo ref={logo} /></div>
 	{/if}
 	{#if mode != 'summary'}
 		<div role="cell" class="text-nowrap overflow-hidden text-ellipsis hover:bg-hover rounded">
-			<a href="/team/{team?.id}" class="text-gray-900 dark:text-gray-100 transition-colors">{team?.display_name || team?.name}</a>
+			<a href="/team/{team?.id}" class="text-gray-900 dark:text-gray-100 transition-colors"
+				>{team?.display_name || team?.name}</a>
 		</div>
 	{/if}
 

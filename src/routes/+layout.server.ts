@@ -11,8 +11,8 @@ export const load = async ({ depends }) => {
 
 	try {
 		await Promise.all([cc.loadMapInfo()]);
-	} catch (err) {
-		// TODO ignore failure to load map data for now. avoid (re)loading in the future
+	} catch (error) {
+		console.log(`Could not load map: ${error}`);
 	}
 
 	const contest = cc.getContest();
