@@ -28,8 +28,7 @@ export class Contests {
 			this.contests = JSON.parse(response.body) as Contest[];
 			const endTime = performance.now();
 			console.log(`Fetched ${this.baseURL} in ${(endTime - startTime).toFixed(1)}ms`);
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		} catch (error: any) {
+		} catch (error: unknown) {
 			if (error instanceof HTTPError) {
 				throw new Error(`HTTP error ${error.response.statusCode} loading contests: ${error.response.statusMessage}`);
 			} else if (error instanceof RequestError) {
@@ -107,4 +106,3 @@ export class Contests {
 		this.contests = [];
 	}
 }
-

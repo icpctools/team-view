@@ -16,7 +16,7 @@
 	const util = new ContestUtil();
 	let imgSrc = $derived(util.bestLogo(ref, size * 20, size * 20, tagg)?.href);
 
-	function onError(_event: any): void {
+	function onError(): void {
 		imgSrc = '/images/icpc-logo.png';
 	}
 </script>

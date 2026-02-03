@@ -11,7 +11,7 @@ export class ContestUtil {
 			return undefined;
 		}
 
-		for (var i = 0; i < arr.length; i++) {
+		for (let i = 0; i < arr.length; i++) {
 			if (id === arr[i].id) {
 				return arr[i];
 			}
@@ -27,9 +27,9 @@ export class ContestUtil {
 			return undefined;
 		}
 
-		var list = [];
-		for (var j = 0; j < ids.length; j++) {
-			for (var i = 0; i < arr.length; i++) {
+		const list = [];
+		for (let j = 0; j < ids.length; j++) {
+			for (let i = 0; i < arr.length; i++) {
 				if (ids[j] === arr[i].id) {
 					list.push(arr[i]);
 				}
@@ -46,8 +46,8 @@ export class ContestUtil {
 			return undefined;
 		}
 
-		var list = [];
-		for (var i = 0; i < arr.length; i++) {
+		const list = [];
+		for (let i = 0; i < arr.length; i++) {
 			if (arr[i].submission_id === id) {
 				list.push(arr[i]);
 			}
@@ -56,10 +56,8 @@ export class ContestUtil {
 	}
 
 	getOppositeTag(tag: string): string | undefined {
-		if ('light' === tag)
-			return 'dark';
-		else if ('dark' === tag)
-			return 'light';
+		if ('light' === tag) return 'dark';
+		else if ('dark' === tag) return 'light';
 		return undefined;
 	}
 
@@ -148,18 +146,15 @@ export class ContestUtil {
 			return false;
 		}
 
-		for (var i = 0; i < submissions.length; i++) {
+		for (let i = 0; i < submissions.length; i++) {
 			const time: number | string | undefined = parseRelTime(submissions[i].contest_time);
 			if (time && time >= 0 && submissions[i].problem_id == problem_id) {
 				// TODO: should we check if this is a public team too?
 				const judgements = this.findManyBySubmissionId(contest.getJudgements(), submissions[i].id);
 				if (judgements && judgements.length > 0) {
-					const jt = this.findById(
-						contest.getJudgementTypes(),
-						judgements[judgements.length - 1].judgement_type_id
-					);
+					const jt = this.findById(contest.getJudgementTypes(), judgements[judgements.length - 1].judgement_type_id);
 					if (jt && jt.solved) {
-						return (submission == submissions[i]);
+						return submission == submissions[i];
 					}
 				}
 			}
@@ -167,8 +162,7 @@ export class ContestUtil {
 		return false;
 	}
 
-	sortProblems(problems: Problem[]): any {
+	sortProblems(problems: Problem[]): unknown {
 		return problems.sort((a, b) => (a.ordinal > b.ordinal ? 1 : b.ordinal > a.ordinal ? -1 : 0));
 	}
 }
-

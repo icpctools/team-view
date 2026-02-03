@@ -10,10 +10,10 @@ export const load = async ({ depends }) => {
 
 	await Promise.all([cc.loadContest(), cc.loadTeams(), cc.loadOrganizations(), cc.loadProblems(), cc.loadScoreboard()]);
 
-	let contest = cc.getContest();
+	const contest = cc.getContest();
 	if (!contest) throw error(404);
 
-	let scoreboard = cc.getScoreboard();
+	const scoreboard = cc.getScoreboard();
 	if (!scoreboard) throw error(404);
 
 	const teams = cc.getTeams();
@@ -22,11 +22,11 @@ export const load = async ({ depends }) => {
 
 	// sort teams by scoreboard row
 	const util = new ContestUtil();
-	let sortedTeams = scoreboard.rows?.map((row) => util.findById(teams, row.team_id));
+	const sortedTeams = scoreboard.rows?.map((row) => util.findById(teams, row.team_id));
 
 	const orgs = cc.getOrganizations();
 
-	let logos = sortedTeams?.map((team) => util.findById(orgs, team?.organization_id)?.logo);
+	const logos = sortedTeams?.map((team) => util.findById(orgs, team?.organization_id)?.logo);
 	const hasLogos = logos.filter((x) => x).length > 0;
 
 	return {

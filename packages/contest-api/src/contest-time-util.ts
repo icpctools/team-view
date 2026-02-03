@@ -3,7 +3,7 @@
  */
 import type { Contest, RelTime } from './contest-types';
 
-function isNumber(value: any): value is number {
+function isNumber(value: unknown): value is number {
 	return typeof value === 'number';
 }
 
@@ -52,14 +52,14 @@ function formatTimeInMin(timeMs: number | undefined) {
 		return '0';
 	}
 
-	var sb = [];
+	const sb = [];
 	if (timeMs < 0) {
 		sb.push('-');
 		timeMs = -timeMs;
 	}
-	let timeS = Math.floor(timeMs / 1000);
+	const timeS = Math.floor(timeMs / 1000);
 
-	let mins = Math.floor(timeS / 60.0);
+	const mins = Math.floor(timeS / 60.0);
 	if (mins > 0) {
 		sb.push(mins);
 	}
@@ -86,19 +86,19 @@ export function getContestState(
 		return 'unscheduled';
 	}
 
-	let d = new Date(contest.start_time);
+	const d = new Date(contest.start_time);
 
-	let time = (Date.now() - d.getTime()) * m; // - contest.getTimeDelta();
+	const time = (Date.now() - d.getTime()) * m; // - contest.getTimeDelta();
 	if (time < 0) {
 		return 'countdown';
 	}
-	let duration = parseRelTime(contest.duration);
+	const duration = parseRelTime(contest.duration);
 	if (duration) {
 		if (time > duration) {
 			return 'finished';
 		}
 
-		let freeze = parseRelTime(contest.scoreboard_freeze_duration);
+		const freeze = parseRelTime(contest.scoreboard_freeze_duration);
 		if (freeze && time > duration - freeze) {
 			return 'frozen';
 		}
@@ -121,7 +121,7 @@ export function getContestTime(contest: Contest | undefined, short: boolean): st
 		if (!contest.countdown_pause_time) {
 			return 'Contest not scheduled';
 		} else {
-			let pause = parseRelTime(contest.countdown_pause_time);
+			const pause = parseRelTime(contest.countdown_pause_time);
 			if (!pause) {
 				return 'Paused';
 			}
@@ -134,9 +134,9 @@ export function getContestTime(contest: Contest | undefined, short: boolean): st
 		}
 	}
 
-	let d = new Date(contest.start_time);
+	const d = new Date(contest.start_time);
 
-	let time = (Date.now() - d.getTime()) * m; // - contest.getTimeDelta();
+	const time = (Date.now() - d.getTime()) * m; // - contest.getTimeDelta();
 	if (time < 0) {
 		if (short) {
 			return formatContestTime(time, true);
@@ -144,7 +144,7 @@ export function getContestTime(contest: Contest | undefined, short: boolean): st
 			return 'Countdown: ' + formatContestTime(time, true);
 		}
 	}
-	let duration = parseRelTime(contest.duration);
+	const duration = parseRelTime(contest.duration);
 	if (duration && time > duration) {
 		return 'Contest is over';
 	}
@@ -153,7 +153,7 @@ export function getContestTime(contest: Contest | undefined, short: boolean): st
 }
 
 export function formatContestTime(time: number, floor: boolean): string {
-	var sb = [];
+	const sb = [];
 	if (time < 0) {
 		sb.push('-');
 	}
@@ -165,22 +165,22 @@ export function formatContestTime(time: number, floor: boolean): string {
 		ss = Math.abs(Math.ceil(time / 1000.0));
 	}
 
-	var days = Math.floor(ss / 86400.0);
+	const days = Math.floor(ss / 86400.0);
 
 	if (days > 0) {
 		sb.push(days + 'd ');
 	}
 
-	var hours = Math.floor(ss / 3600.0) % 24;
+	const hours = Math.floor(ss / 3600.0) % 24;
 	sb.push(hours + ':');
 
-	var minutes = Math.floor(ss / 60) % 60;
+	const minutes = Math.floor(ss / 60) % 60;
 	if (minutes < 10) {
 		sb.push('0');
 	}
 	sb.push(minutes + ':');
 
-	var seconds = ss % 60;
+	const seconds = ss % 60;
 	if (seconds < 10) {
 		sb.push('0');
 	}
