@@ -77,7 +77,7 @@
 				<div class="grid grid-table" style="grid-template-columns: 1fr 1fr 1fr 1fr" role="row">
 					<div role="cell" class="">{submission.time}</div>
 					<div role="cell" class="">
-						<Problem problem={submission.problem} onclick={() => goto('/problem/' + submission.problem?.id)}/>
+						<Problem problem={submission.problem} onclick={() => goto('/problem/' + submission.problem?.id)} />
 					</div>
 					<div role="cell" class="">{submission.language}</div>
 					<div role="cell" class="">
