@@ -8,7 +8,7 @@ function excludeNodeModules(): Plugin {
 	return {
 		name: 'exclude-node-modules',
 		enforce: 'pre',
-		resolveId(id, importer) {
+		resolveId(id) {
 			// Don't resolve Node.js-only packages for client builds
 			if (
 				id === 'got' ||

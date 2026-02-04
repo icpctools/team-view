@@ -155,7 +155,7 @@
 		}
 
 		if (mapInfo?.spare_teams) {
-			for (const l of mapInfo?.spare_teams) {
+			for (const l of mapInfo?.spare_teams ?? []) {
 				ctx.translate(l.x * scale, l.y * scale);
 
 				let rotation = ((90 - l.rotation) * Math.PI) / 180;

@@ -93,7 +93,8 @@
 					style="background-color:{scoreBg(rp, problem)}">
 					{#if scoreboard_type === 'pass-fail'}
 						<span class="@max-[30px]:hidden">{timeToMin(rp.time)}</span>
-						<span class="text-xs text-white/70 dark:text-gray-600 pl-0.5 @max-[60px]:hidden">{rp.num_judged + rp.num_pending}</span>
+						<span class="text-xs text-white/70 dark:text-gray-600 pl-0.5 @max-[60px]:hidden"
+							>{rp.num_judged + rp.num_pending}</span>
 					{:else if scoreboard_type === 'score'}
 						<span class="@max-[30px]:hidden">{rp.score}</span>
 						<span class="text-xs text-white/70 pl-0.5 @max-[60px]:hidden">{rp.num_judged + rp.num_pending}</span>

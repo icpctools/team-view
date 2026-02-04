@@ -8,6 +8,7 @@ If you run team view in a web browser in kiosk mode, it is a direct replacement 
 Coach View (https://tools.icpc.global).
 
 But it is also much more:
+
 - A performant web app for all contest data - runs on any client and minimal load on network and backend server.
 - Fully reactive - portions of the UI appear only when content is available, so for instance, if your contest
   doesn't have video streaming or maps those options won't appear in the UI.
@@ -21,10 +22,10 @@ https://github.com/icpctools/team-view/pkgs/container/team-view
 
 To configure your backend Contest API server, set the following environment variables:
 
- - CONTEST_URL - The Contest API base URL, e.g. http://cds/api/
- - CONTEST_ID - Optional contest id, only required when more than one contest is configured.
- - CONTEST_USER - A user on the contest server.
- - CONTEST_PASSWORD - The user's password.
+- CONTEST_URL - The Contest API base URL, e.g. http://cds/api/
+- CONTEST_ID - Optional contest id, only required when more than one contest is configured.
+- CONTEST_USER - A user on the contest server.
+- CONTEST_PASSWORD - The user's password.
 
 ## Developing
 

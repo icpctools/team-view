@@ -63,7 +63,7 @@ export class ContestAPI {
 
 	timeDelta = [];
 
-	interval: any;
+	interval: number | NodeJS.Timeout | undefined;
 
 	constructor(contestURL: string, credentials?: Credentials) {
 		if (!contestURL.endsWith('/')) {
@@ -121,6 +121,7 @@ export class ContestAPI {
 		return options;
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	async loadObject(type: string): Promise<any> {
 		const startTime = performance.now();
 		const url = this.getURL(type);
@@ -406,6 +407,7 @@ export class ContestAPI {
 
 	private processFileReferences(obj: unknown) {
 		// We get either one object or an array of objects, handle both cases
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		let objs: any[];
 		if (Array.isArray(obj)) {
 			objs = obj;
@@ -430,7 +432,7 @@ export class ContestAPI {
 
 	watch(): void {
 		if (this.interval) {
-			return this.interval;
+			return;
 		}
 		console.log(`Watching ${this.id}`);
 		this.interval = setInterval(async () => {

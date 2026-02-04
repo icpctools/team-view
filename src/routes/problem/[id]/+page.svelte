@@ -37,14 +37,20 @@
 		<div class="flex flex-col">
 			<div class="text-xl">Submissions ({data.submissions.length})</div>
 
-			<div class="grid grid-table bg-gray-100 dark:bg-gray-800" style="grid-template-columns: 1fr 1fr 1fr 1fr" role="row">
+			<div
+				class="grid grid-table bg-gray-100 dark:bg-gray-800"
+				style="grid-template-columns: 1fr 1fr 1fr 1fr"
+				role="row">
 				<div role="cell" class="p-2 font-semibold">Time</div>
 				<div role="cell" class="p-2 font-semibold">Team</div>
 				<div role="cell" class="p-2 font-semibold">Language</div>
 				<div role="cell" class="p-2 font-semibold">Judgement</div>
 			</div>
 			{#each data.submissions as submission}
-				<div class="grid grid-table even:bg-white dark:even:bg-gray-900 odd:bg-gray-50 dark:odd:bg-gray-800" style="grid-template-columns: 1fr 1fr 1fr 1fr" role="row">
+				<div
+					class="grid grid-table even:bg-white dark:even:bg-gray-900 odd:bg-gray-50 dark:odd:bg-gray-800"
+					style="grid-template-columns: 1fr 1fr 1fr 1fr"
+					role="row">
 					<div role="cell" class="p-2">{submission.time}</div>
 					<div role="cell" class="p-2">
 						<a href="/team/{submission.team?.id}" class="text-blue-600 dark:text-blue-400 hover:underline"
