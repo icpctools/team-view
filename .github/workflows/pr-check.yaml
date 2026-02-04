@@ -24,7 +24,7 @@ jobs:
           node-version: 24
           cache: 'pnpm'
 
-      - name: Install pnpm
+      - name: Install dependencies
         run: pnpm install
 
       - name: Run linter
