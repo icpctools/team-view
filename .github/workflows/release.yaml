@@ -1,0 +1,161 @@
+name: Release
+
+permissions:
+  contents: write
+  packages: write
+  id-token: write
+  pull-requests: write
+  repository-projects: write
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (example: 0.1.0)'
+        required: true
+      branch:
+        description: 'Branch to use for the release'
+        required: true
+        default: main
+env:
+  GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+  REGISTRY: ghcr.io
+  IMAGE_NAME: icpctools/team-view
+
+jobs:
+  tag:
+    name: Tag release
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    outputs:
+      githubTag: ${{ steps.tag_util.outputs.githubTag }}
+      releaseVersion: ${{ steps.tag_util.outputs.releaseVersion }}
+      releaseId: ${{ steps.create_release.outputs.id }}
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.inputs.branch }}
+
+      - name: Generate tags
+        id: tag_util
+        run: |
+          TAG_PATTERN=${{ github.event.inputs.version }}
+          echo "githubTag=v$TAG_PATTERN" >> ${GITHUB_OUTPUT}
+          echo "releaseVersion=$TAG_PATTERN" >> ${GITHUB_OUTPUT}
+
+      - name: Tag the code
+        run: |
+          git config --local user.name ${{ github.actor }}
+          git config --local user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
+
+          # Add the new version in package.json file
+          sed -i  "s#version\":\ \"\(.*\)\",#version\":\ \"${{ steps.tag_util.outputs.releaseVersion }}\",#g" package.json
+          sed -i  "s#version\":\ \"\(.*\)\",#version\":\ \"${{ steps.tag_util.outputs.releaseVersion }}\",#g" packages/contest-api/package.json
+          git add package.json packages/contest-api/package.json
+
+          # commit the changes
+          git commit -m "chore: 🥁 tagging ${{ steps.tag_util.outputs.githubTag }} 🥳"
+          echo "Tagging with ${{ steps.tag_util.outputs.githubTag }}"
+          git tag ${{ steps.tag_util.outputs.githubTag }}
+          git push origin ${{ steps.tag_util.outputs.githubTag }}
+
+      - name: Create Release
+        id: create_release
+        uses: ncipollo/release-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag: ${{ steps.tag_util.outputs.githubTag }}
+          name: ${{ steps.tag_util.outputs.githubTag }}
+          draft: true
+          prerelease: true
+
+      - name: Create PR to bump the version (only if we're on the main branch)
+        if: ${{ github.event.inputs.branch == 'main' }}
+        run: |
+          git config --local user.name ${{ github.actor }}
+          git config --local user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
+          CURRENT_VERSION=$(echo "${{ steps.tag_util.outputs.releaseVersion }}")
+          tmp=${CURRENT_VERSION%.*}
+          minor=${tmp#*.}
+          bumpedVersion=${CURRENT_VERSION%%.*}.$((minor + 1)).0
+          bumpedBranchName="bump-to-${bumpedVersion}"
+          git checkout -b "${bumpedBranchName}"
+          sed -i  "s#version\":\ \"\(.*\)\",#version\":\ \"${bumpedVersion}-next\",#g" package.json
+          sed -i  "s#version\":\ \"\(.*\)\",#version\":\ \"${bumpedVersion}-next\",#g" packages/contest-api/package.json
+          git add package.json packages/contest-api/package.json
+          git commit -s --amend -m "chore: bump version to ${bumpedVersion}"
+          git push origin "${bumpedBranchName}"
+          echo -e "Bump version to ${bumpedVersion}\n\n${{ steps.tag_util.outputs.releaseVersion }} has been released.\n\n Time to switch to the new ${bumpedVersion} version" > /tmp/pr-title
+          pullRequestUrl=$(gh pr create --title "chore: bump version to ${bumpedVersion}" --body-file /tmp/pr-title --head "${bumpedBranchName}" --base "main")
+          echo "Pull request created: ${pullRequestUrl}"
+          echo "Flag the PR as being ready for review"
+          gh pr ready "${pullRequestUrl}"
+          echo "Mark the PR as being ok to be merged automatically"
+          gh pr merge "${pullRequestUrl}" --auto --rebase
+          sed -i  "s#version\":\ \"\(.*\)\",#version\":\ \"${CURRENT_VERSION}\",#g" package.json
+          sed -i  "s#version\":\ \"\(.*\)\",#version\":\ \"${CURRENT_VERSION}\",#g" packages/contest-api/package.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-publish:
+    name: Build and publish
+    runs-on: ubuntu-24.04
+    needs: [tag]
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.tag.outputs.githubTag }}
+          fetch-depth: 0
+
+      - name: Log in to Container Registry
+        if: github.event.inputs.branch == 'main'
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=${{ github.event.inputs.version }},enable={{is_default_branch}}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: ${{ github.event.inputs.branch == 'main' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  release:
+    name: Release
+    runs-on: ubuntu-24.04
+    needs: [tag, build-publish]
+    timeout-minutes: 5
+
+    steps:
+      - name: id
+        run: echo the release id is ${{ needs.tag.outputs.releaseId}}
+
+      - name: Publish release
+        uses: StuYarrow/publish-release@v1.1.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          id: ${{ needs.tag.outputs.releaseId}}
