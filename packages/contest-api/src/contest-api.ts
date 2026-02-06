@@ -126,7 +126,7 @@ export class ContestAPI {
 		const startTime = performance.now();
 		const url = this.getURL(type);
 		try {
-			const response = await got.get(url, this.getHttpOptions());
+			const response = await got(url, this.getHttpOptions());
 			const obj = JSON.parse(response.body);
 			const endTime = performance.now();
 			console.log(`Fetched ${url} in ${(endTime - startTime).toFixed(1)}ms`);
