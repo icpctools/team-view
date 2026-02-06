@@ -1,48 +1,62 @@
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { ContestAPI } from './contest-api';
-import { setupServer, type SetupServerApi } from 'msw/node';
-import { http, HttpResponse } from 'msw';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import type { Response } from 'got';
 
-class TestContestAPI extends ContestAPI {
-	id: string;
-
-	constructor(id: string) {
-		super(`https://apiServer.org/api/contests/${id}`);
-		this.id = id;
-
-		server = setupServer(
-			http.get(`https://apiServer.org/api/contests/${id}/*`, (x) => {
-				const ind = x.request.url.lastIndexOf('/');
-				const type = x.request.url.substring(ind + 1);
-				const file = this.getFile(type);
-				return HttpResponse.json(JSON.parse(file));
-			})
-		);
-		server.listen({ onUnhandledRequest: 'error' });
-	}
-
-	getFile(type: string): string {
-		// use contest.json for the root
-		const filename = type ? type : 'contest';
-		const filePath = resolve(`tests/contests/${this.id}/${filename}.json`);
-		return readFileSync(filePath, 'utf8');
-	}
+function getFile(contestId: string, type: string): string {
+	// use contest.json for the root
+	const filename = type ? type : 'contest';
+	// Path is relative to workspace root, not package root
+	const filePath = resolve(`tests/contests/${contestId}/${filename}.json`);
+	return readFileSync(filePath, 'utf8');
 }
 
-let server: SetupServerApi | undefined = undefined;
+// Mock got module
+vi.mock('got', () => {
+	return {
+		default: vi.fn((url: string) => {
+			// Extract contest ID and type from URL
+			const urlObj = new URL(url);
+			const pathParts = urlObj.pathname.split('/').filter(Boolean);
+			const contestsIndex = pathParts.indexOf('contests');
+			const contestId = pathParts[contestsIndex + 1];
+			const type = pathParts[contestsIndex + 2] || '';
+
+			const file = getFile(contestId, type);
+
+			return Promise.resolve({
+				body: file,
+				statusCode: 200
+			} as Response);
+		}),
+		HTTPError: class HTTPError extends Error {
+			response: { statusCode: number; statusMessage: string };
+			constructor(response: { statusCode: number; statusMessage: string }) {
+				super();
+				this.response = response;
+			}
+		},
+		RequestError: class RequestError extends Error {
+			code: string;
+			constructor(code: string) {
+				super();
+				this.code = code;
+			}
+		}
+	};
+});
 
 beforeEach(() => {
 	vi.clearAllMocks();
 });
 
 afterEach(() => {
-	server?.close();
+	// Cleanup if needed
 });
 
 test('load contest', async () => {
-	const contestAPI = new TestContestAPI('basic');
+	const contestAPI = new ContestAPI('https://apiServer.org/api/contests/basic');
 
 	await contestAPI.loadContest();
 	const contest = contestAPI.getContest();
@@ -51,7 +65,7 @@ test('load contest', async () => {
 });
 
 test('load groups', async () => {
-	const contestAPI = new TestContestAPI('basic');
+	const contestAPI = new ContestAPI('https://apiServer.org/api/contests/basic');
 
 	await contestAPI.loadGroups();
 	const groups = contestAPI.getGroups();

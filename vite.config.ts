@@ -41,7 +41,7 @@ function excludeNodeModules(): Plugin {
 export default defineConfig({
 	plugins: [excludeNodeModules(), tailwindcss(), sveltekit()],
 	test: {
-		include: ['src/**/*.{test,spec}.{js,ts}']
+		include: ['src/**/*.{test,spec}.{js,ts}', 'packages/**/*.{test,spec}.{js,ts}']
 	},
 	ssr: {
 		noExternal: ['contest-api']
