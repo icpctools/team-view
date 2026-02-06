@@ -12,7 +12,7 @@
 
 	let { scoreboard_type = 'pass-fail', problems, showLogo = true }: Props = $props();
 
-	let col = getColumns(scoreboard_type, problems?.length, showLogo, 'full');
+	let col = $derived(getColumns(scoreboard_type, problems?.length, showLogo, 'full'));
 </script>
 
 <div role="rowgroup" class="sticky top-0 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm font-semibold">
