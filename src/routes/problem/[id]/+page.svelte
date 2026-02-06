@@ -53,7 +53,7 @@
 					role="row">
 					<div role="cell" class="p-2">{submission.time}</div>
 					<div role="cell" class="p-2">
-						<a href="/team/{submission.team?.id}" class="text-blue-600 dark:text-blue-400 hover:underline"
+						<a href="/team/{submission.team?.id}" class="text-blue-600 dark:text-blue-400 hover:bg-hover p-1 rounded"
 							>{submission.team?.label}: {submission.team?.display_name || submission.team?.name}</a>
 					</div>
 					<div role="cell" class="p-2">{submission.language}</div>
