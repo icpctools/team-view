@@ -3,7 +3,7 @@
  */
 import type { ContestAPI } from './contest-api';
 import { parseRelTime } from './contest-time-util';
-import type { FileReference, Problem, Submission } from './contest-types';
+import type { Access, FileReference, Problem, Submission } from './contest-types';
 
 export class ContestUtil {
 	findById<Type extends { id: string }>(arr: Array<Type> | undefined, id: string | undefined): Type | undefined {
@@ -56,8 +56,34 @@ export class ContestUtil {
 	}
 
 	getOppositeTag(tag: string): string | undefined {
-		if ('light' === tag) return 'dark';
-		else if ('dark' === tag) return 'light';
+		if ('light' === tag) {
+			return 'dark';
+		} else if ('dark' === tag) {
+			return 'light';
+		}
+		return undefined;
+	}
+
+	getFileByTag(files: FileReference[] | undefined, tag: string): FileReference | undefined {
+		if (!files || files.length == 0) {
+			return undefined;
+		}
+
+		if (files.length === 1) {
+			return files[0];
+		}
+
+		// look for a file that has the given tag
+		for (const file of files) {
+			if (file.tags) {
+				for (const tag2 of file.tags) {
+					if (tag2 === tag) {
+						return file;
+					}
+				}
+			}
+		}
+
 		return undefined;
 	}
 
@@ -162,7 +188,38 @@ export class ContestUtil {
 		return false;
 	}
 
-	sortProblems(problems: Problem[]): unknown {
+	sortProblems(problems: Problem[]): Problem[] {
 		return problems.sort((a, b) => (a.ordinal > b.ordinal ? 1 : b.ordinal > a.ordinal ? -1 : 0));
+	}
+
+	hasEndpoint(acc: Access | undefined, endpoint: string): boolean {
+		if (!acc || !acc.endpoints || !endpoint) {
+			return false;
+		}
+
+		for (const ep of acc.endpoints) {
+			if (endpoint === ep.type) return true;
+		}
+
+		return false;
+	}
+
+	hasEndpointProperty(acc: Access | undefined, endpoint: string, property: string): boolean {
+		if (!acc || !acc.endpoints || !endpoint || !property) {
+			return false;
+		}
+
+		for (const ep of acc.endpoints) {
+			if (endpoint === ep.type) {
+				for (const p of ep.properties) {
+					if (property === p) {
+						return true;
+					}
+				}
+				return false;
+			}
+		}
+
+		return false;
 	}
 }
