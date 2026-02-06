@@ -59,6 +59,8 @@
 			player.dispose();
 		}
 	});
+
+	/* eslint svelte/no-unused-svelte-ignore: "off" */
 </script>
 
 {#if src}

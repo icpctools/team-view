@@ -9,23 +9,24 @@
 
 	let { problem, onclick }: Props = $props();
 
-	let pStyle = $state('');
-	const rgb = problem?.rgb;
-	if (rgb) {
-		let col = parseHexColor(rgb);
-		let fg = '#fff';
-		if (col && col[0] + col[1] + col[2] > 450) {
-			fg = '#000';
-		}
-		let border = rgb;
-		if (col) {
-			border = rgbToHex(darker(col));
-		}
+	let pStyle = $derived.by(() => {
+		const rgb = problem?.rgb;
+		if (rgb) {
+			let col = parseHexColor(rgb);
+			let fg = '#fff';
+			if (col && col[0] + col[1] + col[2] > 450) {
+				fg = '#000';
+			}
+			let border = rgb;
+			if (col) {
+				border = rgbToHex(darker(col));
+			}
 
-		pStyle = 'background-color:' + rgb + ';color:' + fg + ';border-color:' + border + ';';
-	} else {
-		pStyle = 'background-color:#fff;color:#000;border:#000;';
-	}
+			return 'background-color:' + rgb + ';color:' + fg + ';border-color:' + border + ';';
+		} else {
+			return 'background-color:#fff;color:#000;border:#000;';
+		}
+	});
 </script>
 
 <!-- svelte-ignore a11y_interactive_supports_focus -->

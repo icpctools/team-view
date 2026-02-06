@@ -17,7 +17,7 @@
 
 	let { scoreboard_type = 'pass-fail', problems, row, team, logo, showLogo = true, mode = 'full' }: Props = $props();
 
-	let col = getColumns(scoreboard_type, problems?.length, showLogo, mode);
+	let col = $derived(getColumns(scoreboard_type, problems?.length, showLogo, mode));
 
 	function scoreBg(rp: ScoreboardProblem, problem: Problem): string {
 		if (rp.num_pending > 0) {
