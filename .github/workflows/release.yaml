@@ -49,10 +49,10 @@ jobs:
           git config --local user.name ${{ github.actor }}
           git config --local user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
 
-          # Add the new version in package.json file
+          # Add the new version in package.json files
           sed -i  "s#version\":\ \"\(.*\)\",#version\":\ \"${{ steps.tag_util.outputs.releaseVersion }}\",#g" package.json
-          sed -i  "s#version\":\ \"\(.*\)\",#version\":\ \"${{ steps.tag_util.outputs.releaseVersion }}\",#g" packages/contest-api/package.json
-          git add package.json packages/contest-api/package.json
+          find packages/* -maxdepth 1 -name "package.json" | xargs -I {} sed -i "s#version\":\ \"\(.*\)\",#version\":\ \"${{ steps.TAG_UTIL.outputs.releaseVersion }}\",#g" {}
+          git add package.json packages/*/package.json
 
           # commit the changes
           git commit -m "chore: 🥁 tagging ${{ steps.tag_util.outputs.githubTag }} 🥳"
