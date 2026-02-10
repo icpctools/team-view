@@ -3,8 +3,11 @@
 	import JudgementType from '$lib/ui/JudgementType.svelte';
 	import Problem from '$lib/ui/Problem.svelte';
 	import { onMount } from 'svelte';
+	import ReactionModal from '$lib/ui/ReactionModal.svelte';
 
 	let { data } = $props();
+
+	let modal = $state<ReactionModal>();
 
 	onMount(() => {
 		const interval = setInterval(() => {
@@ -39,17 +42,20 @@
 
 			<div
 				class="grid grid-table bg-gray-100 dark:bg-gray-800"
-				style="grid-template-columns: 1fr 1fr 1fr 1fr"
+				style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr"
 				role="row">
 				<div role="cell" class="p-2 font-semibold">Time</div>
 				<div role="cell" class="p-2 font-semibold">Team</div>
 				<div role="cell" class="p-2 font-semibold">Language</div>
 				<div role="cell" class="p-2 font-semibold">Judgement</div>
+				{#if data.hasReactions}
+					<div role="cell" class="p-2 font-semibold">Reaction Video</div>
+				{/if}
 			</div>
 			{#each data.submissions as submission}
 				<div
 					class="grid grid-table even:bg-white dark:even:bg-gray-900 odd:bg-gray-50 dark:odd:bg-gray-800"
-					style="grid-template-columns: 1fr 1fr 1fr 1fr"
+					style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr"
 					role="row">
 					<div role="cell" class="p-2">{submission.time}</div>
 					<div role="cell" class="p-2">
@@ -60,8 +66,32 @@
 					<div role="cell" class="p-2">
 						<JudgementType judgement_type={submission.judgement_type} />{submission.judgement}
 					</div>
+					{#if data.hasReactions}
+						<div role="cell" class="p-2">
+							{#if submission.reaction && submission.reaction.length > 0}
+								<button
+									onclick={() =>
+										modal?.openReaction(
+											submission.reaction,
+											submission.team?.display_name || submission.team?.name + ' reaction video'
+										)}
+									class="
+									text-blue-600
+									dark:text-blue-400
+									hover:bg-hover
+									p-1 rounded
+									cursor-pointer">
+									Video
+								</button>
+							{:else}
+								-
+							{/if}
+						</div>
+					{/if}
 				</div>
 			{/each}
 		</div>
 	{/if}
 </div>
+
+<ReactionModal bind:this={modal} />
