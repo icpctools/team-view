@@ -23,7 +23,8 @@
 		autoplay: true,
 		controls: false,
 		responsive: true,
-		fluid: false,
+		fluid: true,
+		aspectRatio: '16:9',
 		poster: '/images/icpc-logo.png',
 		preload: 'auto',
 		mpegtsjs: {

@@ -4,9 +4,12 @@
 	import Person from '$lib/ui/Person.svelte';
 	import Photo from '$lib/ui/Photo.svelte';
 	import Problem from '$lib/ui/Problem.svelte';
+	import ReactionModal from '$lib/ui/ReactionModal.svelte';
 	import { onMount } from 'svelte';
 
 	let { data } = $props();
+
+	let modal = $state<ReactionModal>();
 
 	onMount(() => {
 		const interval = setInterval(() => {
@@ -67,14 +70,17 @@
 	{#if data.submissions && data.submissions.length > 0}
 		<div class="flex flex-col">
 			<div class="text-xl">Submissions</div>
-			<div class="grid grid-table" style="grid-template-columns: 1fr 1fr 1fr 1fr" role="row">
+			<div class="grid grid-table" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr" role="row">
 				<div role="cell" class="">Time</div>
 				<div role="cell" class="">Problem</div>
 				<div role="cell" class="">Language</div>
 				<div role="cell" class="">Judgement</div>
+				{#if data.hasReactions}
+					<div role="cell" class="">Reaction Video</div>
+				{/if}
 			</div>
 			{#each data.submissions as submission}
-				<div class="grid grid-table" style="grid-template-columns: 1fr 1fr 1fr 1fr" role="row">
+				<div class="grid grid-table" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr" role="row">
 					<div role="cell" class="">{submission.time}</div>
 					<div role="cell" class="">
 						<Problem problem={submission.problem} onclick={() => goto('/problem/' + submission.problem?.id)} />
@@ -83,6 +89,28 @@
 					<div role="cell" class="">
 						<JudgementType judgement_type={submission.judgement_type} />{submission.judgement}
 					</div>
+					{#if data.hasReactions}
+						<div role="cell" class="p-2">
+							{#if submission.reaction && submission?.reaction.length > 0}
+								<button
+									onclick={() =>
+										modal?.openReaction(
+											submission.reaction,
+											data.team?.display_name || data.team?.name + ' reaction video'
+										)}
+									class="
+									text-blue-600
+									dark:text-blue-400
+									hover:bg-hover
+									p-1 rounded
+									cursor-pointer">
+									Video
+								</button>
+							{:else}
+								-
+							{/if}
+						</div>
+					{/if}
 				</div>
 			{/each}
 		</div>
@@ -119,3 +147,5 @@
 		</div>
 	{/if}
 </div>
+
+<ReactionModal bind:this={modal} />

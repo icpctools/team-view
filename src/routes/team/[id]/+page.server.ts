@@ -10,6 +10,7 @@ export const load = async ({ params, depends }) => {
 	if (!cc) throw error(404);
 
 	await Promise.all([
+		cc.loadAccess(),
 		cc.loadGroups(),
 		cc.loadOrganizations(),
 		cc.loadTeams(),
@@ -69,11 +70,13 @@ export const load = async ({ params, depends }) => {
 			if (j.score != undefined) judge += j.score + '';
 		}
 		return {
+			id: s.id,
 			time: timeToMin(s.contest_time),
 			problem: util.findById(problems, s.problem_id),
 			language: util.findById(languages, s.language_id)?.name,
 			judgement: judge,
-			judgement_type: jt
+			judgement_type: jt,
+			reaction: s.reaction
 		};
 	});
 
@@ -92,6 +95,7 @@ export const load = async ({ params, depends }) => {
 		coaches: coaches,
 		contestants: contestants,
 		submissions: submissionData,
-		country: country
+		country: country,
+		hasReactions: util.hasEndpointProperty(cc.getAccess(), 'submissions', 'reaction')
 	};
 };
