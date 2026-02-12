@@ -1,5 +1,6 @@
 import { loadContest } from '$lib/state.svelte.js';
 import { error } from '@sveltejs/kit';
+import { ContestUtil } from 'contest-api';
 
 export const load = async ({ depends }) => {
 	const cc = await loadContest();
@@ -7,16 +8,19 @@ export const load = async ({ depends }) => {
 
 	depends('data:contest');
 
-	await Promise.all([cc.loadContest()]);
-
-	try {
-		await Promise.all([cc.loadMapInfo()]);
-	} catch (error) {
-		console.log(`Could not load map: ${error}`);
-	}
+	await Promise.all([cc.loadContest(), cc.loadAccess()]);
 
 	const contest = cc.getContest();
 	if (!contest) throw error(404);
+
+	const util = new ContestUtil();
+	if (util.hasEndpoint(cc.getAccess(), 'map-info')) {
+		try {
+			await Promise.all([cc.loadMapInfo()]);
+		} catch (error) {
+			console.log(`Could not load map: ${error}`);
+		}
+	}
 
 	return {
 		contest: contest,
