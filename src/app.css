@@ -1,5 +1,5 @@
 @import 'tailwindcss';
 
 @theme {
-	--color-hover: light-dark(var(--color-gray-600), var(--color-gray-700));
+	--color-hover: light-dark(var(--color-gray-400), var(--color-gray-700));
 }
