@@ -1,9 +1,9 @@
 /**
  * Copyright later.
  */
-import type { ContestAPI } from './contest-api';
-import { parseRelTime } from './contest-time-util';
-import type { Access, FileReference, Problem, Submission } from './contest-types';
+import type { ContestAPI } from './contest-api.js';
+import { parseRelTime } from './contest-time-util.js';
+import type { Access, FileReference, Problem, Submission } from './contest-types.js';
 
 export class ContestUtil {
 	findById<Type extends { id: string }>(arr: Array<Type> | undefined, id: string | undefined): Type | undefined {

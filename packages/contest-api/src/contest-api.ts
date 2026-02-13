@@ -25,7 +25,7 @@ import type {
 	StartStatus,
 	Submission,
 	Team
-} from './contest-types';
+} from './contest-types.js';
 
 export interface Credentials {
 	user?: string;
