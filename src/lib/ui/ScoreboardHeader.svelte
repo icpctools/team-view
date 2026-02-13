@@ -2,17 +2,24 @@
 	import type { Problem as ProblemObj } from 'contest-api';
 	import Problem from './Problem.svelte';
 	import { getColumns } from './scoreboard-util';
-	import { goto } from '$app/navigation';
 
 	interface Props {
 		showLogo?: boolean;
 		scoreboard_type?: 'pass-fail' | 'score';
 		problems: ProblemObj[];
+		onselectproblem?: (problem: ProblemObj) => void;
 	}
 
-	let { scoreboard_type = 'pass-fail', problems, showLogo = true }: Props = $props();
+	let { scoreboard_type = 'pass-fail', problems, showLogo = true, onselectproblem }: Props = $props();
 
 	let col = $derived(getColumns(scoreboard_type, problems?.length, showLogo, 'full'));
+
+	function onSelectProblem(problem: ProblemObj): void {
+		if (!problem) {
+			return;
+		}
+		onselectproblem?.(problem);
+	}
 </script>
 
 <div role="rowgroup" class="sticky top-0 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm font-semibold">
@@ -33,11 +40,7 @@
 		{/if}
 		{#each problems as problem}
 			<div role="cell" class="justify-self-center w-3/4">
-				<Problem
-					{problem}
-					onclick={() => {
-						goto('/problem/' + problem.id);
-					}} />
+				<Problem {problem} onclick={() => onSelectProblem(problem)} />
 			</div>
 		{/each}
 	</div>
