@@ -3,8 +3,8 @@
  */
 import type { HttpsOptions, OptionsOfTextResponseBody } from 'got';
 import got, { HTTPError, RequestError } from 'got';
-import type { Contest } from './contest-types';
-import { ContestAPI, type Credentials } from './contest-api';
+import type { Contest } from './contest-types.js';
+import { ContestAPI, type Credentials } from './contest-api.js';
 
 export class Contests {
 	contests: Contest[] | undefined;

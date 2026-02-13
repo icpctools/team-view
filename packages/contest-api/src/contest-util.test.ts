@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
-import { ContestUtil } from './contest-util';
-import { Access, FileReference, Problem } from './contest-types';
+import { ContestUtil } from './contest-util.js';
+import { Access, FileReference, Problem } from './contest-types.js';
 
 const util = new ContestUtil();
 

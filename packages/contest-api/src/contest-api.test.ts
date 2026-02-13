@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { ContestAPI } from './contest-api';
+import { ContestAPI } from './contest-api.js';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import type { Response } from 'got';
