@@ -5,8 +5,9 @@
 	"type": "module",
 	"private": true,
 	"scripts": {
-		"dev": "vite dev",
-		"build": "vite build",
+		"dev": "pnpm build:packages && vite dev",
+		"build": "pnpm build:packages && vite build",
+		"build:packages": "pnpm --filter '@icpctools/*' build",
 		"preview": "vite preview",
 		"test": "npm run test:unit && npm run test:integration",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
@@ -41,7 +42,8 @@
 	},
 	"dependencies": {
 		"@fortawesome/fontawesome-free": "^7.1.0",
-		"contest-api": "workspace:*",
+		"@icpctools/contest-api": "workspace:*",
+		"@icpctools/contest-ui": "workspace:*",
 		"got": "^14.6.6",
 		"i18n-iso-countries": "^7.14.0",
 		"mode-watcher": "^1.1.0",

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { MapInfo, Team } from 'contest-api';
+	import type { MapInfo, Team } from '@icpctools/contest-api';
 	import { mode } from 'mode-watcher';
 
 	interface Props {

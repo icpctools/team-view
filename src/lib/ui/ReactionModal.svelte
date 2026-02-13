@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Modal from './Modal.svelte';
-	import type { FileReference } from 'contest-api';
-	import Video from './Video.svelte';
+	import type { FileReference } from '@icpctools/contest-api';
+	import { Video } from '@icpctools/contest-ui';
 
 	let modal = $state<Modal>();
 	let reaction = $state<FileReference[]>();

@@ -1,9 +1,9 @@
 <script lang="ts">
 	import Logo from './Logo.svelte';
-	import { parseHexColor, rgbToHex, FAILED, SOLVED, PENDING, SCORING_MID } from '$lib/color-util.js';
-	import { timeToMin } from 'contest-api';
-	import type { FileReference, Problem, ScoreboardProblem, ScoreboardRow, Team } from 'contest-api';
-	import { getColumns } from './scoreboard-util';
+	import { parseHexColor, rgbToHex, FAILED, SOLVED, PENDING, SCORING_MID } from './color-util.js';
+	import { timeToMin } from '@icpctools/contest-api';
+	import type { FileReference, Problem, ScoreboardProblem, ScoreboardRow, Team } from '@icpctools/contest-api';
+	import { getColumns } from './scoreboard-util.js';
 
 	interface Props {
 		showLogo?: boolean;

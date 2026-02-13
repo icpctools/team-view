@@ -31,7 +31,10 @@ function excludeNodeModules(): Plugin {
 				`;
 			}
 			// Prevent serving source files from packages directory as static assets
-			if (id.includes('/packages/contest-api/src/') && !id.includes('node_modules')) {
+			if (
+				(id.includes('/packages/contest-api/src/') || id.includes('/packages/contest-ui/src/')) &&
+				!id.includes('node_modules')
+			) {
 				return null; // Let Vite handle it as a module
 			}
 		}
@@ -44,7 +47,7 @@ export default defineConfig({
 		include: ['src/**/*.{test,spec}.{js,ts}', 'packages/**/*.{test,spec}.{js,ts}']
 	},
 	ssr: {
-		noExternal: ['contest-api']
+		noExternal: ['@icpctools/contest-api', '@icpctools/contest-ui']
 	},
 	optimizeDeps: {
 		exclude: ['got']

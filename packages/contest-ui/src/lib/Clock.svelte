@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { getContestTime, getContestState } from 'contest-api';
-	import type { Contest } from 'contest-api';
+	import { getContestTime, getContestState } from '@icpctools/contest-api';
+	import type { Contest } from '@icpctools/contest-api';
 	import { onMount } from 'svelte';
 
 	interface Props {

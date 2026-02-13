@@ -1,7 +1,5 @@
 <script lang="ts">
-	import Banner from '$lib/ui/Banner.svelte';
-	import Clock from '$lib/ui/Clock.svelte';
-	import Logo from '$lib/ui/Logo.svelte';
+	import { Banner, Clock, Logo } from '@icpctools/contest-ui';
 	import DarkModeToggle from '$lib/ui/DarkModeToggle.svelte';
 	import { onMount } from 'svelte';
 	import '../app.css';

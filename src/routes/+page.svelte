@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Logo from '$lib/ui/Logo.svelte';
+	import { Logo } from '@icpctools/contest-ui';
 
 	let { data } = $props();
 </script>

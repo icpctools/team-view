@@ -1,5 +1,5 @@
 {
-	"name": "contest-api",
+	"name": "@icpctools/contest-api",
 	"version": "0.7.0-next",
 	"license": "MIT",
 	"type": "module",

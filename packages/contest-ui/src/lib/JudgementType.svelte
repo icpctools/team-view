@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { JudgementType } from 'contest-api';
+	import type { JudgementType } from '@icpctools/contest-api';
 
 	interface Props {
 		judgement_type?: JudgementType;

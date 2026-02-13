@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Video from '$lib/ui/Video.svelte';
+	import { Video } from '@icpctools/contest-ui';
 
 	let { data } = $props();
 </script>
