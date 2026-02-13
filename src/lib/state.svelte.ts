@@ -1,5 +1,5 @@
-import type { ContestAPI } from 'contest-api';
-import { Contests } from 'contest-api';
+import type { ContestAPI } from '@icpctools/contest-api';
+import { Contests } from '@icpctools/contest-api';
 import { CONTEST } from './hardcoded.svelte';
 
 let contest: ContestAPI | undefined;

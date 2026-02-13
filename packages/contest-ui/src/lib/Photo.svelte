@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { FileReference } from 'contest-api';
+	import type { FileReference } from '@icpctools/contest-api';
 	import Image from './Image.svelte';
 
 	interface Props {

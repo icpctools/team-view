@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { invalidate } from '$app/navigation';
-	import Logo from '$lib/ui/Logo.svelte';
-	import ScoreboardRow from '$lib/ui/ScoreboardRow.svelte';
+	import { Logo, ScoreboardRow } from '@icpctools/contest-ui';
 	import { onMount } from 'svelte';
 
 	let { data, children } = $props();

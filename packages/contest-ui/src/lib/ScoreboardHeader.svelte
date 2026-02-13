@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { Problem as ProblemObj } from 'contest-api';
+	import type { Problem as ProblemObj } from '@icpctools/contest-api';
 	import Problem from './Problem.svelte';
-	import { getColumns } from './scoreboard-util';
+	import { getColumns } from './scoreboard-util.js';
 
 	interface Props {
 		showLogo?: boolean;

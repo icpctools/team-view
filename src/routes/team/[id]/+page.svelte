@@ -1,9 +1,6 @@
 <script lang="ts">
 	import { goto, invalidate } from '$app/navigation';
-	import JudgementType from '$lib/ui/JudgementType.svelte';
-	import Person from '$lib/ui/Person.svelte';
-	import Photo from '$lib/ui/Photo.svelte';
-	import Problem from '$lib/ui/Problem.svelte';
+	import { JudgementType, Person, Photo, Problem } from '@icpctools/contest-ui';
 	import ReactionModal from '$lib/ui/ReactionModal.svelte';
 	import { onMount } from 'svelte';
 

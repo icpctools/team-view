@@ -2,8 +2,7 @@
 	import { onMount } from 'svelte';
 	import { goto, invalidate } from '$app/navigation';
 	import { flip } from 'svelte/animate';
-	import ScoreboardHeader from '$lib/ui/ScoreboardHeader.svelte';
-	import ScoreboardRow from '$lib/ui/ScoreboardRow.svelte';
+	import { ScoreboardHeader, ScoreboardRow } from '@icpctools/contest-ui';
 	import type { Problem } from 'contest-api';
 
 	let { data } = $props();

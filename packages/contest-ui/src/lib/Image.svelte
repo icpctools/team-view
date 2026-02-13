@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { FileReference } from 'contest-api';
-	import { ContestUtil } from 'contest-api';
+	import type { FileReference } from '@icpctools/contest-api';
+	import { ContestUtil } from '@icpctools/contest-api';
 	import { mode } from 'mode-watcher';
 
 	interface Props {

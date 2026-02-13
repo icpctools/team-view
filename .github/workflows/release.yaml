@@ -83,7 +83,8 @@ jobs:
           bumpedBranchName="bump-to-${bumpedVersion}"
           git checkout -b "${bumpedBranchName}"
           sed -i  "s#version\":\ \"\(.*\)\",#version\":\ \"${bumpedVersion}-next\",#g" package.json
-          sed -i  "s#version\":\ \"\(.*\)\",#version\":\ \"${bumpedVersion}-next\",#g" packages/contest-api/package.json
+          find packages/* -maxdepth 1 -name "package.json" | xargs -I {} sed -i "s#version\":\ \"\(.*\)\",#version\":\ \"${bumpedVersion}-next\",#g" {}
+
           git add package.json packages/contest-api/package.json
           git commit -s --amend -m "chore: bump version to ${bumpedVersion}"
           git push origin "${bumpedBranchName}"
@@ -95,7 +96,8 @@ jobs:
           echo "Mark the PR as being ok to be merged automatically"
           gh pr merge "${pullRequestUrl}" --auto --rebase
           sed -i  "s#version\":\ \"\(.*\)\",#version\":\ \"${CURRENT_VERSION}\",#g" package.json
-          sed -i  "s#version\":\ \"\(.*\)\",#version\":\ \"${CURRENT_VERSION}\",#g" packages/contest-api/package.json
+          find packages/* -maxdepth 1 -name "package.json" | xargs -I {} sed -i "s#version\":\ \"\(.*\)\",#version\":\ \"${CURRENT_VERSION}\",#g" {}
+
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

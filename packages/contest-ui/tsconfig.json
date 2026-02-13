@@ -1,0 +1,21 @@
+{
+	"compilerOptions": {
+		"module": "nodenext",
+		"target": "esnext",
+		"sourceMap": false,
+		"moduleResolution": "nodenext",
+		"strict": true,
+		"allowSyntheticDefaultImports": true,
+		"isolatedModules": true,
+		"resolveJsonModule": true,
+		"allowJs": true,
+		"checkJs": true,
+
+		"types": ["@testing-library/jest-dom"],
+
+		"paths": {
+			"/@/*": ["./src/*"]
+		}
+	},
+	"include": ["src/**/*.d.ts", "src/**/*.ts", "src/**/*.svelte", "../../types/**/*.d.ts"]
+}
