@@ -1,20 +1,20 @@
 <script lang="ts">
-	import type { Problem as ProblemObj } from '@icpctools/contest-api';
-	import Problem from './Problem.svelte';
+	import type { Problem } from '@icpctools/contest-api';
+	import ProblemUI from './ProblemUI.svelte';
 	import { getColumns } from './scoreboard-util.js';
 
 	interface Props {
 		showLogo?: boolean;
 		scoreboard_type?: 'pass-fail' | 'score';
-		problems: ProblemObj[];
-		onselectproblem?: (problem: ProblemObj) => void;
+		problems: Problem[];
+		onselectproblem?: (problem: Problem) => void;
 	}
 
 	let { scoreboard_type = 'pass-fail', problems, showLogo = true, onselectproblem }: Props = $props();
 
 	let col = $derived(getColumns(scoreboard_type, problems?.length, showLogo, 'full'));
 
-	function onSelectProblem(problem: ProblemObj): void {
+	function onSelectProblem(problem: Problem): void {
 		if (!problem) {
 			return;
 		}
@@ -40,7 +40,7 @@
 		{/if}
 		{#each problems as problem}
 			<div role="cell" class="justify-self-center w-3/4">
-				<Problem {problem} onclick={() => onSelectProblem(problem)} />
+				<ProblemUI {problem} onclick={() => onSelectProblem(problem)} />
 			</div>
 		{/each}
 	</div>
