@@ -38,7 +38,7 @@
 		{:else if scoreboard_type === 'score'}
 			<div role="cell" class="justify-self-center">Score</div>
 		{/if}
-		{#each problems as problem}
+		{#each problems as problem (problem.id)}
 			<div role="cell" class="justify-self-center w-3/4">
 				<ProblemUI {problem} onclick={() => onSelectProblem(problem)} />
 			</div>
