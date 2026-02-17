@@ -20,11 +20,15 @@ export default [
 		}
 	},
 	{
-		files: ['**/*.svelte'],
+		files: ['**/*.svelte', '**/*.svelte.ts'],
 		languageOptions: {
 			parserOptions: {
 				parser: ts.parser
 			}
+		},
+		rules: {
+			// @see https://github.com/sveltejs/eslint-plugin-svelte/issues/1353
+			'svelte/no-navigation-without-resolve': 'off'
 		}
 	},
 	{
