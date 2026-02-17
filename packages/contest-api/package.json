@@ -19,6 +19,7 @@
 		}
 	},
 	"scripts": {
+		"build": "echo 'No build needed for contest-api yet - using TypeScript source directly'",
 		"test": "vitest"
 	},
 	"dependencies": {

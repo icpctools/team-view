@@ -6,20 +6,21 @@ RUN npm install -g pnpm && apk add --no-cache tini git
 WORKDIR /app
 
 # Copy package files and workspace configuration
-COPY package*.json pnpm-workspace.yaml ./
-COPY packages ./packages
+COPY package*.json pnpm-workspace.yaml pnpm-lock.yaml ./
+COPY packages/contest-api/package.json ./packages/contest-api/
+COPY packages/contest-ui/package.json ./packages/contest-ui/
 
-# Install dependencies and tini
-RUN pnpm install
+# Install dependencies (including devDependencies needed for build)
+RUN pnpm install --frozen-lockfile
 
 # Copy source code
 COPY . .
 
-# Set build-time environment variables
-ENV NODE_ENV=production
-
-# Build the application
+# Build the application (before setting NODE_ENV=production)
 RUN pnpm run build
+
+# Set runtime environment variables
+ENV NODE_ENV=production
 
 # Create a non-root user
 RUN addgroup -g 1001 -S nodejs
