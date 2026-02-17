@@ -1,7 +1,8 @@
 import { error } from '@sveltejs/kit';
 import { loadContest } from '$lib/state.svelte.js';
-import { timeToMin, ContestUtil } from '@icpctools/contest-api';
+import { ContestUtil } from '@icpctools/contest-api';
 import type { Judgement, JudgementType } from '@icpctools/contest-api';
+import type { SubmissionData } from '../../../lib/submissionData.js';
 
 export const load = async ({ params, depends }) => {
 	depends('data:problem');
@@ -53,13 +54,14 @@ export const load = async ({ params, depends }) => {
 		}
 		return {
 			id: s.id,
-			time: timeToMin(s.contest_time),
+			time: s.contest_time,
 			team: util.findById(teams, s.team_id),
-			language: util.findById(languages, s.language_id)?.name,
+			language: util.findById(languages, s.language_id),
 			judgement: judge,
 			judgementType: jt,
-			reaction: s.reaction
-		};
+			reaction: s.reaction,
+			problem: problem
+		} as SubmissionData;
 	});
 
 	return {
