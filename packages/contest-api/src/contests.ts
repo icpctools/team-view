@@ -21,7 +21,7 @@ export class Contests {
 		console.log('Contest API URL: ' + this.baseURL);
 	}
 
-	public async loadContests() {
+	public async loadContests(): Promise<void> {
 		const startTime = performance.now();
 		try {
 			const response = await got.get(this.baseURL + 'contests', this.getHttpOptions());
@@ -102,7 +102,7 @@ export class Contests {
 		return this.contestObjs;
 	}
 
-	clear() {
+	clear(): void {
 		this.contests = [];
 	}
 }

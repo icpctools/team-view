@@ -2,19 +2,19 @@
 	import type { JudgementType } from '@icpctools/contest-api';
 
 	interface Props {
-		judgement_type?: JudgementType;
+		judgementType?: JudgementType;
 	}
 
-	let { judgement_type }: Props = $props();
+	let { judgementType }: Props = $props();
 </script>
 
-{#if judgement_type}
+{#if judgementType}
 	<div
 		class="justify-self-center text-center text-sm text-white rounded-sm w-10 cursor-default"
-		class:bg-green-600={judgement_type.solved}
-		class:bg-red-600={judgement_type.penalty}
-		class:bg-cyan-600={!judgement_type.solved && !judgement_type.penalty}>
-		{judgement_type.id}
+		class:bg-green-600={judgementType.solved}
+		class:bg-red-600={judgementType.penalty}
+		class:bg-cyan-600={!judgementType.solved && !judgementType.penalty}>
+		{judgementType.id}
 	</div>
 {:else}
 	<div class="justify-self-center text-center text-sm w-10">...</div>

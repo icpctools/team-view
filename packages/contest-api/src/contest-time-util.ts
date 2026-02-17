@@ -37,14 +37,14 @@ export function parseRelTime(relTime: RelTime | number | undefined): number | un
 	return ret;
 }
 
-export function timeToMin(relTime: RelTime | number | undefined) {
+export function timeToMin(relTime: RelTime | number | undefined): string {
 	if (!relTime) {
 		return '';
 	}
 	return formatTimeInMin(parseRelTime(relTime));
 }
 
-function formatTimeInMin(timeMs: number | undefined) {
+function formatTimeInMin(timeMs: number | undefined): string {
 	if (!timeMs) {
 		return '';
 	}
