@@ -83,7 +83,7 @@
 		</div>
 	{/if}
 
-	{#each problems as problem}
+	{#each problems as problem (problem.id)}
 		{@const rp = row.problems?.find((p) => p.problem_id == problem.id)}
 		{#if rp}
 			{#if rp.num_judged > 0 || rp.num_pending > 0}

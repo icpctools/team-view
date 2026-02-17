@@ -51,7 +51,7 @@
 					<div role="cell" class="p-2 font-semibold">Reaction Video</div>
 				{/if}
 			</div>
-			{#each data.submissions as submission}
+			{#each data.submissions as submission (submission.id)}
 				<div
 					class="grid grid-table even:bg-white dark:even:bg-gray-900 odd:bg-gray-50 dark:odd:bg-gray-800"
 					style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr"

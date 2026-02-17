@@ -57,7 +57,7 @@
 		<div class="flex flex-col">
 			<div class="text-xl">Groups</div>
 			<div class="flex flex-row gap-2">
-				{#each data.groups as group}
+				{#each data.groups as group (group.id)}
 					<div>{group.name}</div>
 				{/each}
 			</div>
@@ -76,7 +76,7 @@
 					<div role="cell" class="">Reaction Video</div>
 				{/if}
 			</div>
-			{#each data.submissions as submission}
+			{#each data.submissions as submission (submission.id)}
 				<div class="grid grid-table" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr" role="row">
 					<div role="cell" class="">{submission.time}</div>
 					<div role="cell" class="">
@@ -126,7 +126,7 @@
 		<div class="flex flex-col">
 			<div class="text-xl">Coaches</div>
 			<div class="flex flex-row gap-2">
-				{#each data.coaches as person}
+				{#each data.coaches as person (person.id)}
 					<PersonUI {person} />
 				{/each}
 			</div>
@@ -137,7 +137,7 @@
 		<div class="flex flex-col">
 			<div class="text-xl">Contestants</div>
 			<div class="flex flex-row gap-2">
-				{#each data.contestants as person}
+				{#each data.contestants as person (person.id)}
 					<PersonUI {person} />
 				{/each}
 			</div>
