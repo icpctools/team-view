@@ -1,12 +1,60 @@
 <script lang="ts">
 	import { goto, invalidate } from '$app/navigation';
-	import { JudgementTypeUI, PersonUI, Photo, ProblemUI } from '@icpctools/contest-ui';
-	import ReactionModal from '$lib/ui/ReactionModal.svelte';
+	import type { Problem, FileReference, JudgementType } from '@icpctools/contest-api';
+	import { PersonUI, Photo } from '@icpctools/contest-ui';
 	import { onMount } from 'svelte';
+	import { Column } from '$lib/ui/table/table';
+	import SimpleColumn from '$lib/ui/table/SimpleColumn.svelte';
+	import Table from '$lib/ui/table/Table.svelte';
+	import { timeToMin, parseRelTime } from '@icpctools/contest-api';
+	import JudgementTypeColumn from '$lib/ui/table/JudgementTypeColumn.svelte';
+	import ProblemColumn from '$lib/ui/table/ProblemColumn.svelte';
+	import ReactionColumn from '$lib/ui/table/ReactionColumn.svelte';
+	import ReactionModal from '$lib/ui/ReactionModal.svelte';
+	import type { SubmissionData } from '$lib/submissionData.js';
 
 	let { data } = $props();
 
 	let modal = $state<ReactionModal>();
+
+	let timeColumn = new Column<SubmissionData, string>('Time', {
+		renderMapping: (object: SubmissionData) => timeToMin(object.time),
+		renderer: SimpleColumn,
+		comparator: (a, b): number => (parseRelTime(a.time) ?? 0) - (parseRelTime(b.time) ?? 0)
+	});
+
+	let problemColumn = new Column<SubmissionData, Problem>('Problem', {
+		renderMapping: (object: SubmissionData) => object.problem,
+		renderer: ProblemColumn,
+		onclick: (object: SubmissionData) => goto(`/problem/${object.problem.id}`),
+		comparator: (a, b): number => a.problem.ordinal - b.problem.ordinal
+	});
+
+	let languageColumn = new Column<SubmissionData, string>('Language', {
+		renderMapping: (object: SubmissionData) => object.language.name,
+		renderer: SimpleColumn,
+		comparator: (a, b): number => a.language.name.localeCompare(b.language.name)
+	});
+
+	let judgementTypeColumn = new Column<SubmissionData, JudgementType | undefined>('Judgement', {
+		renderMapping: (object: SubmissionData) => object.judgementType,
+		renderer: JudgementTypeColumn,
+		comparator: (a, b): number => (a.judgementType?.name ?? 'a').localeCompare(b.judgementType?.name ?? 'a')
+	});
+
+	let reactionColumn = new Column<SubmissionData, FileReference[]>('Reaction Video', {
+		renderMapping: (object: SubmissionData) => object.reaction,
+		renderer: ReactionColumn,
+		onclick: (object: SubmissionData) =>
+			modal?.openReaction(object.reaction, data.team?.display_name || data.team?.name + ' reaction video')
+	});
+
+	const columns = [timeColumn, problemColumn, languageColumn, judgementTypeColumn];
+
+	// svelte-ignore state_referenced_locally
+	if (data.hasReactions) {
+		columns.push(reactionColumn);
+	}
 
 	onMount(() => {
 		const interval = setInterval(() => {
@@ -67,49 +115,8 @@
 	{#if data.submissions && data.submissions.length > 0}
 		<div class="flex flex-col">
 			<div class="text-xl">Submissions</div>
-			<div class="grid grid-table" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr" role="row">
-				<div role="cell" class="">Time</div>
-				<div role="cell" class="">Problem</div>
-				<div role="cell" class="">Language</div>
-				<div role="cell" class="">Judgement</div>
-				{#if data.hasReactions}
-					<div role="cell" class="">Reaction Video</div>
-				{/if}
-			</div>
-			{#each data.submissions as submission (submission.id)}
-				<div class="grid grid-table" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr" role="row">
-					<div role="cell" class="">{submission.time}</div>
-					<div role="cell" class="">
-						<ProblemUI problem={submission.problem} onclick={() => goto('/problem/' + submission.problem?.id)} />
-					</div>
-					<div role="cell" class="">{submission.language}</div>
-					<div role="cell" class="">
-						<JudgementTypeUI judgementType={submission.judgementType} />{submission.judgement}
-					</div>
-					{#if data.hasReactions}
-						<div role="cell" class="p-2">
-							{#if submission.reaction && submission?.reaction.length > 0}
-								<button
-									onclick={() =>
-										modal?.openReaction(
-											submission.reaction,
-											data.team?.display_name || data.team?.name + ' reaction video'
-										)}
-									class="
-									text-blue-600
-									dark:text-blue-400
-									hover:bg-hover
-									p-1 rounded
-									cursor-pointer">
-									Video
-								</button>
-							{:else}
-								-
-							{/if}
-						</div>
-					{/if}
-				</div>
-			{/each}
+
+			<Table kind="submissions" data={data.submissions} {columns} defaultSortColumn="Time"></Table>
 		</div>
 	{/if}
 
