@@ -4,9 +4,9 @@ import Image from './Image.svelte';
 import Photo from './Photo.svelte';
 import Clock from './Clock.svelte';
 import FloorMap from './FloorMap.svelte';
-import JudgementType from './JudgementType.svelte';
-import Person from './Person.svelte';
-import Problem from './Problem.svelte';
+import JudgementTypeUI from './JudgementTypeUI.svelte';
+import PersonUI from './PersonUI.svelte';
+import ProblemUI from './ProblemUI.svelte';
 import ScoreboardHeader from './ScoreboardHeader.svelte';
 import ScoreboardRow from './ScoreboardRow.svelte';
 import Video from './Video.svelte';
@@ -18,9 +18,9 @@ export {
 	Photo,
 	Clock,
 	FloorMap,
-	JudgementType,
-	Person,
-	Problem,
+	JudgementTypeUI,
+	PersonUI,
+	ProblemUI,
 	ScoreboardHeader,
 	ScoreboardRow,
 	Video

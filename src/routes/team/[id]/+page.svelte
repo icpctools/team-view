@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto, invalidate } from '$app/navigation';
-	import { JudgementType, Person, Photo, Problem } from '@icpctools/contest-ui';
+	import { JudgementTypeUI, PersonUI, Photo, ProblemUI } from '@icpctools/contest-ui';
 	import ReactionModal from '$lib/ui/ReactionModal.svelte';
 	import { onMount } from 'svelte';
 
@@ -80,11 +80,11 @@
 				<div class="grid grid-table" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr" role="row">
 					<div role="cell" class="">{submission.time}</div>
 					<div role="cell" class="">
-						<Problem problem={submission.problem} onclick={() => goto('/problem/' + submission.problem?.id)} />
+						<ProblemUI problem={submission.problem} onclick={() => goto('/problem/' + submission.problem?.id)} />
 					</div>
 					<div role="cell" class="">{submission.language}</div>
 					<div role="cell" class="">
-						<JudgementType judgementType={submission.judgementType} />{submission.judgement}
+						<JudgementTypeUI judgementType={submission.judgementType} />{submission.judgement}
 					</div>
 					{#if data.hasReactions}
 						<div role="cell" class="p-2">
@@ -127,7 +127,7 @@
 			<div class="text-xl">Coaches</div>
 			<div class="flex flex-row gap-2">
 				{#each data.coaches as person}
-					<Person {person} />
+					<PersonUI {person} />
 				{/each}
 			</div>
 		</div>
@@ -138,7 +138,7 @@
 			<div class="text-xl">Contestants</div>
 			<div class="flex flex-row gap-2">
 				{#each data.contestants as person}
-					<Person {person} />
+					<PersonUI {person} />
 				{/each}
 			</div>
 		</div>

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { invalidate } from '$app/navigation';
-	import { JudgementType, Problem } from '@icpctools/contest-ui';
+	import { JudgementTypeUI, ProblemUI } from '@icpctools/contest-ui';
 	import { onMount } from 'svelte';
 	import ReactionModal from '$lib/ui/ReactionModal.svelte';
 
@@ -23,7 +23,7 @@
 	<div class="flex flex-col">
 		<div class="text-xl">Problem</div>
 		<div class="flex flex-row gap-x-2">
-			<Problem problem={data.problem} />
+			<ProblemUI problem={data.problem} />
 			{data.problem.name}
 		</div>
 	</div>
@@ -63,7 +63,7 @@
 					</div>
 					<div role="cell" class="p-2">{submission.language}</div>
 					<div role="cell" class="p-2">
-						<JudgementType judgementType={submission.judgementType} />{submission.judgement}
+						<JudgementTypeUI judgementType={submission.judgementType} />{submission.judgement}
 					</div>
 					{#if data.hasReactions}
 						<div role="cell" class="p-2">
