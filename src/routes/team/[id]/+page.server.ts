@@ -75,7 +75,7 @@ export const load = async ({ params, depends }) => {
 			problem: util.findById(problems, s.problem_id),
 			language: util.findById(languages, s.language_id)?.name,
 			judgement: judge,
-			judgement_type: jt,
+			judgementType: jt,
 			reaction: s.reaction
 		};
 	});

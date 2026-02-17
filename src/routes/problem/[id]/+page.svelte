@@ -63,7 +63,7 @@
 					</div>
 					<div role="cell" class="p-2">{submission.language}</div>
 					<div role="cell" class="p-2">
-						<JudgementType judgement_type={submission.judgement_type} />{submission.judgement}
+						<JudgementType judgementType={submission.judgementType} />{submission.judgement}
 					</div>
 					{#if data.hasReactions}
 						<div role="cell" class="p-2">

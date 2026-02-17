@@ -8,14 +8,14 @@ class Mutex {
 	private locked: boolean = false;
 	private queue: (() => void)[] = [];
 
-	async lock() {
+	async lock(): Promise<void> {
 		if (this.locked) {
 			return new Promise<void>((resolve) => this.queue.push(resolve));
 		}
 		this.locked = true;
 	}
 
-	unlock() {
+	unlock(): void {
 		this.locked = false;
 		if (this.queue.length > 0) {
 			const next = this.queue.shift();
@@ -26,7 +26,7 @@ class Mutex {
 
 const mutex = new Mutex();
 
-export async function loadContest() {
+export async function loadContest(): Promise<ContestAPI | undefined> {
 	if (contest) return contest;
 
 	await mutex.lock();
