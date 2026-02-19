@@ -77,6 +77,7 @@ export const load = async ({ params, depends }) => {
 			language: util.findById(languages, s.language_id),
 			judgement: judge,
 			judgementType: jt,
+			files: s.files,
 			reaction: s.reaction
 		} as SubmissionData;
 	});

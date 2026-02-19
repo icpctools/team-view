@@ -11,10 +11,13 @@
 	import ReactionColumn from '$lib/ui/table/ReactionColumn.svelte';
 	import ReactionModal from '$lib/ui/ReactionModal.svelte';
 	import type { SubmissionData } from '$lib/submissionData.js';
+	import SourceColumn from '$lib/ui/table/SourceColumn.svelte';
+	import SourceModal from '$lib/ui/SourceModal.svelte';
 
 	let { data } = $props();
 
-	let modal = $state<ReactionModal>();
+	let sourceModal = $state<SourceModal>();
+	let reactionModal = $state<ReactionModal>();
 
 	let timeColumn = new Column<SubmissionData>('Time', {
 		renderer: SimpleColumn,
@@ -43,16 +46,25 @@
 		comparator: (a, b): number => (a.judgementType?.name ?? 'a').localeCompare(b.judgementType?.name ?? 'a')
 	});
 
+	let sourceColumn = new Column<SubmissionData>('Source Code', {
+		renderer: SourceColumn,
+		rendererProps: (object: SubmissionData) => ({
+			source: object.files,
+			onclick: () =>
+				sourceModal?.openSource(object.files, object.team?.display_name || object.team?.name + ' source code')
+		})
+	});
+
 	let reactionColumn = new Column<SubmissionData>('Reaction Video', {
 		renderer: ReactionColumn,
 		rendererProps: (object: SubmissionData) => ({
 			reaction: object.reaction,
 			onclick: () =>
-				modal?.openReaction(object.reaction, data.team?.display_name || data.team?.name + ' reaction video')
+				reactionModal?.openReaction(object.reaction, object.team?.display_name || object.team?.name + ' reaction video')
 		})
 	});
 
-	const columns = [timeColumn, problemColumn, languageColumn, judgementTypeColumn];
+	const columns = [timeColumn, problemColumn, languageColumn, judgementTypeColumn, sourceColumn];
 
 	// svelte-ignore state_referenced_locally
 	if (data.hasReactions) {
@@ -155,4 +167,6 @@
 	{/if}
 </div>
 
-<ReactionModal bind:this={modal} />
+<SourceModal bind:this={sourceModal} />
+
+<ReactionModal bind:this={reactionModal} />

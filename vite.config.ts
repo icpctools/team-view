@@ -50,7 +50,11 @@ export default defineConfig({
 		noExternal: ['@icpctools/contest-api', '@icpctools/contest-ui']
 	},
 	optimizeDeps: {
-		exclude: ['got']
+		exclude: ['got'],
+		include: ['monaco-editor']
+	},
+	worker: {
+		format: 'es'
 	},
 	server: {
 		fs: {
