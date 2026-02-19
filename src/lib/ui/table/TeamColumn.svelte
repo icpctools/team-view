@@ -2,14 +2,14 @@
 	import type { Team } from '@icpctools/contest-api';
 
 	interface Props {
-		object: Team;
+		team: Team;
 		onclick?: () => void;
 	}
-	let { object, onclick }: Props = $props();
+	let { team, onclick }: Props = $props();
 </script>
 
 <div class="w-full">
-	{#if object}
+	{#if team}
 		<button
 			{onclick}
 			class="
@@ -18,7 +18,7 @@
 			hover:bg-hover
 			p-0.5 rounded
 			cursor-pointer">
-			{object?.label}: {object?.display_name || object?.name}
+			{team.label}: {team.display_name || team.name}
 		</button>
 	{/if}
 </div>

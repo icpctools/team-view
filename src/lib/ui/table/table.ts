@@ -3,7 +3,7 @@ import type { Component } from 'svelte';
 /**
  * Options to be used when creating a Column.
  */
-export interface ColumnInformation<Type, RenderType = Type> {
+export interface ColumnInformation<Type> {
 	/**
 	 * Column alignment, one of 'left', 'center', or 'right'.
 	 *
@@ -19,19 +19,17 @@ export interface ColumnInformation<Type, RenderType = Type> {
 	readonly width?: string;
 
 	/**
-	 * Map the source object to another type for rendering. Allows
-	 * easier reuse and sharing of renderers by converting to simple
-	 * types (e.g. rendering 'string' instead of 'type.name') or
-	 * converting to a different type.
+	 * Svelte component, renderer for each cell in the column.
 	 */
-	readonly renderMapping?: (object: Type) => RenderType;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	readonly renderer?: Component<any>;
 
 	/**
-	 * Svelte component, renderer for each cell in the column.
-	 * The component must have a property 'object' that has the
-	 * same type as the Column.
+	 * Properties to pass to the renderer component.
+	 * These properties will be spread onto the component, allowing you
+	 * to renderer components with any property.
 	 */
-	readonly renderer?: Component<{ object: RenderType; onclick?: () => void }>;
+	readonly rendererProps?: (object: Type) => Record<string, unknown>;
 
 	/**
 	 * Set a comparator used to sort the data by the values in this column.
@@ -62,19 +60,14 @@ export interface ColumnInformation<Type, RenderType = Type> {
 	 * Defaults to 'false'.
 	 */
 	readonly overflow?: boolean;
-
-	/**
-	 * Action to execute if you click on the column.
-	 */
-	readonly onclick?: (object: Type) => void;
 }
 
 /**
  * A table Column.
  */
-export class Column<Type, RenderType = Type> {
+export class Column<Type> {
 	constructor(
 		readonly title: string,
-		readonly info: ColumnInformation<Type, RenderType>
+		readonly info: ColumnInformation<Type>
 	) {}
 }

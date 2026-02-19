@@ -3,14 +3,14 @@
 	import { ProblemUI } from '@icpctools/contest-ui';
 
 	interface Props {
-		object: Problem;
+		problem: Problem;
 		onclick?: () => void;
 	}
-	let { object, onclick }: Props = $props();
+	let { problem, onclick }: Props = $props();
 </script>
 
 <div class="w-12">
-	{#if object}
-		<ProblemUI problem={object} {onclick} />
+	{#if problem}
+		<ProblemUI {problem} {onclick} />
 	{/if}
 </div>

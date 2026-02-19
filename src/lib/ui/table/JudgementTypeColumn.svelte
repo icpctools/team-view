@@ -3,13 +3,13 @@
 	import { JudgementTypeUI } from '@icpctools/contest-ui';
 
 	interface Props {
-		object?: JudgementType;
+		judgementType?: JudgementType;
 	}
-	let { object }: Props = $props();
+	let { judgementType }: Props = $props();
 </script>
 
 <div class="max-w-full">
-	{#if object}
-		<JudgementTypeUI judgementType={object} />
+	{#if judgementType}
+		<JudgementTypeUI {judgementType} />
 	{/if}
 </div>

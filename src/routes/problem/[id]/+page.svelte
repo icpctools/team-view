@@ -5,7 +5,7 @@
 	import ReactionModal from '$lib/ui/ReactionModal.svelte';
 	import { Column } from '$lib/ui/table/table.js';
 	import type { SubmissionData } from '../../../lib/submissionData.js';
-	import { parseRelTime, timeToMin, type FileReference, type JudgementType, type Team } from '@icpctools/contest-api';
+	import { parseRelTime, timeToMin } from '@icpctools/contest-api';
 	import SimpleColumn from '$lib/ui/table/SimpleColumn.svelte';
 	import JudgementTypeColumn from '$lib/ui/table/JudgementTypeColumn.svelte';
 	import ReactionColumn from '$lib/ui/table/ReactionColumn.svelte';
@@ -26,38 +26,39 @@
 		};
 	});
 
-	let timeColumn = new Column<SubmissionData, string>('Time', {
-		renderMapping: (object: SubmissionData) => timeToMin(object.time),
+	let timeColumn = new Column<SubmissionData>('Time', {
 		renderer: SimpleColumn,
+		rendererProps: (object: SubmissionData) => ({ object: timeToMin(object.time) }),
 		comparator: (a, b): number => (parseRelTime(a.time) ?? 0) - (parseRelTime(b.time) ?? 0)
 	});
 
-	let teamColumn = new Column<SubmissionData, Team>('Team', {
+	let teamColumn = new Column<SubmissionData>('Team', {
 		width: '3fr',
-		renderMapping: (object: SubmissionData) => object.team,
 		renderer: TeamColumn,
-		onclick: (object: SubmissionData) => goto(`/team/${object.team?.id}`),
+		rendererProps: (object: SubmissionData) => ({ team: object.team, onclick: () => goto(`/team/${object.team?.id}`) }),
 		comparator: (a, b): number =>
 			(a.team.display_name ?? a.team.name ?? 'a').localeCompare(b.team.display_name ?? b.team.name ?? 'a')
 	});
 
-	let languageColumn = new Column<SubmissionData, string>('Language', {
-		renderMapping: (object: SubmissionData) => object.language?.name,
+	let languageColumn = new Column<SubmissionData>('Language', {
 		renderer: SimpleColumn,
+		rendererProps: (object: SubmissionData) => ({ object: object.language?.name }),
 		comparator: (a, b): number => a.language.name.localeCompare(b.language.name)
 	});
 
-	let judgementTypeColumn = new Column<SubmissionData, JudgementType | undefined>('Judgement', {
-		renderMapping: (object: SubmissionData) => object.judgementType,
+	let judgementTypeColumn = new Column<SubmissionData>('Judgement', {
 		renderer: JudgementTypeColumn,
+		rendererProps: (object: SubmissionData) => ({ judgementType: object.judgementType }),
 		comparator: (a, b): number => (a.judgementType?.name ?? 'a').localeCompare(b.judgementType?.name ?? 'a')
 	});
 
-	let reactionColumn = new Column<SubmissionData, FileReference[]>('Reaction Video', {
-		renderMapping: (object: SubmissionData) => object.reaction,
+	let reactionColumn = new Column<SubmissionData>('Reaction Video', {
 		renderer: ReactionColumn,
-		onclick: (object: SubmissionData) =>
-			modal?.openReaction(object.reaction, object.team?.display_name || object.team?.name + ' reaction video')
+		rendererProps: (object: SubmissionData) => ({
+			reaction: object.reaction,
+			onclick: () =>
+				modal?.openReaction(object.reaction, object.team?.display_name || object.team?.name + ' reaction video')
+		})
 	});
 
 	const columns = [timeColumn, teamColumn, languageColumn, judgementTypeColumn];

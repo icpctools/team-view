@@ -2,14 +2,14 @@
 	import type { FileReference } from '@icpctools/contest-api';
 
 	interface Props {
-		object?: FileReference[];
+		reaction?: FileReference[];
 		onclick?: () => void;
 	}
-	let { object, onclick }: Props = $props();
+	let { reaction, onclick }: Props = $props();
 </script>
 
 <div class="w-full">
-	{#if object && object?.length > 0}
+	{#if reaction && reaction?.length > 0}
 		<button
 			{onclick}
 			class="
