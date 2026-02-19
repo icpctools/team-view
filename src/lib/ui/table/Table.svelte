@@ -5,8 +5,7 @@
 
 	interface Props {
 		kind: string;
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		columns: Column<T, any>[];
+		columns: Column<T>[];
 		data: T[];
 		defaultSortColumn: string | undefined;
 	}
@@ -144,9 +143,7 @@
 								: 'overflow-hidden'} max-w-full py-1.5"
 							role="cell">
 							{#if column.info.renderer}
-								<column.info.renderer
-									object={column.info.renderMapping ? column.info.renderMapping(object) : object}
-									onclick={column.info.onclick ? () => column.info.onclick?.(object) : undefined} />
+								<column.info.renderer {...column.info.rendererProps?.(object)} />
 							{/if}
 						</div>
 					{/each}
