@@ -11,10 +11,13 @@
 	import ReactionColumn from '$lib/ui/table/ReactionColumn.svelte';
 	import Table from '$lib/ui/table/Table.svelte';
 	import TeamColumn from '$lib/ui/table/TeamColumn.svelte';
+	import SourceModal from '$lib/ui/SourceModal.svelte';
+	import SourceColumn from '$lib/ui/table/SourceColumn.svelte';
 
 	let { data } = $props();
 
-	let modal = $state<ReactionModal>();
+	let sourceModal = $state<SourceModal>();
+	let reactionModal = $state<ReactionModal>();
 
 	onMount(() => {
 		const interval = setInterval(() => {
@@ -52,16 +55,25 @@
 		comparator: (a, b): number => (a.judgementType?.name ?? 'a').localeCompare(b.judgementType?.name ?? 'a')
 	});
 
+	let sourceColumn = new Column<SubmissionData>('Source Code', {
+		renderer: SourceColumn,
+		rendererProps: (object: SubmissionData) => ({
+			source: object.files,
+			onclick: () =>
+				sourceModal?.openSource(object.files, object.team?.display_name || object.team?.name + ' source code')
+		})
+	});
+
 	let reactionColumn = new Column<SubmissionData>('Reaction Video', {
 		renderer: ReactionColumn,
 		rendererProps: (object: SubmissionData) => ({
 			reaction: object.reaction,
 			onclick: () =>
-				modal?.openReaction(object.reaction, object.team?.display_name || object.team?.name + ' reaction video')
+				reactionModal?.openReaction(object.reaction, object.team?.display_name || object.team?.name + ' reaction video')
 		})
 	});
 
-	const columns = [timeColumn, teamColumn, languageColumn, judgementTypeColumn];
+	const columns = [timeColumn, teamColumn, languageColumn, judgementTypeColumn, sourceColumn];
 
 	// svelte-ignore state_referenced_locally
 	if (data.hasReactions) {
@@ -94,4 +106,6 @@
 	{/if}
 </div>
 
-<ReactionModal bind:this={modal} />
+<SourceModal bind:this={sourceModal} />
+
+<ReactionModal bind:this={reactionModal} />
