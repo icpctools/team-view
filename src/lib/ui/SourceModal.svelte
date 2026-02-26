@@ -50,9 +50,7 @@
 			Files:
 			{#each sourceFiles as file (file)}
 				<button
-					class="
-		text-blue-600
-		dark:text-blue-400
+					class="text-link
 		hover:bg-hover
 		p-0.5 rounded
 		cursor-pointer">
