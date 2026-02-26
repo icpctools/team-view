@@ -9,7 +9,7 @@
 		theme?: string;
 	}
 
-	let { value = $bindable(), language = 'text', theme = 'vs-dark' }: Props = $props();
+	let { value = $bindable(), language = $bindable('text'), theme = 'vs-dark' }: Props = $props();
 
 	let editor = $state<Monaco.editor.IStandaloneCodeEditor>();
 	let monaco = $state<typeof Monaco>();
@@ -26,7 +26,7 @@
 		// monaco instance is ready, let's display some code!
 		editor = monaco.editor.create(editorContainer, {
 			value,
-			language,
+			language: language,
 			theme,
 			automaticLayout: true,
 			overviewRulerLanes: 0,
@@ -52,6 +52,12 @@
 		}
 		if (value === '') {
 			editor?.setValue(' ');
+		}
+	});
+
+	$effect(() => {
+		if (editor) {
+			monaco?.editor.setModelLanguage(editor.getModel(), language);
 		}
 	});
 

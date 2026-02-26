@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { fetchAndUnzipSubmission } from '$lib/source-util';
+	import { fetchAndUnzipSubmission, getFileLanguage } from '$lib/source-util';
 	import CodeEditor from './CodeEditor.svelte';
 	import Modal from './Modal.svelte';
 	import type { FileReference } from '@icpctools/contest-api';
@@ -9,8 +9,9 @@
 	let sourceMap = $state<Map<string, string>>();
 	let sourceFiles = $state<string[]>([]);
 	let sourceCode = $state<string>('');
+	let language = $state('text');
 
-	export function openSource(files: FileReference[] | undefined, title: string, auth: string) {
+	export function openSource(files: FileReference[] | undefined, title: string, auth: string): void {
 		if (!files) return;
 
 		sourceFiles = [];
@@ -27,12 +28,16 @@
 				sourceFiles = [...sourceMap.keys()];
 				if (sourceFiles.length > 0) {
 					sourceCode = sourceMap.get(sourceFiles[0]) ?? 'Not found';
+					language = getFileLanguage(sourceFiles[0]);
 				}
 			})
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			.catch((err: any) => {
+			.catch((err: unknown) => {
 				sourceFiles = [];
-				sourceCode = 'Error: ' + err;
+				if (err instanceof TypeError) {
+					sourceCode = err.message;
+				} else {
+					sourceCode = 'Error: ' + err;
+				}
 			});
 
 		modal?.open(title);
@@ -56,7 +61,7 @@
 			{/each}
 		</div>
 		<div class="flex max-w-full w-full h-full">
-			<CodeEditor value={sourceCode}></CodeEditor>
+			<CodeEditor value={sourceCode} bind:language></CodeEditor>
 		</div>
 	</div>
 </Modal>

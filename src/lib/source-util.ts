@@ -1,16 +1,34 @@
 import type { FileReference } from '@icpctools/contest-api';
 
-export async function fetchFileReference(source: FileReference, auth: string): Promise<ArrayBuffer> {
-	console.log('Fetching file reference:', source.href);
+export function getFileLanguage(filename: string): string {
+	const ext = filename.slice(filename.lastIndexOf('.') + 1);
+	switch (ext) {
+		case 'ts':
+			return 'typescript';
+
+		case 'js':
+			return 'javascript';
+
+		case 'py':
+			return 'python';
+
+		// some languages match the file extention (e.g. cpp and java) so fallback to this
+		default:
+			return ext;
+	}
+}
+
+export async function fetchFileReference(fileRef: FileReference, auth: string): Promise<ArrayBuffer> {
+	console.log('Fetching file reference:', fileRef.href);
 
 	const startTime = performance.now();
-	const url = source.href;
+	const url = fileRef.href;
 
 	const response = await fetch(url, {
 		method: 'GET',
 		headers: { Authorization: 'Basic ' + auth }
 	}).catch((err: unknown) => {
-		throw new Error(`Failed to fetch: ${err}`);
+		throw err;
 	});
 	if (!response.ok) {
 		throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`);
