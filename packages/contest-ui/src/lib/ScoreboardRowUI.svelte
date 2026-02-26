@@ -64,8 +64,10 @@
 		<div role="cell" class="w-4 justify-self-center"><Logo ref={logo} /></div>
 	{/if}
 	{#if mode != 'summary'}
-		<div role="cell" class="text-nowrap overflow-hidden text-ellipsis hover:bg-hover rounded">
-			<a href="/team/{team?.id}" class="text-gray-900 dark:text-gray-100 transition-colors"
+		<div role="cell" class="text-nowrap overflow-hidden text-ellipsis">
+			<a
+				href="/team/{team?.id}"
+				class="text-gray-900 dark:text-gray-100 hover:bg-hover hover:text-link rounded p-0.5 transition-colors"
 				>{team?.display_name || team?.name}</a>
 		</div>
 	{/if}

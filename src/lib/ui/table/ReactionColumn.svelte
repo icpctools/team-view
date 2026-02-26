@@ -12,9 +12,7 @@
 	{#if reaction && reaction?.length > 0}
 		<button
 			{onclick}
-			class="
-			text-blue-600
-			dark:text-blue-400
+			class="text-link
 			hover:bg-hover
 			p-0.5 rounded
 			cursor-pointer">
