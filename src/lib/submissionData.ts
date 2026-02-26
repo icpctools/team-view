@@ -9,4 +9,5 @@ export interface SubmissionData {
 	judgementType: JudgementType | undefined;
 	files: FileReference[];
 	reaction: FileReference[];
+	auth: string;
 }

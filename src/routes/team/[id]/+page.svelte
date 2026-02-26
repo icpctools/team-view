@@ -51,7 +51,11 @@
 		rendererProps: (object: SubmissionData) => ({
 			source: object.files,
 			onclick: () =>
-				sourceModal?.openSource(object.files, object.team?.display_name || object.team?.name + ' source code')
+				sourceModal?.openSource(
+					object.files,
+					object.team?.display_name || object.team?.name + ' source code',
+					object.auth
+				)
 		})
 	});
 

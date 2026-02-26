@@ -10,13 +10,13 @@
 	let sourceFiles = $state<string[]>([]);
 	let sourceCode = $state<string>('');
 
-	export function openSource(files: FileReference[] | undefined, title: string) {
+	export function openSource(files: FileReference[] | undefined, title: string, auth: string) {
 		if (!files) return;
 
 		sourceFiles = [];
 		sourceCode = 'Loading...';
 
-		fetchAndUnzipSubmission(files)
+		fetchAndUnzipSubmission(files, auth)
 			.then((map) => {
 				sourceMap = map;
 				if (!sourceMap) {
