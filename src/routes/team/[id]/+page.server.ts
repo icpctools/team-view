@@ -78,7 +78,8 @@ export const load = async ({ params, depends }) => {
 			judgement: judge,
 			judgementType: jt,
 			files: s.files,
-			reaction: s.reaction
+			reaction: s.reaction,
+			auth: cc.getAuth()
 		} as SubmissionData;
 	});
 

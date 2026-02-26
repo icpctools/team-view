@@ -430,6 +430,10 @@ export class ContestAPI {
 		}
 	}
 
+	getAuth() {
+		return btoa(this.credentials?.user + ':' + this.credentials?.password);
+	}
+
 	watch(): void {
 		if (this.interval) {
 			return;

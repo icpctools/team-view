@@ -25,5 +25,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 	event.locals.sessionCount = sessionStore.getSessionCount();
 
-	return resolve(event);
+	const response = await resolve(event);
+	response.headers.set('Access-Control-Allow-Origin', '*');
+	return response;
 };

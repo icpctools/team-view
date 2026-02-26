@@ -1,33 +1,40 @@
 import type { FileReference } from '@icpctools/contest-api';
 
-export async function fetchAndUnzipSubmission(source: FileReference[]): Promise<Map<string, string>> {
-	const contents = new Map<string, string>();
-	const url = source[0].href;
+export async function fetchFileReference(source: FileReference, auth: string): Promise<ArrayBuffer> {
+	console.log('Fetching file reference:', source.href);
 
-	// Import JSZip dynamically
-	const JSZip = (await import('jszip')).default;
+	const startTime = performance.now();
+	const url = source.href;
 
-	console.log('Fetching submission:', url);
-
-	// Fetch the zip file
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const response = await fetch(url).catch((err: any) => {
+	const response = await fetch(url, {
+		method: 'GET',
+		headers: { Authorization: 'Basic ' + auth }
+	}).catch((err: unknown) => {
 		throw new Error(`Failed to fetch: ${err}`);
 	});
-
 	if (!response.ok) {
-		throw new Error(`Failed to fetch submission: ${response.status} ${response.statusText}`);
+		throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`);
 	}
 
-	// Get as ArrayBuffer instead of Blob and confirm it's not empty
 	const arrayBuffer = await response.arrayBuffer();
 	if (arrayBuffer.byteLength === 0) {
 		throw new Error('Received empty file');
 	}
+	const endTime = performance.now();
+	console.log(`Fetched ${url} in ${(endTime - startTime).toFixed(1)}ms`);
+	return arrayBuffer;
+}
 
+export async function fetchAndUnzipSubmission(source: FileReference[], auth: string): Promise<Map<string, string>> {
+	// Import JSZip dynamically
+	const JSZip = (await import('jszip')).default;
+
+	// Fetch the zip file
+	const arrayBuffer = await fetchFileReference(source[0], auth);
 	const zip = await JSZip.loadAsync(arrayBuffer);
 
 	// Extract all files
+	const contents = new Map<string, string>();
 	for (const [filename, file] of Object.entries(zip.files)) {
 		if (!file.dir) {
 			const content = await file.async('string');
