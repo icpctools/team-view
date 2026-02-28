@@ -2,8 +2,8 @@
 	import { onMount } from 'svelte';
 	import { goto, invalidate } from '$app/navigation';
 	import { flip } from 'svelte/animate';
-	import { ScoreboardHeader, ScoreboardRow } from '@icpctools/contest-ui';
-	import type { Problem } from 'contest-api';
+	import { ScoreboardHeader, ScoreboardRowUI } from '@icpctools/contest-ui';
+	import type { Problem } from '@icpctools/contest-api';
 
 	let { data } = $props();
 
@@ -28,7 +28,7 @@
 	<div role="rowgroup">
 		{#each data.scoreboard.rows as row, i (row.team_id)}
 			<div animate:flip class="even:bg-white dark:even:bg-gray-900 odd:bg-gray-100 dark:odd:bg-gray-800">
-				<ScoreboardRow
+				<ScoreboardRowUI
 					showLogo={data.hasLogos}
 					scoreboard_type={data.scoreboard_type}
 					problems={data.problems}

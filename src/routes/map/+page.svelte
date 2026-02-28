@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import type { Team } from 'contest-api';
+	import type { Team } from '@icpctools/contest-api';
 	import { FloorMap } from '@icpctools/contest-ui';
 
 	let { data } = $props();

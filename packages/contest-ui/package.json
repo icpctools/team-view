@@ -49,9 +49,9 @@
 			"types": "./dist/Problem.svelte.d.ts",
 			"svelte": "./dist/Problem.svelte"
 		},
-		"./ScoreboardRow": {
-			"types": "./dist/ScoreboardRow.svelte.d.ts",
-			"svelte": "./dist/ScoreboardRow.svelte"
+		"./ScoreboardRowUI": {
+			"types": "./dist/ScoreboardRowUI.svelte.d.ts",
+			"svelte": "./dist/ScoreboardRowUI.svelte"
 		},
 		"./ScoreboardHeader": {
 			"types": "./dist/ScoreboardHeader.svelte.d.ts",
