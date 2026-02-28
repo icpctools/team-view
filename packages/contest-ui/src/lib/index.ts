@@ -8,7 +8,7 @@ import JudgementTypeUI from './JudgementTypeUI.svelte';
 import PersonUI from './PersonUI.svelte';
 import ProblemUI from './ProblemUI.svelte';
 import ScoreboardHeader from './ScoreboardHeader.svelte';
-import ScoreboardRow from './ScoreboardRow.svelte';
+import ScoreboardRowUI from './ScoreboardRowUI.svelte';
 import Video from './Video.svelte';
 
 export {
@@ -22,6 +22,6 @@ export {
 	PersonUI,
 	ProblemUI,
 	ScoreboardHeader,
-	ScoreboardRow,
+	ScoreboardRowUI,
 	Video
 };

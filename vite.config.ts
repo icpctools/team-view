@@ -13,7 +13,7 @@ function excludeNodeModules(): Plugin {
 			if (options?.ssr) {
 				return null;
 			}
-			
+
 			// Don't resolve Node.js-only packages for client builds
 			if (
 				id === 'got' ||
@@ -30,7 +30,7 @@ function excludeNodeModules(): Plugin {
 			if (options?.ssr) {
 				return null;
 			}
-			
+
 			// Return empty module for got and Node.js built-ins in client builds
 			if (id === '\0virtual:got-empty') {
 				// Export the named exports that contest-api uses

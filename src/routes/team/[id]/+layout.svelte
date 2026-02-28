@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { invalidate } from '$app/navigation';
-	import { Logo, ScoreboardRow } from '@icpctools/contest-ui';
+	import { Logo, ScoreboardRowUI } from '@icpctools/contest-ui';
 	import { onMount } from 'svelte';
 
 	let { data, children } = $props();
@@ -50,7 +50,7 @@
 
 	{#if data.problems && data.row}
 		<div class="w-full align-center border-b border-gray-500 dark:border-gray-600">
-			<ScoreboardRow
+			<ScoreboardRowUI
 				scoreboard_type={data.scoreboard_type}
 				problems={data.problems}
 				row={data.row}

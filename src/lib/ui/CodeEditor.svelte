@@ -1,6 +1,6 @@
 <script lang="ts">
 	import loader from '@monaco-editor/loader';
-	import type * as Monaco from 'monaco-editor/esm/vs/editor/editor.api';
+	import type * as Monaco from 'monaco-editor';
 	import { onDestroy, onMount } from 'svelte';
 
 	interface Props {
@@ -24,17 +24,19 @@
 		monaco = await loader.init();
 
 		// monaco instance is ready, let's display some code!
-		editor = monaco.editor.create(editorContainer, {
-			value,
-			language: language,
-			theme,
-			automaticLayout: true,
-			overviewRulerLanes: 0,
-			overviewRulerBorder: false,
-			readOnly: true,
-			scrollBeyondLastLine: false,
-			wordWrap: 'on'
-		});
+		if (editorContainer) {
+			editor = monaco?.editor.create(editorContainer, {
+				value,
+				language,
+				theme,
+				automaticLayout: true,
+				overviewRulerLanes: 0,
+				overviewRulerBorder: false,
+				readOnly: true,
+				scrollBeyondLastLine: false,
+				wordWrap: 'on'
+			});
+		}
 	});
 
 	$effect(() => {
@@ -57,7 +59,10 @@
 
 	$effect(() => {
 		if (editor) {
-			monaco?.editor.setModelLanguage(editor.getModel(), language);
+			const model = editor.getModel();
+			if (model) {
+				monaco?.editor.setModelLanguage(model, language);
+			}
 		}
 	});
 
