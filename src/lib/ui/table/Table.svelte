@@ -27,7 +27,7 @@
 			return;
 		}
 
-		let comparator = column.info.comparator;
+		let comparator = column.comparator;
 		if (!comparator) {
 			// column is not sortable
 			return;
@@ -37,7 +37,7 @@
 			sortAscending = !sortAscending;
 		} else {
 			sortCol = column;
-			sortAscending = column.info.initialOrder ? column.info.initialOrder !== 'descending' : true;
+			sortAscending = column.initialOrder ? column.initialOrder !== 'descending' : true;
 		}
 		sortImpl();
 	}
@@ -48,7 +48,7 @@
 			return data;
 		}
 
-		let comparator = sortCol.info.comparator;
+		let comparator = sortCol.comparator;
 		if (!comparator) {
 			// column is not sortable
 			return data;
@@ -65,16 +65,16 @@
 
 	onMount(async () => {
 		const column: Column<T> | undefined = columns.find((column) => column.title === defaultSortColumn);
-		if (column?.info.comparator) {
+		if (column?.comparator) {
 			sortCol = column;
-			sortAscending = column.info.initialOrder ? column.info.initialOrder !== 'descending' : true;
+			sortAscending = column.initialOrder ? column.initialOrder !== 'descending' : true;
 		}
 	});
 
 	let gridTemplateColumns = $derived.by(() => {
 		let columnWidths: string[] = ['5px'];
 
-		columns.map((c) => c.info.width ?? '1fr').forEach((w) => columnWidths.push(w));
+		columns.map((c) => c.width ?? '1fr').forEach((w) => columnWidths.push(w));
 
 		columnWidths.push('5px');
 
@@ -97,13 +97,13 @@
 				<!-- svelte-ignore a11y_click_events_have_key_events -->
 				<!-- svelte-ignore a11y_interactive_supports_focus -->
 				<div
-					class="max-w-full overflow-hidden flex flex-row text-sm font-semibold items-center whitespace-nowrap {column
-						.info.align === 'right'
+					class="max-w-full overflow-hidden flex flex-row text-sm font-semibold items-center whitespace-nowrap {column.align ===
+					'right'
 						? 'justify-self-end'
-						: column.info.align === 'center'
+						: column.align === 'center'
 							? 'justify-self-center'
 							: 'justify-self-start'} self-center select-none"
-					class:cursor-pointer={column.info.comparator}
+					class:cursor-pointer={column.comparator}
 					class:hover:text-black={sortCol !== column}
 					class:hover:dark:text-white={sortCol !== column}
 					onclick={sort.bind(undefined, column)}
@@ -111,7 +111,7 @@
 					<div class="overflow-hidden text-ellipsis">
 						{column.title}
 					</div>
-					{#if column.info.comparator}<i
+					{#if column.comparator}<i
 							class="fas pl-0.5"
 							class:fa-sort={sortCol !== column}
 							class:fa-sort-up={sortCol === column && sortAscending}
@@ -134,17 +134,15 @@
 
 					{#each columns as column, index (index)}
 						<div
-							class="whitespace-nowrap {column.info.align === 'right'
+							class="whitespace-nowrap {column.align === 'right'
 								? 'justify-self-end'
-								: column.info.align === 'center'
+								: column.align === 'center'
 									? 'justify-self-center'
-									: 'justify-self-start'} self-center {column.info.overflow === true
+									: 'justify-self-start'} self-center {column.overflow === true
 								? ''
 								: 'overflow-hidden'} max-w-full py-1.5"
 							role="cell">
-							{#if column.info.renderer}
-								<column.info.renderer {...column.info.rendererProps?.(object)} />
-							{/if}
+							<column.renderer {...column.rendererProps?.(object)} />
 						</div>
 					{/each}
 				</div>

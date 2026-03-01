@@ -1,9 +1,14 @@
 import type { Component } from 'svelte';
 
 /**
- * Options to be used when creating a Column.
+ * A table column.
  */
-export interface ColumnInformation<Type> {
+export interface Column<Type> {
+	/**
+	 * The column title.
+	 */
+	readonly title: string;
+
 	/**
 	 * Column alignment, one of 'left', 'center', or 'right'.
 	 *
@@ -22,7 +27,7 @@ export interface ColumnInformation<Type> {
 	 * Svelte component, renderer for each cell in the column.
 	 */
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	readonly renderer?: Component<any>;
+	readonly renderer: Component<any>;
 
 	/**
 	 * Properties to pass to the renderer component.
@@ -60,14 +65,4 @@ export interface ColumnInformation<Type> {
 	 * Defaults to 'false'.
 	 */
 	readonly overflow?: boolean;
-}
-
-/**
- * A table Column.
- */
-export class Column<Type> {
-	constructor(
-		readonly title: string,
-		readonly info: ColumnInformation<Type>
-	) {}
 }

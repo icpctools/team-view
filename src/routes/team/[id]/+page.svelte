@@ -2,7 +2,7 @@
 	import { goto, invalidate } from '$app/navigation';
 	import { PersonUI, Photo } from '@icpctools/contest-ui';
 	import { onMount } from 'svelte';
-	import { Column } from '$lib/ui/table/table';
+	import type { Column } from '$lib/ui/table/table';
 	import SimpleColumn from '$lib/ui/table/SimpleColumn.svelte';
 	import Table from '$lib/ui/table/Table.svelte';
 	import { timeToMin, parseRelTime } from '@icpctools/contest-api';
@@ -19,60 +19,63 @@
 	let sourceModal = $state<SourceModal>();
 	let reactionModal = $state<ReactionModal>();
 
-	let timeColumn = new Column<SubmissionData>('Time', {
-		renderer: SimpleColumn,
-		rendererProps: (object: SubmissionData) => ({ object: timeToMin(object.time) }),
-		comparator: (a, b): number => (parseRelTime(a.time) ?? 0) - (parseRelTime(b.time) ?? 0)
-	});
-
-	let problemColumn = new Column<SubmissionData>('Problem', {
-		renderer: ProblemColumn,
-		rendererProps: (object: SubmissionData) => ({
-			problem: object.problem,
-			onclick: () => goto(`/problem/${object.problem.id}`)
-		}),
-		comparator: (a, b): number => a.problem.ordinal - b.problem.ordinal
-	});
-
-	let languageColumn = new Column<SubmissionData>('Language', {
-		renderer: SimpleColumn,
-		rendererProps: (object: SubmissionData) => ({ object: object.language.name }),
-		comparator: (a, b): number => a.language.name.localeCompare(b.language.name)
-	});
-
-	let judgementTypeColumn = new Column<SubmissionData>('Judgement', {
-		renderer: JudgementTypeColumn,
-		rendererProps: (object: SubmissionData) => ({ judgementType: object.judgementType }),
-		comparator: (a, b): number => (a.judgementType?.name ?? 'a').localeCompare(b.judgementType?.name ?? 'a')
-	});
-
-	let sourceColumn = new Column<SubmissionData>('Source Code', {
-		renderer: SourceColumn,
-		rendererProps: (object: SubmissionData) => ({
-			source: object.files,
-			onclick: () =>
-				sourceModal?.openSource(
-					object.files,
-					object.team?.display_name || object.team?.name + ' source code',
-					object.auth
-				)
-		})
-	});
-
-	let reactionColumn = new Column<SubmissionData>('Reaction Video', {
-		renderer: ReactionColumn,
-		rendererProps: (object: SubmissionData) => ({
-			reaction: object.reaction,
-			onclick: () =>
-				reactionModal?.openReaction(object.reaction, object.team?.display_name || object.team?.name + ' reaction video')
-		})
-	});
-
-	const columns = [timeColumn, problemColumn, languageColumn, judgementTypeColumn, sourceColumn];
+	const columns: Column<SubmissionData>[] = [
+		{
+			title: 'Time',
+			renderer: SimpleColumn,
+			rendererProps: (object: SubmissionData) => ({ object: timeToMin(object.time) }),
+			comparator: (a, b): number => (parseRelTime(a.time) ?? 0) - (parseRelTime(b.time) ?? 0)
+		},
+		{
+			title: 'Problem',
+			renderer: ProblemColumn,
+			rendererProps: (object: SubmissionData) => ({
+				problem: object.problem,
+				onclick: () => goto(`/problem/${object.problem.id}`)
+			}),
+			comparator: (a, b): number => a.problem.ordinal - b.problem.ordinal
+		},
+		{
+			title: 'Language',
+			renderer: SimpleColumn,
+			rendererProps: (object: SubmissionData) => ({ object: object.language.name }),
+			comparator: (a, b): number => a.language.name.localeCompare(b.language.name)
+		},
+		{
+			title: 'Judgement',
+			renderer: JudgementTypeColumn,
+			rendererProps: (object: SubmissionData) => ({ judgementType: object.judgementType }),
+			comparator: (a, b): number => (a.judgementType?.name ?? 'a').localeCompare(b.judgementType?.name ?? 'a')
+		},
+		{
+			title: 'Source Code',
+			renderer: SourceColumn,
+			rendererProps: (object: SubmissionData) => ({
+				source: object.files,
+				onclick: () =>
+					sourceModal?.openSource(
+						object.files,
+						object.team?.display_name || object.team?.name + ' source code',
+						object.auth
+					)
+			})
+		}
+	];
 
 	// svelte-ignore state_referenced_locally
 	if (data.hasReactions) {
-		columns.push(reactionColumn);
+		columns.push({
+			title: 'Reaction Video',
+			renderer: ReactionColumn,
+			rendererProps: (object: SubmissionData) => ({
+				reaction: object.reaction,
+				onclick: () =>
+					reactionModal?.openReaction(
+						object.reaction,
+						object.team?.display_name || object.team?.name + ' reaction video'
+					)
+			})
+		});
 	}
 
 	onMount(() => {
