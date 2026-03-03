@@ -1,5 +1,6 @@
 import { sveltekit } from '@sveltejs/kit/vite';
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from 'vite';
+import { svelteTesting } from '@testing-library/svelte/vite';
 import tailwindcss from '@tailwindcss/vite';
 import type { Plugin } from 'vite';
 
@@ -14,14 +15,9 @@ function excludeNodeModules(): Plugin {
 				return null;
 			}
 
-			// Don't resolve Node.js-only packages for client builds
-			if (
-				id === 'got' ||
-				id.startsWith('got/') ||
-				['events', 'stream', 'tls', 'url', 'assert', 'util', 'http', 'https', 'net'].includes(id) ||
-				id.startsWith('node:')
-			) {
-				// For client builds, return a virtual empty module
+			// Stub got for client builds - it's Node-only and contest-api's got usage
+			// is server-only (loadContest is only called from +page.server.ts)
+			if (id === 'got' || id.startsWith('got/')) {
 				return { id: '\0virtual:got-empty', external: false };
 			}
 		},
@@ -52,10 +48,7 @@ function excludeNodeModules(): Plugin {
 }
 
 export default defineConfig({
-	plugins: [excludeNodeModules(), tailwindcss(), sveltekit()],
-	test: {
-		include: ['src/**/*.{test,spec}.{js,ts}', 'packages/**/*.{test,spec}.{js,ts}']
-	},
+	plugins: [excludeNodeModules(), tailwindcss(), sveltekit(), svelteTesting()],
 	ssr: {
 		noExternal: ['@icpctools/contest-api', '@icpctools/contest-ui']
 	},
