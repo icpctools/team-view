@@ -17,7 +17,7 @@ export function parseRelTime(relTime: RelTime | number | undefined): number | un
 	}
 	const match = relTime.match('-?([0-9]+):([0-9]{2}):([0-9]{2})(\\.[0-9]{3})?');
 
-	if (match == null || match.length < 4) {
+	if (!match || match.length < 4) {
 		return undefined;
 	}
 
@@ -70,7 +70,7 @@ function formatTimeInMin(timeMs: number | undefined): string {
 export function getContestState(
 	contest: Contest | undefined
 ): 'unscheduled' | 'countdown' | 'paused' | 'running' | 'frozen' | 'finished' {
-	if (contest == null) {
+	if (!contest) {
 		return 'unscheduled';
 	}
 
@@ -79,7 +79,7 @@ export function getContestState(
 		m = contest.time_multiplier;
 	}
 
-	if (contest.start_time == null) {
+	if (!contest.start_time) {
 		if (contest.countdown_pause_time) {
 			return 'paused';
 		}
@@ -108,7 +108,7 @@ export function getContestState(
 }
 
 export function getContestTime(contest: Contest | undefined, short: boolean): string | undefined {
-	if (contest == null) {
+	if (!contest) {
 		return undefined;
 	}
 
@@ -117,7 +117,7 @@ export function getContestTime(contest: Contest | undefined, short: boolean): st
 		m = contest.time_multiplier;
 	}
 
-	if (contest.start_time == null) {
+	if (!contest.start_time) {
 		if (!contest.countdown_pause_time) {
 			return 'Contest not scheduled';
 		} else {

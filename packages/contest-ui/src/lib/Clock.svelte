@@ -13,6 +13,9 @@
 	let state = $derived(getContestState(contest));
 
 	onMount(() => {
+		// set initial value, then schedule updates
+		clock = getContestTime(contest, true);
+
 		const clockInt = setInterval(
 			() => {
 				clock = getContestTime(contest, true);
@@ -27,6 +30,7 @@
 </script>
 
 <span
+	aria-label="contest clock"
 	class:text-gray-400={state === 'unscheduled'}
 	class:text-green-300={state === 'countdown'}
 	class:text-blue-200={state === 'frozen'}

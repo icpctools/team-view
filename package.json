@@ -15,10 +15,11 @@
 		"lint": "eslint .",
 		"format": "prettier --write .",
 		"test:integration": "playwright test",
-		"test:unit": "vitest"
+		"test:unit": "vitest --run"
 	},
 	"devDependencies": {
 		"@eslint/js": "^9.39.2",
+		"@testing-library/svelte": "^5.3.1",
 		"@playwright/test": "^1.58.2",
 		"@sveltejs/adapter-node": "^5.5.3",
 		"@sveltejs/kit": "^2.52.0",
