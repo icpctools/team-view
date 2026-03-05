@@ -1,5 +1,5 @@
 import { error } from '@sveltejs/kit';
-import { ContestUtil } from '@icpctools/contest-api';
+import { findById } from '@icpctools/contest-api';
 import { loadContest } from '$lib/state.svelte.js';
 
 export const load = async ({ depends }) => {
@@ -21,12 +21,11 @@ export const load = async ({ depends }) => {
 	const problems = cc.getProblems();
 
 	// sort teams by scoreboard row
-	const util = new ContestUtil();
-	const sortedTeams = scoreboard.rows?.map((row) => util.findById(teams, row.team_id));
+	const sortedTeams = scoreboard.rows?.map((row) => findById(teams, row.team_id));
 
 	const orgs = cc.getOrganizations();
 
-	const logos = sortedTeams?.map((team) => util.findById(orgs, team?.organization_id)?.logo);
+	const logos = sortedTeams?.map((team) => findById(orgs, team?.organization_id)?.logo);
 	const hasLogos = logos.filter((x) => x).length > 0;
 
 	return {

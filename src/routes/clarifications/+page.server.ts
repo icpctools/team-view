@@ -1,17 +1,24 @@
 import { error } from '@sveltejs/kit';
 import { loadContest } from '$lib/state.svelte.js';
 import type { ClarificationData } from './clarificationData.js';
-import { ContestUtil, type Clarification, type Group, type Problem, type Team } from '@icpctools/contest-api';
+import {
+	findById,
+	findManyById,
+	type Clarification,
+	type Group,
+	type Problem,
+	type Team
+} from '@icpctools/contest-api';
 
-function createClarData(c: Clarification, util: ContestUtil, teams: Team[], groups: Group[], problems: Problem[]) {
+function createClarData(c: Clarification, teams: Team[], groups: Group[], problems: Problem[]) {
 	return {
 		id: c.id,
 		time: c.contest_time,
 		text: c.text,
-		from_team: util.findById(teams, c.from_team_id),
-		to_teams: util.findManyById(teams, c.to_team_ids),
-		to_groups: util.findManyById(groups, c.to_group_ids),
-		problem: util.findById(problems, c.problem_id)
+		from_team: findById(teams, c.from_team_id),
+		to_teams: findManyById(teams, c.to_team_ids),
+		to_groups: findManyById(groups, c.to_group_ids),
+		problem: findById(problems, c.problem_id)
 	} as ClarificationData;
 }
 
@@ -30,11 +37,9 @@ export const load = async ({ depends }) => {
 
 	const clars = cc.getClarifications();
 
-	const util = new ContestUtil();
-
 	const clarDataMap = new Map<string, ClarificationData>();
 	for (const c of clars ?? []) {
-		clarDataMap.set(c.id, createClarData(c, util, teams, groups, problems));
+		clarDataMap.set(c.id, createClarData(c, teams, groups, problems));
 	}
 
 	// Attach replies as children of their parent

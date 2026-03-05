@@ -1,13 +1,11 @@
 import { expect, test } from 'vitest';
-import { ContestUtil } from './contest-util.js';
 import { Access, FileReference, Problem } from './contest-types.js';
-
-const util = new ContestUtil();
+import { getFileByTag, getOppositeTag, hasEndpoint, hasEndpointProperty, sortProblems } from './contest-util.js';
 
 test('getOppositeTag', () => {
-	expect(util.getOppositeTag('light')).toBe('dark');
-	expect(util.getOppositeTag('dark')).toBe('light');
-	expect(util.getOppositeTag('sam')).toBeUndefined();
+	expect(getOppositeTag('light')).toBe('dark');
+	expect(getOppositeTag('dark')).toBe('light');
+	expect(getOppositeTag('sam')).toBeUndefined();
 });
 
 test('getFileByTag', () => {
@@ -32,12 +30,12 @@ test('getFileByTag', () => {
 
 	const files = [file1, file2, file3] as FileReference[];
 
-	expect(util.getFileByTag(files, 'a')).toEqual(file1);
-	expect(util.getFileByTag(files, 'b')).toEqual(file1);
-	expect(util.getFileByTag(files, 'c')).toEqual(file2);
-	expect(util.getFileByTag(files, 'd')).toEqual(file2);
-	expect(util.getFileByTag(files, 'e')).toBeUndefined();
-	expect(util.getFileByTag(undefined, 'b')).toBeUndefined();
+	expect(getFileByTag(files, 'a')).toEqual(file1);
+	expect(getFileByTag(files, 'b')).toEqual(file1);
+	expect(getFileByTag(files, 'c')).toEqual(file2);
+	expect(getFileByTag(files, 'd')).toEqual(file2);
+	expect(getFileByTag(files, 'e')).toBeUndefined();
+	expect(getFileByTag(undefined, 'b')).toBeUndefined();
 });
 
 test('hasEndpoint', () => {
@@ -51,9 +49,9 @@ test('hasEndpoint', () => {
 		]
 	} as Access;
 
-	expect(util.hasEndpoint(access, 'a')).toBeTruthy();
-	expect(util.hasEndpoint(access, 'b')).toBeFalsy();
-	expect(util.hasEndpoint(undefined, 'b')).toBeFalsy();
+	expect(hasEndpoint(access, 'a')).toBeTruthy();
+	expect(hasEndpoint(access, 'b')).toBeFalsy();
+	expect(hasEndpoint(undefined, 'b')).toBeFalsy();
 });
 
 test('hasEndpointProperty', () => {
@@ -67,11 +65,11 @@ test('hasEndpointProperty', () => {
 		]
 	} as Access;
 
-	expect(util.hasEndpointProperty(access, 'a', 'b')).toBeTruthy();
-	expect(util.hasEndpointProperty(access, 'a', 'c')).toBeTruthy();
-	expect(util.hasEndpointProperty(access, 'a', 'd')).toBeFalsy();
-	expect(util.hasEndpointProperty(access, 'x', 'b')).toBeFalsy();
-	expect(util.hasEndpointProperty(undefined, 'x', 'b')).toBeFalsy();
+	expect(hasEndpointProperty(access, 'a', 'b')).toBeTruthy();
+	expect(hasEndpointProperty(access, 'a', 'c')).toBeTruthy();
+	expect(hasEndpointProperty(access, 'a', 'd')).toBeFalsy();
+	expect(hasEndpointProperty(access, 'x', 'b')).toBeFalsy();
+	expect(hasEndpointProperty(undefined, 'x', 'b')).toBeFalsy();
 });
 
 test('sortProblems', () => {
@@ -99,7 +97,7 @@ test('sortProblems', () => {
 		}
 	] as Problem[];
 
-	const problems2 = util.sortProblems(problems);
+	const problems2 = sortProblems(problems);
 	expect(problems2[0].ordinal).toBe(0);
 	expect(problems2[0].id).toBe('a');
 	expect(problems2[1].ordinal).toBe(1);

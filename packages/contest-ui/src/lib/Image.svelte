@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { FileReference } from '@icpctools/contest-api';
-	import { ContestUtil } from '@icpctools/contest-api';
+	import { bestLogo } from '@icpctools/contest-api';
 	import { mode } from 'mode-watcher';
 
 	interface Props {
@@ -13,8 +13,7 @@
 
 	let tagg: string = $derived(tag ?? mode.current ?? '');
 
-	const util = new ContestUtil();
-	let imgSrc = $derived(util.bestLogo(ref, size * 20, size * 20, tagg)?.href);
+	let imgSrc = $derived(bestLogo(ref, size * 20, size * 20, tagg)?.href);
 
 	function onError(): void {
 		imgSrc = '/images/icpc-logo.png';
