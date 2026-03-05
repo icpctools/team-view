@@ -82,7 +82,7 @@ export class ContestAPI {
 		const sInd2 = this.contestURL.indexOf('/', sInd + 2);
 		this.serverURL = this.contestURL.substring(0, sInd2);
 
-		console.log('Contest URL: ' + this.contestURL);
+		//console.log('Contest URL: ' + this.contestURL);
 	}
 
 	getURL(type: string, id?: string): string {

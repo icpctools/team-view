@@ -25,7 +25,7 @@ export function parseRelTime(relTime: RelTime | number | undefined): number | un
 	const m = parseInt(match[2]);
 	const s = parseInt(match[3]);
 	let ms = 0;
-	if (match.length == 5) {
+	if (match[4]) {
 		ms = parseInt(match[4].substring(1));
 	}
 
