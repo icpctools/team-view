@@ -1,0 +1,5 @@
+[
+	{ "id": "Security", "label": "Security", "status": 1 },
+	{ "id": "SysOps", "label": "SysOps", "status": 0 },
+	{ "id": "Teams", "label": "Teams", "status": 0 }
+]

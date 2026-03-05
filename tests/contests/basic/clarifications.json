@@ -1,0 +1,10 @@
+[
+	{ "id": "A", "text": "A", "to_team_id": "10" },
+	{ "id": "B", "text": "B", "to_team_id": "20" },
+	{ "id": "C", "text": "C", "to_team_ids": ["10"] },
+	{ "id": "D", "text": "D", "to_team_ids": ["20"] },
+	{ "id": "E", "text": "E", "to_group_ids": ["1"] },
+	{ "id": "F", "text": "F", "to_group_ids": ["2"] },
+	{ "id": "G", "text": "G", "to_team_ids": ["10", "11"] },
+	{ "id": "H", "text": "H", "to_group_ids": ["2", "3"] }
+]

@@ -1,0 +1,8 @@
+[
+	{ "id": "29", "icpc_id": "29", "name": "Ali Kent", "sex": "male", "role": "coach", "team_ids": ["124"] },
+	{ "id": "71", "icpc_id": "71", "name": "Krzysztof Simon", "sex": "male", "role": "contestant", "team_ids": ["137"] },
+	{ "id": "79", "icpc_id": "79", "name": "Pawel Ollack", "sex": "male", "role": "staff", "title": "ICPC Director" },
+	{ "id": "14", "icpc_id": "14", "name": "Andrey Lui", "sex": "male", "role": "coach", "team_ids": ["90"] },
+	{ "id": "33", "icpc_id": "33", "name": "Qingyong Lou", "sex": "male", "role": "contestant", "team_ids": ["13"] },
+	{ "id": "35", "icpc_id": "35", "name": "Yong Chow", "sex": "male", "role": "contestant", "team_ids": ["85"] }
+]
