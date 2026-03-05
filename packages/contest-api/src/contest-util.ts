@@ -21,7 +21,7 @@ export class ContestUtil {
 
 	findManyById<Type extends { id: string }>(
 		arr: Array<Type> | undefined,
-		ids: string | undefined
+		ids: string[] | undefined
 	): Array<Type> | undefined {
 		if (!arr || arr.length === 0 || !ids || ids.length == 0) {
 			return undefined;

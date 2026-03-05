@@ -1,0 +1,31 @@
+<script lang="ts">
+	import { invalidate } from '$app/navigation';
+	import { onMount } from 'svelte';
+	import ClarificationUI from '$lib/ui/ClarificationUI.svelte';
+
+	let { data } = $props();
+
+	onMount(() => {
+		const interval = setInterval(() => {
+			invalidate('data:problem');
+		}, 3000);
+
+		return () => {
+			clearInterval(interval);
+		};
+	});
+</script>
+
+<div class="flex flex-col p-2 gap-1 h-full overflow-auto bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+	<div class="flex flex-col">
+		<div class="text-xl">Clarifications</div>
+
+		{#if data.clarifications.length === 0}
+			<div>None</div>
+		{/if}
+
+		{#each data.clarifications as clar (clar.id)}
+			<ClarificationUI {clar} />
+		{/each}
+	</div>
+</div>

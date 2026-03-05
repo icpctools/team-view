@@ -46,6 +46,11 @@
 		{/if}
 
 		<div class="text-lg hover:bg-hover hover:text-link p-2 rounded-md">
+			<a href="/clarifications" class="flex flex-row items-center"
+				><i class="fa-regular fa-clipboard-question pr-2"></i>Clarifications</a>
+		</div>
+
+		<div class="text-lg hover:bg-hover hover:text-link p-2 rounded-md">
 			<a href="/scoreboard" class="flex flex-row items-center"
 				><i class="fa-regular fa-square-poll-horizontal pr-2"></i>Scoreboard</a>
 		</div>

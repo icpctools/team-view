@@ -451,6 +451,9 @@ export class ContestAPI {
 				if (this.judgements) {
 					await this.loadJudgements(true);
 				}
+				if (this.clarifications) {
+					await this.loadClarifications(true);
+				}
 				if (this.scoreboard) {
 					await this.loadScoreboard(true);
 				}
