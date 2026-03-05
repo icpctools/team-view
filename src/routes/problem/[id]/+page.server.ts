@@ -1,6 +1,6 @@
 import { error } from '@sveltejs/kit';
 import { loadContest } from '$lib/state.svelte.js';
-import { ContestUtil } from '@icpctools/contest-api';
+import { findById, findManyBySubmissionId, hasEndpointProperty } from '@icpctools/contest-api';
 import type { Judgement, JudgementType } from '@icpctools/contest-api';
 import type { SubmissionData } from '../../../lib/submissionData.js';
 
@@ -34,9 +34,8 @@ export const load = async ({ params, depends }) => {
 	const judgements = cc.getJudgements();
 	const judgementTypes = cc.getJudgementTypes();
 
-	const util = new ContestUtil();
 	const submissionData = submissions?.map((s) => {
-		const jud = util.findManyBySubmissionId(judgements, s.id);
+		const jud = findManyBySubmissionId(judgements, s.id);
 		let j: Judgement | undefined;
 		if (jud && jud.length > 0) {
 			// find current judgement
@@ -49,14 +48,14 @@ export const load = async ({ params, depends }) => {
 		let judge = '';
 		let jt: JudgementType | undefined;
 		if (j) {
-			jt = util.findById(judgementTypes, j.judgement_type_id);
+			jt = findById(judgementTypes, j.judgement_type_id);
 			if (j.score != undefined) judge += j.score + '';
 		}
 		return {
 			id: s.id,
 			time: s.contest_time,
-			team: util.findById(teams, s.team_id),
-			language: util.findById(languages, s.language_id),
+			team: findById(teams, s.team_id),
+			language: findById(languages, s.language_id),
 			judgement: judge,
 			judgementType: jt,
 			files: s.files,
@@ -69,6 +68,6 @@ export const load = async ({ params, depends }) => {
 	return {
 		problem: problem,
 		submissions: submissionData,
-		hasReactions: util.hasEndpointProperty(cc.getAccess(), 'submissions', 'reaction')
+		hasReactions: hasEndpointProperty(cc.getAccess(), 'submissions', 'reaction')
 	};
 };

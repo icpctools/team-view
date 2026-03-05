@@ -1,8 +1,10 @@
 import { error } from '@sveltejs/kit';
-import { ContestUtil } from '@icpctools/contest-api';
+import { findById } from '@icpctools/contest-api';
 import { loadContest } from '$lib/state.svelte.js';
 import type { Judgement, JudgementType } from '@icpctools/contest-api';
 import type { SubmissionData } from '$lib/submissionData';
+import { findManyBySubmissionId } from '@icpctools/contest-api';
+import { hasEndpointProperty } from '@icpctools/contest-api';
 
 export const load = async ({ params, depends }) => {
 	depends('data:team');
@@ -32,8 +34,7 @@ export const load = async ({ params, depends }) => {
 	const groups = cc.getGroups();
 	const groups2 = groups?.filter((g) => team.group_ids?.includes(g.id));
 
-	const util = new ContestUtil();
-	const logo = util.findById(orgs, team.organization_id)?.logo;
+	const logo = findById(orgs, team.organization_id)?.logo;
 
 	const persons = cc.getPersons();
 
@@ -53,7 +54,7 @@ export const load = async ({ params, depends }) => {
 	const judgementTypes = cc.getJudgementTypes();
 
 	const submissionData = submissions?.map((s) => {
-		const jud = util.findManyBySubmissionId(judgements, s.id);
+		const jud = findManyBySubmissionId(judgements, s.id);
 		let j: Judgement | undefined;
 		if (jud && jud.length > 0) {
 			// find current judgement
@@ -66,15 +67,15 @@ export const load = async ({ params, depends }) => {
 		let judge = '';
 		let jt: JudgementType | undefined;
 		if (j) {
-			jt = util.findById(judgementTypes, j.judgement_type_id);
+			jt = findById(judgementTypes, j.judgement_type_id);
 			if (j.score != undefined) judge += j.score + '';
 		}
 		return {
 			id: s.id,
 			time: s.contest_time,
 			team: team,
-			problem: util.findById(problems, s.problem_id),
-			language: util.findById(languages, s.language_id),
+			problem: findById(problems, s.problem_id),
+			language: findById(languages, s.language_id),
 			judgement: judge,
 			judgementType: jt,
 			files: s.files,
@@ -99,6 +100,6 @@ export const load = async ({ params, depends }) => {
 		contestants: contestants,
 		submissions: submissionData,
 		country: country,
-		hasReactions: util.hasEndpointProperty(cc.getAccess(), 'submissions', 'reaction')
+		hasReactions: hasEndpointProperty(cc.getAccess(), 'submissions', 'reaction')
 	};
 };

@@ -1,6 +1,6 @@
 import { loadContest } from '$lib/state.svelte.js';
 import { error } from '@sveltejs/kit';
-import { ContestUtil } from '@icpctools/contest-api';
+import { hasEndpoint } from '@icpctools/contest-api';
 
 export const load = async ({ depends }) => {
 	const cc = await loadContest();
@@ -13,8 +13,7 @@ export const load = async ({ depends }) => {
 	const contest = cc.getContest();
 	if (!contest) throw error(404);
 
-	const util = new ContestUtil();
-	if (util.hasEndpoint(cc.getAccess(), 'map-info')) {
+	if (hasEndpoint(cc.getAccess(), 'map-info')) {
 		try {
 			await Promise.all([cc.loadMapInfo()]);
 		} catch (error) {
