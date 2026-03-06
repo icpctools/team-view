@@ -18,7 +18,10 @@ export default defineConfig({
 	root: PACKAGE_ROOT,
 	resolve: {
 		alias: {
-			'/@/': join(PACKAGE_ROOT, 'src') + '/'
+			'/@/': join(PACKAGE_ROOT, 'src') + '/',
+			...(process.env.VITEST && {
+				'mode-watcher': join(PACKAGE_ROOT, 'src/lib/__mocks__/mode-watcher.ts')
+			})
 		}
 	},
 	plugins: [tailwindcss(), svelte({ configFile: '../../svelte.config.js', hot: !process.env.VITEST }), svelteTesting()],

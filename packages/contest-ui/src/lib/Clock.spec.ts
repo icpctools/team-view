@@ -63,9 +63,13 @@ test('Expect frozen styling', async () => {
 
 test('Expect finished styling', async () => {
 	const contest = { start_time: '2000-01-01T12:00:00+00:00', duration: '5:00:00.000' } as Contest;
+	// Mock Date.now to be after contest end (start 12:00 UTC + 5h duration)
+	vi.useFakeTimers();
+	vi.setSystemTime(new Date('2000-01-01T17:00:01Z'));
 	await render(Clock, { contest: contest });
 
 	const clock = screen.getByLabelText('contest clock');
 	expect(clock).toBeInTheDocument();
 	expect(clock).toHaveClass('text-gray-300');
+	vi.useRealTimers();
 });
