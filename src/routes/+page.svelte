@@ -1,4 +1,5 @@
 <script lang="ts">
+	import StartStatusPanel from '$lib/ui/StartStatusPanel.svelte';
 	import { Logo } from '@icpctools/contest-ui';
 
 	let { data } = $props();
@@ -26,3 +27,9 @@
 		</div>
 	{/each}
 </div>
+
+{#if data.status && !data.state?.started}
+	<div class="pt-8">
+		<StartStatusPanel status={data.status} />
+	</div>
+{/if}
