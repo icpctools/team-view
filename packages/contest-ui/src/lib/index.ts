@@ -9,3 +9,5 @@ import ProblemUI from './ProblemUI.svelte';
 import Video from './Video.svelte';
 
 export { Logo, Image, Clock, FloorMap, JudgementTypeUI, JudgementUI, PersonUI, ProblemUI, Video };
+
+export * from './colors.js';

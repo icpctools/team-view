@@ -1,11 +1,6 @@
 /**
  * Copyright later.
  */
-export const PENDING = rgbToHex([66, 114, 245]);
-export const FAILED = rgbToHex([240, 0, 0]);
-export const SOLVED = rgbToHex([0, 230, 0]);
-export const SCORING_MID = rgbToHex([210, 210, 0]);
-export const FIRST_TO_SOLVE = rgbToHex([0, 100, 0]);
 
 export function parseHexColor(hex: string): [number, number, number] | [number, number, number, number] {
 	// remove the '#' if present

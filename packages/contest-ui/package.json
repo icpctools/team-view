@@ -56,6 +56,10 @@
 		"./Person": {
 			"types": "./dist/Person.svelte.d.ts",
 			"svelte": "./dist/Person.svelte"
+		},
+		"./colors": {
+			"types": "./dist/colors.d.ts",
+			"default": "./dist/colors.js"
 		}
 	},
 	"scripts": {
