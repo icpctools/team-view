@@ -80,6 +80,6 @@ test('Expect finished styling', async () => {
 
 	const clock = screen.getByLabelText('contest clock');
 	expect(clock).toBeInTheDocument();
-	expect(clock).toHaveClass('text-gray-300');
+	expect(clock).toHaveClass('text-red-700');
 	vi.useRealTimers();
 });
