@@ -67,41 +67,42 @@ function formatTimeInMin(timeMs: number | undefined): string {
 	return sb.join('');
 }
 
-export function getContestClock(contest?: Contest, state?: ContestState, currentTimeMs?: number): string | undefined {
+/**
+ * Returns the current contest time:
+ * - undefined if the contest isn't scheduled
+ * - negative if we're before the scheduled start, or countdown is paused
+ * - positive once the contest has been started (taking removed intervals and multiplier into account)
+ * - continues past contest duration if the contest is over
+ */
+export function getContestTime(contest?: Contest, state?: ContestState, currentTimeMs?: number): number | undefined {
 	if (!contest) {
 		return undefined;
 	}
 
-	let m = 1;
-	if (contest.time_multiplier) {
-		m = contest.time_multiplier;
-	}
-
-	// pause time
+	// paused
+	const m = contest?.time_multiplier ?? 1;
 	if (contest.countdown_pause_time) {
 		const pause = parseRelTime(contest.countdown_pause_time);
 		if (!pause) {
 			return undefined;
 		}
 
-		return formatContestTime(-pause * m, false);
+		return -pause * m;
 	}
 
-	// scheduled
+	// not started
 	const currentTime = currentTimeMs ?? Date.now();
 	if (!state?.started) {
 		if (!contest.start_time) {
 			return undefined;
 		} else {
+			// scheduled
 			const d = new Date(contest.start_time);
-			return formatContestTime((currentTime - d.getTime()) * m, true);
+			return (currentTime - d.getTime()) * m;
 		}
 	}
 
-	// started
-	const d = new Date(state.started);
-
-	// apply removed intervals
+	// started - apply removed intervals
 	let removedTime = 0;
 	if (state.removed_intervals) {
 		for (const interval of state.removed_intervals) {
@@ -110,33 +111,89 @@ export function getContestClock(contest?: Contest, state?: ContestState, current
 				// interval started before now, so it applies
 				if (!interval.end) {
 					// we're in the interval
-					return formatContestTime(parseRelTime(interval.contest_time) ?? 0, true);
+					return parseRelTime(interval.contest_time) ?? 0;
 				}
 				const intervalEnd = new Date(interval?.end).getTime();
 				if (intervalEnd > currentTime) {
 					// we're in the interval
-					return formatContestTime(parseRelTime(interval.contest_time) ?? 0, true);
+					return parseRelTime(interval.contest_time) ?? 0;
 				}
 				removedTime += intervalEnd - intervalStart;
 			}
 		}
 	}
 
-	return formatContestTime((currentTime - d.getTime() - removedTime) * m, true);
+	const d = new Date(state.started);
+	return (currentTime - d.getTime() - removedTime) * m;
 }
 
-export function formatContestTime(time: number, floor: boolean): string {
+/**
+ * Returns the current time remaining in the contest:
+ * - undefined if there's no contest or it doesn't have a valid duration
+ * - the contest duration if it hasn't started yet
+ * - a positive, decreasing number if the contest is running (taking removed intervals and multiplier into account)
+ * - zero once the contest is over
+ * Use formatContestTime(x, true) for user formatting.
+ */
+export function getRemainingContestTime(
+	contest?: Contest,
+	state?: ContestState,
+	currentTimeMs?: number
+): number | undefined {
+	if (!contest || !contest.duration) {
+		return undefined;
+	}
+
+	const duration = parseRelTime(contest.duration);
+	if (!duration) {
+		return undefined;
+	}
+
+	if (!state?.started) {
+		return duration;
+	}
+
+	if (state?.ended) {
+		return 0;
+	}
+
+	// started - apply removed intervals
+	const currentTime = currentTimeMs ?? Date.now();
+	let removedTime = 0;
+	if (state.removed_intervals) {
+		for (const interval of state.removed_intervals) {
+			const intervalStart = new Date(interval.start).getTime();
+			if (intervalStart < currentTime) {
+				// interval started before now, so it applies
+				if (!interval.end) {
+					// we're in the interval
+					return duration - (parseRelTime(interval.contest_time) ?? 0);
+				}
+				const intervalEnd = new Date(interval?.end).getTime();
+				if (intervalEnd > currentTime) {
+					// we're in the interval
+					return duration - (parseRelTime(interval.contest_time) ?? 0);
+				}
+				removedTime += intervalEnd - intervalStart;
+			}
+		}
+	}
+
+	const d = new Date(state.started);
+	return Math.max(0, duration - (currentTime - d.getTime() - removedTime) * (contest?.time_multiplier ?? 1));
+}
+
+export function formatContestTime(time: number | undefined, ceil?: boolean): string | undefined {
+	if (time === undefined) {
+		return undefined;
+	}
+
 	const sb = [];
 	if (time < 0) {
 		sb.push('-');
 	}
 
-	let ss: number;
-	if (floor) {
-		ss = Math.abs(Math.floor(time / 1000.0));
-	} else {
-		ss = Math.abs(Math.ceil(time / 1000.0));
-	}
+	const ss = Math.abs(ceil ? Math.ceil(time / 1000.0) : Math.floor(time / 1000.0));
 
 	const days = Math.floor(ss / 86400.0);
 
