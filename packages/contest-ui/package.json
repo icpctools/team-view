@@ -1,6 +1,6 @@
 {
 	"name": "@icpctools/contest-ui",
-	"version": "0.7.0-next",
+	"version": "0.7.0",
 	"license": "MIT",
 	"type": "module",
 	"main": "./src/index.ts",
