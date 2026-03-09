@@ -84,8 +84,9 @@ jobs:
           git checkout -b "${bumpedBranchName}"
           sed -i  "s#version\":\ \"\(.*\)\",#version\":\ \"${bumpedVersion}-next\",#g" package.json
           find packages/* -maxdepth 1 -name "package.json" | xargs -I {} sed -i "s#version\":\ \"\(.*\)\",#version\":\ \"${bumpedVersion}-next\",#g" {}
+          git add package.json packages/*/package.json
 
-          git add package.json packages/contest-api/package.json
+          # commit the changes
           git commit -s --amend -m "chore: bump version to ${bumpedVersion}"
           git push origin "${bumpedBranchName}"
           echo -e "Bump version to ${bumpedVersion}\n\n${{ steps.tag_util.outputs.releaseVersion }} has been released.\n\n Time to switch to the new ${bumpedVersion} version" > /tmp/pr-title
