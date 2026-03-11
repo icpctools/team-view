@@ -18,7 +18,7 @@
 		"test:unit": "vitest --run"
 	},
 	"devDependencies": {
-		"@eslint/js": "^9.39.4",
+		"@eslint/js": "^10.0.1",
 		"@playwright/test": "^1.58.2",
 		"@sveltejs/adapter-node": "^5.5.4",
 		"@sveltejs/kit": "^2.54.0",
@@ -27,8 +27,8 @@
 		"@testing-library/svelte": "^5.3.1",
 		"@types/eslint": "^9.6.1",
 		"@types/node": "^25.4.0",
-		"eslint": "^9.39.4",
-		"eslint-config-prettier": "^9.1.2",
+		"eslint": "^10.0.3",
+		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-svelte": "^3.15.2",
 		"globals": "^17.4.0",
 		"jszip": "^3.10.1",

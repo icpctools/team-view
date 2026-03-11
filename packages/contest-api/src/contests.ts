@@ -30,11 +30,13 @@ export class Contests {
 			console.log(`Fetched ${this.baseURL} in ${(endTime - startTime).toFixed(1)}ms`);
 		} catch (error: unknown) {
 			if (error instanceof HTTPError) {
-				throw new Error(`HTTP error ${error.response.statusCode} loading contests: ${error.response.statusMessage}`);
+				throw new Error(`HTTP error ${error.response.statusCode} loading contests: ${error.response.statusMessage}`, {
+					cause: error
+				});
 			} else if (error instanceof RequestError) {
-				throw new Error(`Error loading contests: ${error.code}`);
+				throw new Error(`Error loading contests: ${error.code}`, { cause: error });
 			} else {
-				throw new Error(`Unexpected error loading contests: ${error}`);
+				throw new Error(`Unexpected error loading contests: ${error}`, { cause: error });
 			}
 		}
 	}
