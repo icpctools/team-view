@@ -134,11 +134,13 @@ export class ContestAPI {
 			return obj;
 		} catch (error: unknown) {
 			if (error instanceof HTTPError) {
-				throw new Error(`HTTP error ${error.response.statusCode} loading ${url}: ${error.response.statusMessage}`);
+				throw new Error(`HTTP error ${error.response.statusCode} loading ${url}: ${error.response.statusMessage}`, {
+					cause: error
+				});
 			} else if (error instanceof RequestError) {
-				throw new Error(`Error loading ${url}: ${error.code}`);
+				throw new Error(`Error loading ${url}: ${error.code}`, { cause: error });
 			} else {
-				throw new Error(`Unexpected error loading ${url}: ${error}`);
+				throw new Error(`Unexpected error loading ${url}: ${error}`, { cause: error });
 			}
 		}
 		/*return $.ajax({
