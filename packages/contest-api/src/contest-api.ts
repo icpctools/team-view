@@ -13,10 +13,12 @@ import type {
 	ContestState,
 	FileReference,
 	Group,
+	Id,
 	Judgement,
 	JudgementType,
 	Language,
 	MapInfo,
+	Notification,
 	Organization,
 	Person,
 	Problem,
@@ -33,37 +35,39 @@ export interface Credentials {
 }
 
 export class ContestAPI {
-	contest?: Contest;
-	access?: Access;
-	state?: ContestState;
-	organizations?: Organization[];
-	groups?: Group[];
-	teams?: Team[];
-	persons?: Person[];
-	accounts?: Account[];
-	account?: Account;
-	languages?: Language[];
-	judgementTypes?: JudgementType[];
-	problems?: Problem[];
-	submissions?: Submission[];
-	judgements?: Judgement[];
-	runs?: Run[];
-	clarifications?: Clarification[];
-	commentary?: Commentary[];
-	awards?: Award[];
-	startStatus?: StartStatus[];
-	scoreboard?: Scoreboard;
-	mapInfo?: MapInfo;
+	private contest?: Contest;
+	private access?: Access;
+	private state?: ContestState;
+	private organizations?: Organization[];
+	private groups?: Group[];
+	private teams?: Team[];
+	private persons?: Person[];
+	private accounts?: Account[];
+	private account?: Account;
+	private languages?: Language[];
+	private judgementTypes?: JudgementType[];
+	private problems?: Problem[];
+	private submissions?: Submission[];
+	private judgements?: Judgement[];
+	private runs?: Run[];
+	private clarifications?: Clarification[];
+	private commentary?: Commentary[];
+	private awards?: Award[];
+	private startStatus?: StartStatus[];
+	private scoreboard?: Scoreboard;
+	private mapInfo?: MapInfo;
 
-	id: string;
-	contestURL: string;
-	baseURL: string;
-	serverURL: string;
-	credentials?: Credentials;
+	private id: string;
+	private contestURL: string;
+	private baseURL: string;
+	private serverURL: string;
+	private credentials?: Credentials;
 
-	timeDelta = [];
+	private timeDelta = [];
 
-	interval: number | NodeJS.Timeout | undefined;
+	private interval: number | NodeJS.Timeout | undefined;
+
+	private unknownTypes: string[] = [];
 
 	constructor(contestURL: string, credentials?: Credentials) {
 		if (!contestURL.endsWith('/')) {
@@ -96,13 +100,11 @@ export class ContestAPI {
 		const httpsOptions: HttpsOptions = {
 			rejectUnauthorized: false
 		};
-		const user = this.credentials?.user;
-		const password = this.credentials?.password;
 		const options: OptionsOfTextResponseBody = {
 			https: httpsOptions,
 			retry: { limit: 0 },
-			username: user,
-			password: password,
+			username: this.credentials?.user,
+			password: this.credentials?.password,
 			// specify short timeout
 			timeout: {
 				lookup: 2000,
@@ -199,11 +201,13 @@ export class ContestAPI {
 		}
 	}
 
+	private sortProblems(problems2: Problem[]): Problem[] {
+		return problems2.sort((a, b) => (a.ordinal > b.ordinal ? 1 : b.ordinal > a.ordinal ? -1 : 0));
+	}
+
 	async loadProblems(force?: boolean): Promise<void> {
 		if (force || !this.problems) {
-			const problems2: Problem[] = await this.loadObject('problems');
-			problems2.sort((a, b) => (a.ordinal > b.ordinal ? 1 : b.ordinal > a.ordinal ? -1 : 0));
-			this.problems = problems2;
+			this.problems = this.sortProblems(await this.loadObject('problems'));
 		}
 	}
 
@@ -219,21 +223,23 @@ export class ContestAPI {
 		}
 	}
 
+	private sortTeams(teams2: Team[]): Team[] {
+		// sort by team id
+		return teams2.sort((a, b) => {
+			// try parsing as number first
+			const an = parseInt(a.id);
+			const bn = parseInt(b.id);
+			if (!Number.isNaN(an) && !Number.isNaN(bn)) {
+				return an - bn;
+			}
+			// otherwise compare by locale
+			return a.id.localeCompare(b.id);
+		});
+	}
+
 	async loadTeams(force?: boolean): Promise<void> {
 		if (force || !this.teams) {
-			const teams2: Team[] = await this.loadObject('teams');
-			// sort by team id
-			teams2.sort((a, b) => {
-				// try parsing as number first
-				const an = parseInt(a.id);
-				const bn = parseInt(b.id);
-				if (!Number.isNaN(an) && !Number.isNaN(bn)) {
-					return an - bn;
-				}
-				// otherwise compare by locale
-				return a.id.localeCompare(b.id);
-			});
-			this.teams = teams2;
+			this.teams = this.sortTeams(await this.loadObject('teams'));
 		}
 	}
 
@@ -434,6 +440,158 @@ export class ContestAPI {
 
 	getAuth() {
 		return btoa(this.credentials?.user + ':' + this.credentials?.password);
+	}
+
+	private processNotificationSingleton(type: string, data: object) {
+		// update a 'singleton' object, e.g. contest, state
+		switch (type) {
+			case 'contest': {
+				this.contest = data as Contest;
+				return;
+			}
+			case 'state': {
+				this.state = data as ContestState;
+				return;
+			}
+			case 'mapInfo': {
+				this.mapInfo = data as MapInfo;
+				break;
+			}
+			default: {
+				if (!this.unknownTypes.includes(type)) {
+					console.log('Unknown singleton type in feed: ' + type);
+					this.unknownTypes.push(type);
+				}
+			}
+		}
+	}
+
+	private processData(
+		id: Id | undefined,
+		arr: { id: Id }[] | undefined,
+		obj: { id: Id } | { id: Id }[] | undefined
+	): { id: Id }[] {
+		if (Array.isArray(obj)) {
+			if (id) {
+				console.log('Event can never have id and data array');
+				return arr ?? [];
+			}
+			return obj;
+		}
+
+		if (!arr || arr.length === 0) {
+			// deletion on empty array
+			if (!obj) {
+				return [];
+			}
+
+			return [obj];
+		}
+
+		// search for existing object to replace
+		let index = -1;
+		for (let i = 0; i < arr.length; i++) {
+			if (arr[i].id === id) {
+				index = i;
+				break;
+			}
+		}
+
+		// deletion
+		if (obj === undefined) {
+			if (index >= 0) {
+				arr.splice(index, 1);
+			}
+			return arr;
+		}
+
+		// replacement
+		if (index >= 0) {
+			arr[index] = obj;
+			return arr;
+		}
+
+		// addition
+		arr.push(obj);
+		return arr;
+	}
+
+	processNotification(n: Notification): void {
+		if (!n.id && !Array.isArray(n.data)) {
+			// no id and not an array: must be a 'singleton' object (e.g. state)
+			this.processNotificationSingleton(n.type, n.data ?? {});
+			return;
+		}
+
+		const data = n.data as { id: Id } | undefined;
+		switch (n.type) {
+			case 'judgement-types': {
+				this.judgementTypes = this.processData(n.id, this.judgementTypes, data) as JudgementType[];
+				break;
+			}
+			case 'languages': {
+				this.languages = this.processData(n.id, this.languages, data) as Language[];
+				break;
+			}
+			case 'problems': {
+				this.problems = this.sortProblems(this.processData(n.id, this.problems, data) as Problem[]);
+				break;
+			}
+			case 'groups': {
+				this.groups = this.processData(n.id, this.groups, data) as Group[];
+				break;
+			}
+			case 'organizations': {
+				this.organizations = this.processData(n.id, this.organizations, data) as Organization[];
+				break;
+			}
+			case 'teams': {
+				this.teams = this.sortTeams(this.processData(n.id, this.teams, data) as Team[]);
+				break;
+			}
+			case 'persons': {
+				this.persons = this.processData(n.id, this.persons, data) as Person[];
+				break;
+			}
+			case 'accounts': {
+				this.accounts = this.processData(n.id, this.accounts, data) as Account[];
+				break;
+			}
+			case 'submissions': {
+				this.submissions = this.processData(n.id, this.submissions, data) as Submission[];
+				break;
+			}
+			case 'judgements': {
+				this.judgements = this.processData(n.id, this.judgements, data) as Judgement[];
+				break;
+			}
+			case 'runs': {
+				this.runs = this.processData(n.id, this.runs, data) as Run[];
+				break;
+			}
+			case 'clarifications': {
+				this.clarifications = this.processData(n.id, this.clarifications, data) as Clarification[];
+				break;
+			}
+			case 'awards': {
+				this.awards = this.processData(n.id, this.awards, data) as Award[];
+				break;
+			}
+			case 'commentary': {
+				this.commentary = this.processData(n.id, this.commentary, data) as Commentary[];
+				break;
+			}
+			case 'start-status': {
+				this.startStatus = this.processData(n.id, this.startStatus, data) as StartStatus[];
+				break;
+			}
+			default: {
+				if (!this.unknownTypes.includes(n.type)) {
+					console.log('Unknown type in feed: ' + n.type);
+					this.unknownTypes.push(n.type);
+				}
+			}
+		}
 	}
 
 	watch(): void {

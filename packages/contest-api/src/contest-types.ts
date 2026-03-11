@@ -305,6 +305,6 @@ export interface StartStatus {
 export interface Notification {
 	type: string;
 	id?: Id;
-	data?: [] | object;
+	data?: { id: Id }[] | object;
 	token?: string;
 }
