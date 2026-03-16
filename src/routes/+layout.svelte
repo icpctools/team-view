@@ -3,7 +3,6 @@
 	import DarkModeToggle from '$lib/ui/DarkModeToggle.svelte';
 	import { onMount } from 'svelte';
 	import '../app.css';
-	import '../tailwind.css';
 	import '@fortawesome/fontawesome-free/css/all.min.css';
 	import { invalidate } from '$app/navigation';
 	import { ModeWatcher } from 'mode-watcher';
