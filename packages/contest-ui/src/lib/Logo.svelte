@@ -11,6 +11,6 @@
 	let { ref, size = 8, tag }: Props = $props();
 </script>
 
-<div class="max-h-{size} max-w-{size} h-{size} w-{size} flex place-content-center">
+<div class="max-h-{size} max-w-{size} h-{size} w-{size} flex min-w-0 min-h-0 place-content-center">
 	<Image {ref} {size} {tag} />
 </div>
