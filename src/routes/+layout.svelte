@@ -36,7 +36,7 @@
 		<div class="w-48"><Clock contest={data.contest} /></div>
 
 		<div class="text-lg hover:bg-hover hover:text-link p-2 rounded-md">
-			<a href="/" class="flex flex-row items-center"><i class="fa-regular fa-people-group pr-2"></i>Teams</a>
+			<a href="/" class="flex flex-row items-center"><i class="fa-solid fa-people-group pr-2"></i>Teams</a>
 		</div>
 
 		{#if data.map}
@@ -47,12 +47,12 @@
 
 		<div class="text-lg hover:bg-hover hover:text-link p-2 rounded-md">
 			<a href="/clarifications" class="flex flex-row items-center"
-				><i class="fa-regular fa-clipboard-question pr-2"></i>Clarifications</a>
+				><i class="fa-solid fa-clipboard-question pr-2"></i>Clarifications</a>
 		</div>
 
 		<div class="text-lg hover:bg-hover hover:text-link p-2 rounded-md">
 			<a href="/scoreboard" class="flex flex-row items-center"
-				><i class="fa-regular fa-square-poll-horizontal pr-2"></i>Scoreboard</a>
+				><i class="fa-solid fa-square-poll-horizontal pr-2"></i>Scoreboard</a>
 		</div>
 
 		<DarkModeToggle />
