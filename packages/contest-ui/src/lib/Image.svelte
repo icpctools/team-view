@@ -21,5 +21,5 @@
 </script>
 
 {#if imgSrc}
-	<img src={imgSrc} alt="logo" class="w-full h-full object-scale-down rounded-md" onerror={onError} />
+	<img src={imgSrc} alt="logo" class="min-w-0 min-h-0 w-full h-full object-contain rounded-md" onerror={onError} />
 {/if}
