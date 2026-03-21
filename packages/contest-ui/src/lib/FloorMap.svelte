@@ -137,6 +137,9 @@
 		ctx.font = Math.round(scale / 2) + 'px Arial';
 		ctx.lineWidth = 0.75;
 
+		let isDark = mode.current === 'dark';
+
+		// draw floor areas
 		for (const team of teams) {
 			if (team.location) {
 				const l = team.location;
@@ -145,10 +148,45 @@
 				let rotation = ((90 - l.rotation) * Math.PI) / 180;
 				ctx.rotate(rotation);
 
-				drawTeam(ctx, team.id === selected?.id, area_width, area_depth, desk_width, desk_depth);
+				drawTeamArea(ctx, area_width, area_depth);
+
+				ctx.rotate(-rotation);
+				ctx.translate(-l.x * scale, -l.y * scale);
+			}
+		}
+
+		if (mapInfo?.spare_teams) {
+			for (const l of mapInfo?.spare_teams ?? []) {
+				ctx.translate(l.x * scale, l.y * scale);
+
+				let rotation = ((90 - l.rotation) * Math.PI) / 180;
+				ctx.rotate(rotation);
+
+				drawTeamArea(ctx, area_width, area_depth);
+
+				ctx.rotate(-rotation);
+				ctx.translate(-l.x * scale, -l.y * scale);
+			}
+		}
+
+		// draw team desks
+		for (const team of teams) {
+			if (team.location) {
+				const l = team.location;
+				ctx.translate(l.x * scale, l.y * scale);
+
+				let rotation = ((90 - l.rotation) * Math.PI) / 180;
+				ctx.rotate(rotation);
+
+				drawTeam(ctx, team.id === selected?.id, desk_width, desk_depth);
 
 				ctx.rotate(-rotation);
 
+				if (team.id === selected?.id) {
+					ctx.fillStyle = isDark ? 'black' : 'white';
+				} else {
+					ctx.fillStyle = isDark ? 'white' : 'black';
+				}
 				ctx.fillText(team.label, 0, 0);
 				ctx.translate(-l.x * scale, -l.y * scale);
 			}
@@ -161,7 +199,7 @@
 				let rotation = ((90 - l.rotation) * Math.PI) / 180;
 				ctx.rotate(rotation);
 
-				drawTeam(ctx, false, area_width, area_depth, desk_width, desk_depth);
+				drawTeam(ctx, false, desk_width, desk_depth);
 
 				ctx.rotate(-rotation);
 				//ctx.fillText('S', 0, 0);
@@ -170,26 +208,21 @@
 		}
 	}
 
-	function drawTeam(
-		ctx: CanvasRenderingContext2D,
-		selected: boolean,
-		area_width: number,
-		area_depth: number,
-		desk_width: number,
-		desk_depth: number
-	): void {
+	function drawTeamArea(ctx: CanvasRenderingContext2D, area_width: number, area_depth: number): void {
 		let isDark = mode.current === 'dark';
 		ctx.fillStyle = isDark ? '#222' : '#eee';
-		ctx.fillRect(-area_width / 2, -area_depth / 2 + desk_depth / 2 + 0.21 * scale, area_width, area_depth);
+		ctx.fillRect(-area_width / 2, -area_depth / 2 + 0.21 * scale, area_width, area_depth);
+	}
 
-		ctx.strokeStyle = isDark ? 'white' : 'black';
+	function drawTeam(ctx: CanvasRenderingContext2D, selected: boolean, desk_width: number, desk_depth: number): void {
+		let isDark = mode.current === 'dark';
+
 		if (selected) {
 			ctx.fillStyle = isDark ? '#eee' : 'gray';
 			ctx.fillRect(-desk_width / 2, -desk_depth / 2, desk_width, desk_depth);
-			ctx.fillStyle = isDark ? 'black' : 'white';
 		} else {
+			ctx.strokeStyle = isDark ? 'white' : 'black';
 			ctx.strokeRect(-desk_width / 2, -desk_depth / 2, desk_width, desk_depth);
-			ctx.fillStyle = isDark ? 'white' : 'black';
 		}
 	}
 
