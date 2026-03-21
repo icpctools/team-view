@@ -26,8 +26,8 @@
 		let x = event.offsetX;
 		let y = event.offsetY;
 
-		let area_width = (mapInfo?.table_area_width || 3) * scale;
-		let area_depth = (mapInfo?.table_area_depth || 2.2) * scale;
+		let area_width = (mapInfo?.team_area_width || 3) * scale;
+		let area_depth = (mapInfo?.team_area_depth || 2.2) * scale;
 		let desk_depth = (mapInfo?.table_depth || 1) * scale;
 
 		x -= ix;
@@ -65,7 +65,7 @@
 		drawFloor();
 	});
 
-	function drawFloor() {
+	function drawFloor(): void {
 		let c = canvas;
 		if (!c) {
 			return;
@@ -130,8 +130,8 @@
 
 		let desk_width = (mapInfo?.table_width || 1.8) * scale;
 		let desk_depth = (mapInfo?.table_depth || 1) * scale;
-		let area_width = (mapInfo?.table_area_width || 3) * scale;
-		let area_depth = (mapInfo?.table_area_depth || 2.2) * scale;
+		let area_width = (mapInfo?.team_area_width || 3) * scale;
+		let area_depth = (mapInfo?.team_area_depth || 2.2) * scale;
 
 		// resize font based on scale
 		ctx.font = Math.round(scale / 2) + 'px Arial';

@@ -83,8 +83,8 @@ export interface ContestState {
 export interface MapInfo {
 	table_width: number;
 	table_depth: number;
-	table_area_width: number;
-	table_area_depth: number;
+	team_area_width: number;
+	team_area_depth: number;
 	aisles?: Aisle[];
 	spare_teams?: TeamLocation[];
 	printer?: Location;
