@@ -1,0 +1,65 @@
+name: Build and Push Container Image
+
+on:
+  push:
+    branches: ['main']
+  pull_request:
+    branches: ['main']
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: icpctools/team-view
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install qemu
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qemu-user-static
+
+      - name: Log in to Container Registry
+        if: github.ref == 'refs/heads/main'
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | podman login ${{ env.REGISTRY }} -u ${{ github.actor }} --password-stdin
+
+      - name: Extract metadata
+        id: meta
+        run: |
+          IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}"
+          echo "tags=${IMAGE}:latest" >> "$GITHUB_OUTPUT"
+
+      - name: Build container image
+        run: |
+          IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}"
+          TAGS="${{ steps.meta.outputs.tags }}"
+
+          # Use first tag as primary (e.g. latest)
+          PRIMARY_TAG=$(echo "$TAGS" | head -n1 | sed 's|.*:||')
+          IMAGE_TAG="${IMAGE}:${PRIMARY_TAG}"
+
+          # Build for each platform and create manifest
+          podman manifest create "${IMAGE_TAG}"
+          for ARCH in amd64 arm64; do
+            podman build \
+              --platform "linux/${ARCH}" \
+              --label "org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}" \
+              -t "${IMAGE_TAG}-${ARCH}" \
+              .
+            podman manifest add "${IMAGE_TAG}" "${IMAGE_TAG}-${ARCH}"
+          done
+
+      - name: Push image
+        run: |
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            podman manifest push --all "${IMAGE_TAG}" "docker://${IMAGE_TAG}"
+          fi
