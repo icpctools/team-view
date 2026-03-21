@@ -125,7 +125,7 @@
 	</div>
 	<!-- Table body -->
 	<div role="rowgroup">
-		{#each data2 as object (object)}
+		{#each data2 as object (object.id ?? object)}
 			<div
 				class="min-h-10 h-fit rounded-lg even:bg-white dark:even:bg-gray-900/50 odd:bg-gray-100 dark:odd:bg-gray-800/50"
 				animate:flip={{ duration: 500 }}>
