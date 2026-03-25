@@ -14,7 +14,7 @@
 					{#if data.logos[i]}
 						<div
 							class="bg-gray-400 dark:bg-gray-600 rounded-md max-w-12 min-w-12 max-h-12 min-h-12 w-12 h-12 p-1 flex items-center justify-center">
-							<Logo ref={data.logos[i]} />
+							<Logo ref={data.logos[i]} size={8} />
 						</div>
 					{/if}
 
