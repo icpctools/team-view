@@ -4,24 +4,20 @@
 
 	interface Props {
 		ref?: FileReference[];
-		size?: number;
+		size?: 6 | 8 | 12 | 16;
 		tag?: string;
 	}
 
-	let { ref, size = 8, tag }: Props = $props();
-
-	// Tailwind v4 can't detect dynamically constructed class names,
-	// so we map size values to static strings it can scan.
-	const sizeClasses: Record<number, string> = {
-		/* eslint-disable @typescript-eslint/naming-convention */
-		4: 'max-h-4 max-w-4 h-4 w-4',
-		8: 'max-h-8 max-w-8 h-8 w-8',
-		16: 'max-h-16 max-w-16 h-16 w-16',
-		24: 'max-h-24 max-w-24 h-24 w-24'
-		/* eslint-enable @typescript-eslint/naming-convention */
-	};
+	let { ref, size = 6, tag }: Props = $props();
 </script>
 
-<div class="{sizeClasses[size] ?? ''} flex items-center justify-center">
+<div
+	class={{
+		'flex items-center justify-center': true,
+		'max-h-6 max-w-6 h-6 w-6': size === 6,
+		'max-h-8 max-w-8 h-8 w-8': size === 8,
+		'max-h-12 max-w-12 h-12 w-12': size === 12,
+		'max-h-16 max-w-16 h-16 w-16': size === 16
+	}}>
 	<Image {ref} {size} {tag} />
 </div>

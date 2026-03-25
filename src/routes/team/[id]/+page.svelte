@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto, invalidate } from '$app/navigation';
-	import { PersonUI, Photo } from '@icpctools/contest-ui';
+	import { Image, PersonUI } from '@icpctools/contest-ui';
 	import { onMount } from 'svelte';
 	import type { Column } from '$lib/ui/table/table';
 	import SimpleColumn from '$lib/ui/table/SimpleColumn.svelte';
@@ -145,8 +145,8 @@
 	{#if data.team.photo}
 		<div class="flex flex-col">
 			<div class="text-xl">Photo</div>
-			<div class="flex flex-row gap-2">
-				<Photo ref={data.team.photo} size={48} />
+			<div class="flex flex-row gap-2 max-h-64 h-64">
+				<Image ref={data.team.photo} size={96} />
 			</div>
 		</div>
 	{/if}

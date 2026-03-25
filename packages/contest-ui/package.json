@@ -21,10 +21,6 @@
 			"types": "./dist/index.d.ts",
 			"svelte": "./dist/index.js"
 		},
-		"./Banner": {
-			"types": "./dist/Banner.svelte.d.ts",
-			"svelte": "./dist/Banner.svelte"
-		},
 		"./Clock": {
 			"types": "./dist/Clock.svelte.d.ts",
 			"svelte": "./dist/Clock.svelte"
@@ -40,10 +36,6 @@
 		"./JudgementType": {
 			"types": "./dist/JudgementType.svelte.d.ts",
 			"svelte": "./dist/JudgementType.svelte"
-		},
-		"./Photo": {
-			"types": "./dist/Photo.svelte.d.ts",
-			"svelte": "./dist/Photo.svelte"
 		},
 		"./Problem": {
 			"types": "./dist/Problem.svelte.d.ts",

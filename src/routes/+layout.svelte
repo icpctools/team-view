@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Banner, Clock, Logo } from '@icpctools/contest-ui';
+	import { Clock, Image, Logo } from '@icpctools/contest-ui';
 	import DarkModeToggle from '$lib/ui/DarkModeToggle.svelte';
 	import { onMount } from 'svelte';
 	import '../app.css';
@@ -26,7 +26,7 @@
 	<div class="flex flex-row gap-8 bg-gray-800 dark:bg-gray-950 text-white p-4 items-center">
 		{#if data.logo && data.logo.length > 0}
 			<div class="w-12">
-				<Logo ref={data.logo} />
+				<Logo ref={data.logo} size={12} />
 			</div>
 		{/if}
 
@@ -62,8 +62,8 @@
 	</div>
 
 	{#if data.banner && data.banner.length > 0}
-		<div class="self-center p-2">
-			<Banner ref={data.banner} />
+		<div class="flex place-items-center p-2 max-h-16 h-16">
+			<Image ref={data.banner} size={16} />
 		</div>
 	{/if}
 </div>

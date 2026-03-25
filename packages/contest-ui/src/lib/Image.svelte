@@ -13,7 +13,7 @@
 
 	let tagg: string = $derived(tag ?? mode.current ?? '');
 
-	let imgSrc = $derived(bestLogo(ref, size * 20, size * 20, tagg)?.href);
+	let imgSrc = $derived(bestLogo(ref, size * 10, size * 10, tagg)?.href);
 
 	function onError(): void {
 		imgSrc = '/images/icpc-logo.png';
