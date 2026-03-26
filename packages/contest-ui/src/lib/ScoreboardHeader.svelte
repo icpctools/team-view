@@ -39,7 +39,7 @@
 			<div role="cell" class="justify-self-center">Score</div>
 		{/if}
 		{#each problems as problem (problem.id)}
-			<div role="cell" class="justify-self-center w-3/4">
+			<div role="cell" class="flex justify-center w-full">
 				<ProblemUI {problem} onclick={() => onSelectProblem(problem)} />
 			</div>
 		{/each}

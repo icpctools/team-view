@@ -53,6 +53,16 @@
 		// Return a color that works in both light and dark mode
 		return 'transparent';
 	}
+
+	function attempts(rp: ScoreboardProblem): string {
+		const num = rp.num_judged + rp.num_pending;
+		if (num === 0) {
+			return '';
+		} else if (num === 1) {
+			return '1 try';
+		}
+		return num + ' tries';
+	}
 </script>
 
 <div
@@ -91,15 +101,14 @@
 			{#if rp.num_judged > 0 || rp.num_pending > 0}
 				<div
 					role="cell"
-					class="flex flex-row justify-center items-center w-full h-full rounded-md @container text-white dark:text-black"
+					class="flex flex-col justify-center items-center w-full h-full rounded-md @container text-white dark:text-black"
 					style="background-color:{scoreBg(rp, problem)}">
 					{#if scoreboard_type === 'pass-fail'}
 						<span class="@max-[30px]:hidden">{timeToMin(rp.time)}</span>
-						<span class="text-xs text-white/70 dark:text-gray-600 pl-0.5 @max-[60px]:hidden"
-							>{rp.num_judged + rp.num_pending}</span>
+						<span class="text-xs text-gray-100 dark:text-gray-700 pl-0.5 @max-[60px]:hidden">{attempts(rp)}</span>
 					{:else if scoreboard_type === 'score'}
 						<span class="@max-[30px]:hidden">{rp.score}</span>
-						<span class="text-xs text-white/70 pl-0.5 @max-[60px]:hidden">{rp.num_judged + rp.num_pending}</span>
+						<span class="text-xs text-gray-100 dark:text-gray-700 pl-0.5 @max-[60px]:hidden">{attempts(rp)}</span>
 					{/if}
 				</div>
 			{:else}
