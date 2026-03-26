@@ -127,7 +127,7 @@
 	<div role="rowgroup">
 		{#each data2 as object (object.id ?? object)}
 			<div
-				class="min-h-10 h-fit rounded-lg even:bg-white dark:even:bg-gray-900/50 odd:bg-gray-100 dark:odd:bg-gray-800/50"
+				class="min-h-10 h-fit rounded-lg even:bg-white/50 dark:even:bg-gray-900/50 odd:bg-gray-300/50 dark:odd:bg-gray-700/50"
 				animate:flip={{ duration: 500 }}>
 				<div class="grid grid-table gap-x-0.5 min-h-10 hover:bg-gray-300 dark:hover:bg-gray-800 rounded-lg" role="row">
 					<div class="whitespace-nowrap place-self-center" role="cell"></div>

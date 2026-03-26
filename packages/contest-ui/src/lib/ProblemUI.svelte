@@ -32,7 +32,7 @@
 <!-- svelte-ignore a11y_interactive_supports_focus -->
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <div
-	class="grid grid-row justify-self-center border rounded-sm min-w-4 w-full max-w-12 @container dark:text-gray-100"
+	class="grid grid-row border rounded-sm min-w-4 w-full max-w-12 @container dark:text-gray-100"
 	class:hover:bg-hover={onclick}
 	class:cursor-pointer={onclick}
 	class:cursor-default={!onclick}

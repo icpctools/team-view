@@ -27,7 +27,7 @@
 
 	<div role="rowgroup">
 		{#each data.scoreboard.rows as row, i (row.team_id)}
-			<div animate:flip class="even:bg-white dark:even:bg-gray-900 odd:bg-gray-100 dark:odd:bg-gray-800">
+			<div animate:flip class="even:bg-white/50 dark:even:bg-gray-900/50 odd:bg-gray-300/50 dark:odd:bg-gray-700/50">
 				<ScoreboardRowUI
 					showLogo={data.hasLogos}
 					scoreboard_type={data.scoreboard_type}
