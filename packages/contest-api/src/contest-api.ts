@@ -446,14 +446,16 @@ export class ContestAPI {
 		// update a 'singleton' object, e.g. contest, state
 		switch (type) {
 			case 'contest': {
-				this.contest = data as Contest;
+				const obj = data as Contest;
+				this.processFileReferences(obj);
+				this.contest = obj;
 				return;
 			}
 			case 'state': {
 				this.state = data as ContestState;
 				return;
 			}
-			case 'mapInfo': {
+			case 'map-info': {
 				this.mapInfo = data as MapInfo;
 				break;
 			}
@@ -476,6 +478,8 @@ export class ContestAPI {
 				console.log('Event can never have id and data array');
 				return arr ?? [];
 			}
+
+			obj.forEach(obj => this.processFileReferences(obj));
 			return obj;
 		}
 
@@ -485,6 +489,7 @@ export class ContestAPI {
 				return [];
 			}
 
+			this.processFileReferences(obj);
 			return [obj];
 		}
 
@@ -507,17 +512,19 @@ export class ContestAPI {
 
 		// replacement
 		if (index >= 0) {
+			this.processFileReferences(obj);
 			arr[index] = obj;
 			return arr;
 		}
 
 		// addition
+		this.processFileReferences(obj);
 		arr.push(obj);
 		return arr;
 	}
 
 	processNotification(n: Notification): void {
-		if (!n.id && !Array.isArray(n.data)) {
+		if ((!n.id || n.type === 'contest') && !Array.isArray(n.data)) {
 			// no id and not an array: must be a 'singleton' object (e.g. state)
 			this.processNotificationSingleton(n.type, n.data ?? {});
 			return;
