@@ -1,7 +1,10 @@
 /**
- * Copyright later.
+ * Contest API for getting data from a single contest. There are two basic ways of
+ * using it: calling loadXxx() on individual contest endpoints, or using
+ * watch() to connect to an event feed. After doing either, call getXxx() to get
+ * contest data.
  */
-import type { HttpsOptions, OptionsOfTextResponseBody } from 'got';
+import type { OptionsInit, OptionsOfTextResponseBody } from 'got';
 import got, { HTTPError, RequestError } from 'got';
 import type {
 	Access,
@@ -28,6 +31,7 @@ import type {
 	Submission,
 	Team
 } from './contest-types.js';
+import readline from 'node:readline';
 
 export interface Credentials {
 	user?: string;
@@ -40,6 +44,27 @@ export type ContestEvent = {
 };
 
 export type ContestListener = (event: ContestEvent) => void;
+
+class Mutex {
+	private first: boolean = true;
+	private queue: (() => void)[] = [];
+
+	async lock(): Promise<void> {
+		if (this.first) {
+			return new Promise<void>((resolve) => this.queue.push(resolve));
+		}
+	}
+
+	unlock(): void {
+		this.first = false;
+		if (this.queue.length > 0) {
+			const next = this.queue.shift();
+			next?.();
+		}
+	}
+}
+
+const mutex = new Mutex();
 
 export class ContestAPI {
 	private contest?: Contest;
@@ -78,6 +103,8 @@ export class ContestAPI {
 
 	private changeListeners: ContestListener[] = [];
 
+	private scoreboardInvalid: boolean = false;
+
 	constructor(contestURL: string, credentials?: Credentials, proxyURL?: string) {
 		if (!contestURL.endsWith('/')) {
 			contestURL += '/';
@@ -115,11 +142,11 @@ export class ContestAPI {
 	}
 
 	getHttpOptions(): OptionsOfTextResponseBody {
-		const httpsOptions: HttpsOptions = {
-			rejectUnauthorized: false
-		};
-		const options: OptionsOfTextResponseBody = {
-			https: httpsOptions,
+		return {
+			https: {
+				rejectUnauthorized: false
+				//certificateAuthority = this.certificates.getAllCertificates();
+			},
 			retry: { limit: 0 },
 			username: this.credentials?.user,
 			password: this.credentials?.password,
@@ -133,12 +160,6 @@ export class ContestAPI {
 				response: 2000
 			}
 		};
-
-		/*if (options.https) {
-			options.https.certificateAuthority = this.certificates.getAllCertificates();
-		}*/
-
-		return options;
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -490,6 +511,7 @@ export class ContestAPI {
 				const obj = data as Contest;
 				this.processFileReferences(obj);
 				this.contest = obj;
+				mutex.unlock();
 				return;
 			}
 			case 'state': {
@@ -645,33 +667,116 @@ export class ContestAPI {
 		this.fireChange({ type: n.type, id: n.id });
 	}
 
-	watch(): void {
+	getStreamOptions(): OptionsInit & { isStream?: true } {
+		return {
+			https: {
+				rejectUnauthorized: false
+				//certificateAuthority = this.certificates.getAllCertificates();
+			},
+			retry: { limit: 0 },
+			username: this.credentials?.user,
+			password: this.credentials?.password,
+			// specify short timeouts
+			timeout: {
+				lookup: 2000,
+				connect: 2000,
+				secureConnect: 2000,
+				send: 10000
+			},
+			isStream: true
+		};
+	}
+
+	async readEventFeed(): Promise<void> {
+		const url = this.getURL('event-feed');
+		console.log(`Connecting to ${url}`);
+		try {
+			const stream = got.stream(url, this.getStreamOptions());
+
+			const rl = readline.createInterface({
+				input: stream,
+				crlfDelay: Infinity // Recognizes all instances of CR LF as a single line break
+			});
+
+			// TODO 120s timeout
+			for await (const line of rl) {
+				if (line && line.length > 0) {
+					const obj: Notification = JSON.parse(line, (_key, value) => {
+						return value === null ? undefined : value;
+					});
+					this.processNotification(obj);
+				}
+			}
+
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		} catch (error: any) {
+			if (error instanceof HTTPError) {
+				throw new Error(`HTTP error ${error.response.statusCode} loading ${url}: ${error.response.statusMessage}`, {
+					cause: error
+				});
+			} else if (error instanceof RequestError) {
+				throw new Error(`Error loading ${url}: ${error.code}`, { cause: error });
+			} else {
+				throw new Error(`Unexpected error loading ${url}: ${error}`, { cause: error });
+			}
+		}
+		console.log(`Done connecting to ${url}`);
+	}
+
+	private reset(): void {
+		this.contest = undefined;
+		this.access = undefined;
+		this.state = undefined;
+		this.organizations = [];
+		this.groups = [];
+		this.teams = [];
+		this.persons = [];
+		this.accounts = [];
+		this.account = undefined;
+		this.languages = [];
+		this.judgementTypes = [];
+		this.problems = [];
+		this.submissions = [];
+		this.judgements = [];
+		this.runs = [];
+		this.clarifications = [];
+		this.commentary = [];
+		this.awards = [];
+		this.startStatus = [];
+		this.scoreboard = undefined;
+		this.mapInfo = undefined;
+	}
+
+	async watch(): Promise<void> {
 		if (this.interval) {
 			return;
 		}
 		console.log(`Watching ${this.id}`);
+
+		// reset the contest to empty arrays
+		this.reset();
+
+		// load the initial access and scoreboard endpoints since they're not in the feed
+		await this.loadAccess(true);
+		await this.loadScoreboard(true);
+
+		this.readEventFeed();
+
+		// wait for initial contest load
+		await mutex.lock();
+
 		this.interval = setInterval(async () => {
-			console.log(`Invalidating ${this.id}`);
 			try {
-				if (this.contest) {
-					await this.loadContest(true);
-				}
-				if (this.submissions) {
-					await this.loadSubmissions(true);
-				}
-				if (this.judgements) {
-					await this.loadJudgements(true);
-				}
-				if (this.clarifications) {
-					await this.loadClarifications(true);
-				}
-				if (this.scoreboard) {
+				if (this.scoreboardInvalid) {
+					this.scoreboardInvalid = false;
 					await this.loadScoreboard(true);
 				}
 			} catch (error: unknown) {
 				console.error(`Error reloading contest data: ${error}`);
 			}
-		}, 5000);
+		}, 2000);
+
+		console.log(`Done watching ${this.id}`);
 	}
 
 	unwatch(): void {
@@ -693,6 +798,9 @@ export class ContestAPI {
 	}
 
 	private fireChange(event: ContestEvent): void {
+		if (event.type === 'submissions' || event.type === 'judgements') {
+			this.scoreboardInvalid = true;
+		}
 		for (const listener of this.changeListeners) {
 			try {
 				listener(event);
