@@ -3,12 +3,9 @@ import { error } from '@sveltejs/kit';
 import { hasEndpoint } from '@icpctools/contest-api';
 
 export const load = async ({ depends }) => {
+	depends('app:contest');
 	const cc = await loadContest();
 	if (!cc) throw error(404);
-
-	depends('app:contest');
-
-	await Promise.all([cc.loadContest(), cc.loadAccess()]);
 
 	const contest = cc.getContest();
 	if (!contest) throw error(404);

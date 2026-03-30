@@ -28,14 +28,6 @@ export const load = async ({ depends }) => {
 	const cc = await loadContest();
 	if (!cc) throw error(404);
 
-	await Promise.all([
-		cc.loadGroups(),
-		cc.loadOrganizations(),
-		cc.loadTeams(),
-		cc.loadProblems(),
-		cc.loadClarifications()
-	]);
-
 	const problems = cc.getProblems();
 
 	const teams = cc.getTeams();

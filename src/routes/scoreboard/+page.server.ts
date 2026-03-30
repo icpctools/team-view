@@ -8,8 +8,6 @@ export const load = async ({ depends }) => {
 	const cc = await loadContest();
 	if (!cc) throw error(404);
 
-	await Promise.all([cc.loadContest(), cc.loadTeams(), cc.loadOrganizations(), cc.loadProblems(), cc.loadScoreboard()]);
-
 	const contest = cc.getContest();
 	if (!contest) throw error(404);
 
