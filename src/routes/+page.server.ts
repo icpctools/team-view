@@ -4,11 +4,8 @@ import { loadContest } from '$lib/state.svelte.js';
 
 export const load = async ({ depends }) => {
 	depends('app:teams', 'app:organizations');
-
 	const cc = await loadContest();
 	if (!cc) throw error(404);
-
-	await Promise.all([cc.loadTeams(), cc.loadOrganizations()]);
 
 	const teams = cc.getTeams();
 

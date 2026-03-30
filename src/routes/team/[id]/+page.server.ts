@@ -11,19 +11,6 @@ export const load = async ({ params, depends }) => {
 	const cc = await loadContest();
 	if (!cc) throw error(404);
 
-	await Promise.all([
-		cc.loadAccess(),
-		cc.loadGroups(),
-		cc.loadOrganizations(),
-		cc.loadTeams(),
-		cc.loadPersons(),
-		cc.loadLanguages(),
-		cc.loadProblems(),
-		cc.loadJudgementTypes(),
-		cc.loadSubmissions(),
-		cc.loadJudgements()
-	]);
-
 	const teams = cc.getTeams();
 	const team = teams?.find((t) => t.id && t.id === params.id);
 	if (!team) throw error(404);
