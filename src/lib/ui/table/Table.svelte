@@ -1,6 +1,7 @@
 <script lang="ts" generics="T">
 	import { onMount } from 'svelte';
 	import { flip } from 'svelte/animate';
+	import { fade } from 'svelte/transition';
 	import type { Column } from './table';
 
 	interface Props {
@@ -10,6 +11,8 @@
 		defaultSortColumn?: string;
 		showHeader?: boolean;
 		keyProperty?: keyof T;
+		fitToScreen?: boolean;
+		visibleRowCount?: number;
 	}
 	let {
 		kind,
@@ -17,24 +20,42 @@
 		data,
 		defaultSortColumn = undefined,
 		showHeader = true,
-		keyProperty = 'id' as keyof T
+		keyProperty = 'id' as keyof T,
+		fitToScreen = false,
+		visibleRowCount = $bindable(Infinity)
 	}: Props = $props();
 
-	let sortColIndex = $state<number | undefined>(undefined);
+	let sortCol = $state<Column<T>>();
 	let sortAscending = $state<boolean>();
 
-	let sortCol = $derived(sortColIndex !== undefined ? columns[sortColIndex] : undefined);
+	let containerHeight = $state(0);
+	let rowHeight = $state(0);
+	let headerHeight = $state(0);
+	let containerElement = $state<HTMLDivElement>();
 
-	let data2 = $derived.by(() => {
-		if (!data || !sortCol) {
-			return data;
-		} else {
-			return sortImpl();
+	// calculate visible row count when fitToScreen is enabled
+	$effect(() => {
+		if (fitToScreen && containerHeight && rowHeight) {
+			const availableHeight = containerHeight - (showHeader ? headerHeight : 0);
+			const calculatedRows = Math.floor(availableHeight / rowHeight);
+			visibleRowCount = Math.max(1, calculatedRows);
+		} else if (fitToScreen) {
+			visibleRowCount = Infinity;
 		}
 	});
 
-	function sort(columnIndex: number): void {
-		const column = columns[columnIndex];
+	let data2 = $derived.by(() => {
+		let sorted = data;
+		if (data && sortCol) {
+			sorted = sortImpl();
+		}
+		if (fitToScreen && sorted.length > visibleRowCount) {
+			return sorted.slice(0, visibleRowCount);
+		}
+		return sorted;
+	});
+
+	function sort(column: Column<T>): void {
 		if (!column) {
 			return;
 		}
@@ -45,10 +66,10 @@
 			return;
 		}
 
-		if (sortColIndex === columnIndex) {
+		if (sortCol === column) {
 			sortAscending = !sortAscending;
 		} else {
-			sortColIndex = columnIndex;
+			sortCol = column;
 			sortAscending = column.initialOrder ? column.initialOrder !== 'descending' : true;
 		}
 		sortImpl();
@@ -75,11 +96,58 @@
 		return data.toSorted(comparator);
 	}
 
-	onMount(async () => {
-		const columnIndex = columns.findIndex((column) => column.title === defaultSortColumn);
-		if (columnIndex !== -1 && columns[columnIndex]?.comparator) {
-			sortColIndex = columnIndex;
-			sortAscending = columns[columnIndex].initialOrder ? columns[columnIndex].initialOrder !== 'descending' : true;
+	onMount(() => {
+		const column: Column<T> | undefined = columns.find((column) => column.title === defaultSortColumn);
+		if (column?.comparator) {
+			sortCol = column;
+			sortAscending = column.initialOrder ? column.initialOrder !== 'descending' : true;
+		}
+
+		if (fitToScreen && containerElement) {
+			// measure heights after DOM is fully rendered
+			requestAnimationFrame(() => {
+				requestAnimationFrame(() => {
+					// measure header height
+					const headerEl = containerElement?.querySelector('[role="rowgroup"]:first-child');
+					if (headerEl) {
+						headerHeight = (headerEl as HTMLElement).offsetHeight;
+					}
+
+					// measure just 2-3 rows to get accurate height
+					const rowGroupEl = containerElement?.querySelector('[role="rowgroup"]:last-child');
+					if (rowGroupEl) {
+						const rows = rowGroupEl.querySelectorAll('[role="row"]');
+						if (rows.length >= 2) {
+							// measure the first two rows to get accurate spacing
+							const firstRow = rows[0] as HTMLElement;
+							const secondRow = rows[1] as HTMLElement;
+							const firstTop = firstRow.getBoundingClientRect().top;
+							const secondTop = secondRow.getBoundingClientRect().top;
+							rowHeight = secondTop - firstTop;
+						}
+					}
+
+					// measure parent container's actual height
+					if (containerElement?.parentElement) {
+						containerHeight = containerElement.parentElement.clientHeight;
+					}
+				});
+			});
+
+			// set up resize observer for parent container
+			const resizeObserver = new ResizeObserver(() => {
+				if (containerElement?.parentElement) {
+					containerHeight = containerElement.parentElement.clientHeight;
+				}
+			});
+
+			if (containerElement?.parentElement) {
+				resizeObserver.observe(containerElement.parentElement);
+			}
+
+			return () => {
+				resizeObserver.disconnect();
+			};
 		}
 	});
 
@@ -95,8 +163,10 @@
 </script>
 
 <div
+	bind:this={containerElement}
 	style="--table-grid-table-columns: {gridTemplateColumns}"
 	class="w-full relative"
+	class:h-full={fitToScreen}
 	class:hidden={data2.length === 0}
 	role="table"
 	aria-label={kind}>
@@ -115,10 +185,10 @@
 							'justify-self-end': (column.titleAlign ?? column.align) === 'right',
 							'justify-self-stretch': (column.titleAlign ?? column.align) === 'stretch',
 							'cursor-pointer': column.comparator,
-							'hover:text-black': sortColIndex !== colIndex,
-							'hover:dark:text-white': sortColIndex !== colIndex
+							'hover:text-black': sortCol !== column,
+							'hover:dark:text-white': sortCol !== column
 						}}
-						onclick={sort.bind(undefined, colIndex)}
+						onclick={sort.bind(undefined, column)}
 						role="columnheader">
 						{#if typeof column.title === 'string'}
 							<div class="overflow-hidden text-ellipsis">
@@ -130,10 +200,10 @@
 
 						{#if column.comparator}<i
 								class="fas pl-0.5"
-								class:fa-sort={sortColIndex !== colIndex}
-								class:fa-sort-up={sortColIndex === colIndex && sortAscending}
-								class:fa-sort-down={sortColIndex === colIndex && !sortAscending}
-								class:text-gray-500={sortColIndex !== colIndex}
+								class:fa-sort={sortCol !== column}
+								class:fa-sort-up={sortCol === column && sortAscending}
+								class:fa-sort-down={sortCol === column && !sortAscending}
+								class:text-gray-500={sortCol !== column}
 								aria-hidden="true"></i
 							>{/if}
 					</div>
@@ -156,6 +226,7 @@
 		{#each data2 as object, rowIndex (object?.[keyProperty])}
 			<div
 				class="grid grid-table gap-x-0.5 min-h-10 ml-1 hover:bg-gray-300/80 dark:hover:bg-gray-800/80 rounded-lg relative"
+				in:fade={{ duration: 1000 }}
 				animate:flip={{ duration: 1500 }}
 				role="row">
 				{#each columns as column, colIndex (colIndex)}
