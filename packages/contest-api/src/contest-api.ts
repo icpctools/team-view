@@ -147,7 +147,9 @@ export class ContestAPI {
 		const url = this.getURL(type);
 		try {
 			const response = await got(url, this.getHttpOptions());
-			const obj = JSON.parse(response.body);
+			const obj = JSON.parse(response.body, (_key, value) => {
+				return value === null ? undefined : value;
+			});
 			const endTime = performance.now();
 			console.log(`Fetched ${url} in ${(endTime - startTime).toFixed(1)}ms`);
 			this.processFileReferences(obj);
@@ -510,7 +512,7 @@ export class ContestAPI {
 	private processData(
 		id: Id | undefined,
 		arr: { id: Id }[] | undefined,
-		obj: { id: Id } | { id: Id }[] | undefined
+		obj: { id: Id } | { id: Id }[] | undefined | null
 	): { id: Id }[] {
 		if (Array.isArray(obj)) {
 			if (id) {
@@ -542,7 +544,7 @@ export class ContestAPI {
 		}
 
 		// deletion
-		if (obj === undefined) {
+		if (obj === undefined || obj === null) {
 			if (index >= 0) {
 				arr.splice(index, 1);
 			}
@@ -570,7 +572,7 @@ export class ContestAPI {
 			return;
 		}
 
-		const data = n.data as { id: Id } | undefined;
+		const data = n.data as { id: Id } | null | undefined;
 		switch (n.type) {
 			case 'judgement-types': {
 				this.judgementTypes = this.processData(n.id, this.judgementTypes, data) as JudgementType[];
