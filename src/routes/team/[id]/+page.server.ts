@@ -7,7 +7,7 @@ import { findManyBySubmissionId } from '@icpctools/contest-api';
 import { hasEndpointProperty } from '@icpctools/contest-api';
 
 export const load = async ({ params, depends }) => {
-	depends(`app:teams/{$params.id}`);
+	depends(`app:teams/{$params.id}`, 'app:submissions');
 	const cc = await loadContest();
 	if (!cc) throw error(404);
 
