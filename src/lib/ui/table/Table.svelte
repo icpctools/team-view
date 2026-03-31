@@ -1,4 +1,4 @@
-<script lang="ts" generics="T extends { id?: string }">
+<script lang="ts" generics="T">
 	import { onMount } from 'svelte';
 	import { flip } from 'svelte/animate';
 	import type { Column } from './table';
@@ -7,9 +7,18 @@
 		kind: string;
 		columns: Column<T>[];
 		data: T[];
-		defaultSortColumn: string | undefined;
+		defaultSortColumn?: string;
+		showHeader?: boolean;
+		keyProperty?: keyof T;
 	}
-	let { kind, columns, data, defaultSortColumn = undefined }: Props = $props();
+	let {
+		kind,
+		columns,
+		data,
+		defaultSortColumn = undefined,
+		showHeader = true,
+		keyProperty = 'id' as keyof T
+	}: Props = $props();
 
 	let sortCol = $state<Column<T>>();
 	let sortAscending = $state<boolean>();
@@ -72,7 +81,7 @@
 	});
 
 	let gridTemplateColumns = $derived.by(() => {
-		let columnWidths: string[] = ['5px'];
+		let columnWidths: string[] = [];
 
 		columns.map((c) => c.width ?? '1fr').forEach((w) => columnWidths.push(w));
 
@@ -84,65 +93,80 @@
 
 <div
 	style="--table-grid-table-columns: {gridTemplateColumns}"
-	class="w-full"
+	class="w-full relative"
 	class:hidden={data2.length === 0}
 	role="table"
 	aria-label={kind}>
 	<!-- Table header -->
-	<div role="rowgroup" class="relative">
-		<div class="grid grid-table gap-x-0.5 h-7 sticky top-0 text-gray-600 dark:text-gray-300 uppercase z-2" role="row">
-			<div class="whitespace-nowrap justify-self-start" role="columnheader"></div>
+	{#if showHeader}
+		<div role="rowgroup" class="sticky top-0 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm rounded z-10">
+			<div class="grid grid-table mx-1 gap-x-0.5 h-7 text-gray-600 dark:text-gray-300 uppercase" role="row">
+				{#each columns as column, colIndex (colIndex)}
+					<!-- svelte-ignore a11y_click_events_have_key_events -->
+					<!-- svelte-ignore a11y_interactive_supports_focus -->
+					<div
+						class={{
+							'flex max-w-full overflow-hidden text-sm font-semibold whitespace-nowrap select-none self-center': true,
+							'justify-self-start': column.align === 'left',
+							'justify-self-center': column.align === 'center',
+							'justify-self-end': column.align === 'right',
+							'justify-self-stretch': column.align === 'stretch',
+							'cursor-pointer': column.comparator,
+							'hover:text-black': sortCol !== column,
+							'hover:dark:text-white': sortCol !== column
+						}}
+						onclick={sort.bind(undefined, column)}
+						role="columnheader">
+						{#if typeof column.title === 'string'}
+							<div class="overflow-hidden text-ellipsis">
+								{column.title}
+							</div>
+						{:else}
+							<column.title {...column.titleProps} />
+						{/if}
 
-			{#each columns as column, index (index)}
-				<!-- svelte-ignore a11y_click_events_have_key_events -->
-				<!-- svelte-ignore a11y_interactive_supports_focus -->
-				<div
-					class="max-w-full overflow-hidden flex flex-row text-sm font-semibold items-center whitespace-nowrap {column.align ===
-					'right'
-						? 'justify-self-end'
-						: column.align === 'center'
-							? 'justify-self-center'
-							: 'justify-self-start'} self-center select-none"
-					class:cursor-pointer={column.comparator}
-					class:hover:text-black={sortCol !== column}
-					class:hover:dark:text-white={sortCol !== column}
-					onclick={sort.bind(undefined, column)}
-					role="columnheader">
-					<div class="overflow-hidden text-ellipsis">
-						{column.title}
+						{#if column.comparator}<i
+								class="fas pl-0.5"
+								class:fa-sort={sortCol !== column}
+								class:fa-sort-up={sortCol === column && sortAscending}
+								class:fa-sort-down={sortCol === column && !sortAscending}
+								class:text-gray-500={sortCol !== column}
+								aria-hidden="true"></i
+							>{/if}
 					</div>
-					{#if column.comparator}<i
-							class="fas pl-0.5"
-							class:fa-sort={sortCol !== column}
-							class:fa-sort-up={sortCol === column && sortAscending}
-							class:fa-sort-down={sortCol === column && !sortAscending}
-							class:text-gray-500={sortCol !== column}
-							aria-hidden="true"></i
-						>{/if}
-				</div>
-			{/each}
+				{/each}
+			</div>
 		</div>
-	</div>
-	<!-- Table body -->
-	<div role="rowgroup">
-		{#each data2 as object (object.id ?? object)}
-			<div
-				class="min-h-10 h-fit rounded-lg even:bg-white/50 dark:even:bg-gray-900/50 odd:bg-gray-300/50 dark:odd:bg-gray-700/50"
-				animate:flip={{ duration: 500 }}>
-				<div class="grid grid-table gap-x-0.5 min-h-10 hover:bg-gray-300 dark:hover:bg-gray-800 rounded-lg" role="row">
-					<div class="whitespace-nowrap place-self-center" role="cell"></div>
+	{/if}
 
-					{#each columns as column, index (index)}
+	<!-- Fixed alternating row backgrounds -->
+	<div class={{ 'absolute inset-0 pointer-events-none': true, 'mt-7': showHeader }}>
+		{#each data2 as object (object?.[keyProperty])}
+			<div
+				class="min-h-10 h-fit rounded-lg even:bg-white/50 dark:even:bg-gray-900/50 odd:bg-gray-300/50 dark:odd:bg-gray-700/50">
+			</div>
+		{/each}
+	</div>
+
+	<!-- Rows -->
+	<div role="rowgroup" class="relative">
+		{#each data2 as object, rowIndex (object?.[keyProperty])}
+			<div class="min-h-10 h-fit relative" animate:flip={{ duration: 1500 }}>
+				<div
+					class="grid grid-table gap-x-0.5 min-h-10 hover:bg-gray-300/80 dark:hover:bg-gray-800/80 rounded-lg"
+					role="row">
+					{#each columns as column, colIndex (colIndex)}
 						<div
-							class="whitespace-nowrap {column.align === 'right'
-								? 'justify-self-end'
-								: column.align === 'center'
-									? 'justify-self-center'
-									: 'justify-self-start'} self-center {column.overflow === true
-								? ''
-								: 'overflow-hidden'} max-w-full py-1.5"
+							class={{
+								'flex items-center self-stretch max-w-full py-px whitespace-nowrap': true,
+								'justify-self-start': column.align === 'left',
+								'justify-self-center': column.align === 'center',
+								'justify-self-end': column.align === 'right',
+								'justify-self-stretch': column.align === 'stretch',
+								'overflow-hidden': column.overflow === true
+							}}
 							role="cell">
-							<column.renderer {...column.rendererProps?.(object)} />
+							<column.renderer {...column.rendererProps?.(object, rowIndex)} />
 						</div>
 					{/each}
 				</div>
