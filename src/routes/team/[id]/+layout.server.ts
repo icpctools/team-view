@@ -3,7 +3,7 @@ import { findById } from '@icpctools/contest-api';
 import { loadContest } from '$lib/state.svelte.js';
 
 export const load = async ({ params, depends }) => {
-	depends('app:teams');
+	depends(`app:teams/{$params.id}`, 'app:problems', 'app:submissions', 'app:scoreboard');
 	const cc = await loadContest();
 	if (!cc) throw error(404);
 
