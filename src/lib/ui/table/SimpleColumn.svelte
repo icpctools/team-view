@@ -5,6 +5,6 @@
 	let { object }: Props = $props();
 </script>
 
-<div class="text-black dark:text-white max-w-full text-wrap">
+<div class="text-black dark:text-white max-w-full px-1 text-wrap">
 	{object}
 </div>

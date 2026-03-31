@@ -7,14 +7,22 @@ export interface Column<Type> {
 	/**
 	 * The column title.
 	 */
-	readonly title: string;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	readonly title: string | Component<any>;
 
 	/**
-	 * Column alignment, one of 'left', 'center', or 'right'.
+	 * Properties to pass to the title renderer component.
+	 * These properties will be spread onto the component, allowing you
+	 * to renderer title components with any property.
+	 */
+	readonly titleProps?: Record<string, unknown>;
+
+	/**
+	 * Column alignment, one of 'left', 'center', 'right', or 'stretch',
 	 *
 	 * Defaults to 'left' alignment.
 	 */
-	readonly align?: 'left' | 'center' | 'right';
+	readonly align?: 'left' | 'center' | 'right' | 'stretch';
 
 	/**
 	 * Column width, typically in pixels or fractional units (fr).
@@ -34,7 +42,7 @@ export interface Column<Type> {
 	 * These properties will be spread onto the component, allowing you
 	 * to renderer components with any property.
 	 */
-	readonly rendererProps?: (object: Type) => Record<string, unknown>;
+	readonly rendererProps?: (object: Type, rowIndex: number) => Record<string, unknown>;
 
 	/**
 	 * Set a comparator used to sort the data by the values in this column.
