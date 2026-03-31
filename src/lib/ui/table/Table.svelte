@@ -106,11 +106,11 @@
 					<!-- svelte-ignore a11y_interactive_supports_focus -->
 					<div
 						class={{
-							'flex max-w-full overflow-hidden text-sm font-semibold whitespace-nowrap select-none self-center': true,
-							'justify-self-start': column.align === 'left',
-							'justify-self-center': column.align === 'center',
-							'justify-self-end': column.align === 'right',
-							'justify-self-stretch': column.align === 'stretch',
+							'flex items-center max-w-full overflow-hidden text-sm font-semibold whitespace-nowrap select-none': true,
+							'justify-self-start': (column.titleAlign ?? column.align) === 'left',
+							'justify-self-center': (column.titleAlign ?? column.align) === 'center',
+							'justify-self-end': (column.titleAlign ?? column.align) === 'right',
+							'justify-self-stretch': (column.titleAlign ?? column.align) === 'stretch',
 							'cursor-pointer': column.comparator,
 							'hover:text-black': sortCol !== column,
 							'hover:dark:text-white': sortCol !== column
@@ -151,25 +151,24 @@
 	<!-- Rows -->
 	<div role="rowgroup" class="relative">
 		{#each data2 as object, rowIndex (object?.[keyProperty])}
-			<div class="min-h-10 h-fit relative" animate:flip={{ duration: 1500 }}>
-				<div
-					class="grid grid-table gap-x-0.5 min-h-10 hover:bg-gray-300/80 dark:hover:bg-gray-800/80 rounded-lg"
-					role="row">
-					{#each columns as column, colIndex (colIndex)}
-						<div
-							class={{
-								'flex items-center self-stretch max-w-full py-px whitespace-nowrap': true,
-								'justify-self-start': column.align === 'left',
-								'justify-self-center': column.align === 'center',
-								'justify-self-end': column.align === 'right',
-								'justify-self-stretch': column.align === 'stretch',
-								'overflow-hidden': column.overflow === true
-							}}
-							role="cell">
-							<column.renderer {...column.rendererProps?.(object, rowIndex)} />
-						</div>
-					{/each}
-				</div>
+			<div
+				class="grid grid-table gap-x-0.5 min-h-10 ml-1 hover:bg-gray-300/80 dark:hover:bg-gray-800/80 rounded-lg relative"
+				animate:flip={{ duration: 1500 }}
+				role="row">
+				{#each columns as column, colIndex (colIndex)}
+					<div
+						class={{
+							'flex items-center max-w-full py-px whitespace-nowrap': true,
+							'justify-self-start': column.align === 'left',
+							'justify-self-center': column.align === 'center',
+							'justify-self-end': column.align === 'right',
+							'justify-self-stretch': column.align === 'stretch',
+							'overflow-hidden': column.overflow !== true
+						}}
+						role="cell">
+						<column.renderer {...column.rendererProps?.(object, rowIndex)} />
+					</div>
+				{/each}
 			</div>
 		{/each}
 	</div>

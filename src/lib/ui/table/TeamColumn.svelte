@@ -15,12 +15,14 @@
 	<button
 		{onclick}
 		class={{
-			'flex flex-row items-center text-black dark:text-white p-0.5 gap-x-2 rounded': true,
+			'flex flex-row items-center text-black dark:text-white p-0.5 gap-x-2 rounded max-w-full': true,
 			'cursor-pointer hover:bg-hover': onclick
 		}}>
-		{#if logo || !noGap}
-			<Logo ref={logo} />
-		{/if}
-		{team.display_name || team.name}
+		<div class="flex flex-row items-center gap-x-2 max-w-full">
+			{#if logo || !noGap}
+				<div class="w-6"><Logo ref={logo} /></div>
+			{/if}
+			<span class="overflow-hidden text-ellipsis">{team.display_name || team.name}</span>
+		</div>
 	</button>
 {/if}
