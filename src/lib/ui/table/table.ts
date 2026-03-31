@@ -18,6 +18,13 @@ export interface Column<Type> {
 	readonly titleProps?: Record<string, unknown>;
 
 	/**
+	 * Title alignment, one of 'left', 'center', 'right', or 'stretch',
+	 *
+	 * Defaults to column alignment.
+	 */
+	readonly titleAlign?: 'left' | 'center' | 'right' | 'stretch';
+
+	/**
 	 * Column alignment, one of 'left', 'center', 'right', or 'stretch',
 	 *
 	 * Defaults to 'left' alignment.
