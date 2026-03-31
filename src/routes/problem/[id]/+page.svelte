@@ -42,6 +42,7 @@
 			renderer: TeamColumn,
 			rendererProps: (object: SubmissionData) => ({
 				team: object.team,
+				logo: object.logo,
 				onclick: () => goto(`/team/${object.team?.id}`)
 			}),
 			comparator: (a, b): number =>

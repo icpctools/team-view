@@ -25,7 +25,7 @@
 		{/if}
 
 		{#each data.clarifications as clar (clar.id)}
-			<ClarificationUI {clar} />
+			<ClarificationUI {clar} logos={data.logos} />
 		{/each}
 	</div>
 </div>

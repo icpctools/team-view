@@ -479,7 +479,7 @@ export class ContestAPI {
 				return arr ?? [];
 			}
 
-			obj.forEach(obj => this.processFileReferences(obj));
+			obj.forEach((obj) => this.processFileReferences(obj));
 			return obj;
 		}
 

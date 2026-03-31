@@ -27,6 +27,7 @@ export const load = async ({ params, depends }) => {
 	const languages = cc.getLanguages();
 
 	const teams = cc.getTeams();
+	const orgs = cc.getOrganizations();
 
 	const submissions2 = cc.getSubmissions();
 	const submissions = submissions2?.filter((s) => s.problem_id === problem.id);
@@ -51,10 +52,14 @@ export const load = async ({ params, depends }) => {
 			jt = findById(judgementTypes, j.judgement_type_id);
 			if (j.score != undefined) judge += j.score + '';
 		}
+
+		const team = findById(teams, s.team_id);
+		const org = orgs?.find((o) => o.id === team?.organization_id);
 		return {
 			id: s.id,
 			time: s.contest_time,
-			team: findById(teams, s.team_id),
+			team: team,
+			logo: org?.logo,
 			language: findById(languages, s.language_id),
 			judgement: judge,
 			judgementType: jt,
