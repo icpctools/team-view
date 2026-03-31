@@ -5,6 +5,7 @@ import {
 	findById,
 	findManyById,
 	type Clarification,
+	type FileReference,
 	type Group,
 	type Problem,
 	type Team
@@ -27,11 +28,18 @@ export const load = async ({ depends }) => {
 	const cc = await loadContest();
 	if (!cc) throw error(404);
 
-	await Promise.all([cc.loadGroups(), cc.loadTeams(), cc.loadProblems(), cc.loadClarifications()]);
+	await Promise.all([
+		cc.loadGroups(),
+		cc.loadOrganizations(),
+		cc.loadTeams(),
+		cc.loadProblems(),
+		cc.loadClarifications()
+	]);
 
 	const problems = cc.getProblems();
 
 	const teams = cc.getTeams();
+	const orgs = cc.getOrganizations();
 
 	const groups = cc.getGroups();
 
@@ -60,7 +68,16 @@ export const load = async ({ depends }) => {
 		}
 	}
 
+	const logos = new Map<string, FileReference[]>();
+	for (const t of teams) {
+		const org = findById(orgs, t.organization_id);
+		if (org && org.logo && !logos.get(t.id)) {
+			logos.set(t.id, org.logo);
+		}
+	}
+
 	return {
-		clarifications: rootClars
+		clarifications: rootClars,
+		logos: logos
 	};
 };

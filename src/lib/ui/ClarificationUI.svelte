@@ -1,31 +1,38 @@
 <script lang="ts">
-	import { timeToMin } from '@icpctools/contest-api';
+	import { timeToMin, type FileReference } from '@icpctools/contest-api';
 	import type { ClarificationData } from '../../routes/clarifications/clarificationData';
 	import ClarificationUI from './ClarificationUI.svelte';
+	import TeamColumn from './table/TeamColumn.svelte';
+	import { goto } from '$app/navigation';
 
 	interface Props {
 		clar: ClarificationData;
+		logos?: Map<string, FileReference[]>;
 	}
-	let { clar }: Props = $props();
+	let { clar, logos }: Props = $props();
 </script>
 
 <div class="w-full py-2">
 	<div class="flex flex-row space-x-5">
-		<div>
+		<div class="flex flex-row gap-x-1">
 			From:
 			{#if clar.from_team}
-				{clar.from_team.display_name ?? clar.from_team.name}
+				<TeamColumn
+					team={clar.from_team}
+					logo={logos?.get(clar.from_team.id)}
+					noGap
+					onclick={() => goto(`/team/${clar.from_team?.id}`)} />
 			{:else}
 				Jury
 			{/if}
 		</div>
 
 		{#if !clar.from_team}
-			<div>
+			<div class="flex flex-row gap-x-1">
 				To:
 				{#if clar.to_teams && clar.to_teams?.length > 0}
 					{#each clar.to_teams as team (team.id)}
-						<div>{team.display_name ?? team.name}</div>
+						<TeamColumn {team} logo={logos?.get(team.id)} noGap onclick={() => goto(`/team/${team.id}`)} />
 					{/each}
 				{/if}
 				{#if clar.to_groups && clar.to_groups?.length > 0}
@@ -53,7 +60,7 @@
 	{#if clar.replies}
 		<div class="pl-20">
 			{#each clar.replies as reply (reply.id)}
-				<ClarificationUI clar={reply} />
+				<ClarificationUI clar={reply} {logos} />
 			{/each}
 		</div>
 	{/if}

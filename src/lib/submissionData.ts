@@ -6,7 +6,8 @@ export interface SubmissionData {
 	problem: Problem;
 	language: Language;
 	team: Team;
-	judgementType: JudgementType | undefined;
+	logo?: FileReference[];
+	judgementType?: JudgementType;
 	files: FileReference[];
 	reaction: FileReference[];
 	auth: string;
