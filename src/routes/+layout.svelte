@@ -7,6 +7,7 @@
 	import { invalidate } from '$app/navigation';
 	import { ModeWatcher } from 'mode-watcher';
 	import type { ContestEvent } from '@icpctools/contest-api';
+	import ICPCtools from '$lib/ui/ICPCtools.svelte';
 
 	let { data, children } = $props();
 
@@ -80,8 +81,13 @@
 	</div>
 
 	{#if data.banner && data.banner.length > 0}
-		<div class="flex place-items-center p-2 max-h-16 h-16">
-			<Image ref={data.banner} size={16} />
+		<div class="flex flex-row w-full items-center">
+			<div class="flex justify-center p-2 max-h-16 h-16 grow">
+				<Image ref={data.banner} size={16} />
+			</div>
+			<div class="flex h-16 justify-end p-2">
+				<ICPCtools />
+			</div>
 		</div>
 	{/if}
 </div>
