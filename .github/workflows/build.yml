@@ -50,15 +50,15 @@ jobs:
           # Build for each platform and create manifest
           podman manifest create "${IMAGE_TAG}"
           for ARCH in amd64 arm64; do
-            # Build with a local-only tag first
+            # Build with a local-only tag
             LOCAL_TAG="team-view-${ARCH}:${PRIMARY_TAG}"
-            IMAGE_ID=$(podman build \
+            podman build \
               --platform "linux/${ARCH}" \
               --label "org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}" \
               -t "${LOCAL_TAG}" \
-              -q \
-              .)
-            # Add the local image to the manifest using the image ID
+              .
+            # Get the image ID and add to manifest
+            IMAGE_ID=$(podman images -q "${LOCAL_TAG}")
             podman manifest add "${IMAGE_TAG}" "${IMAGE_ID}"
           done
 
