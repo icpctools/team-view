@@ -57,8 +57,8 @@ jobs:
               --label "org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}" \
               -t "${LOCAL_TAG}" \
               .
-            # Get the image ID and add to manifest
-            IMAGE_ID=$(podman images -q "${LOCAL_TAG}")
+            # Get the full image ID and add to manifest
+            IMAGE_ID=$(podman inspect --format='{{.Id}}' "${LOCAL_TAG}")
             podman manifest add "${IMAGE_TAG}" "${IMAGE_ID}"
           done
 
