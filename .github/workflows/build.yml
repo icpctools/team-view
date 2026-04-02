@@ -53,9 +53,9 @@ jobs:
             podman build \
               --platform "linux/${ARCH}" \
               --label "org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}" \
-              -t "${IMAGE_TAG}-${ARCH}" \
+              -t "localhost/${IMAGE_TAG}-${ARCH}" \
               .
-            podman manifest add "${IMAGE_TAG}" "${IMAGE_TAG}-${ARCH}"
+            podman manifest add "${IMAGE_TAG}" "localhost/${IMAGE_TAG}-${ARCH}"
           done
 
       - name: Push image
