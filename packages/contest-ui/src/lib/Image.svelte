@@ -13,13 +13,38 @@
 
 	let tagg: string = $derived(tag ?? mode.current ?? '');
 
-	let imgSrc = $derived(bestLogo(ref, size * 10, size * 10, tagg)?.href);
+	let computedSrc = $derived(bestLogo(ref, size * 10, size * 10, tagg)?.href);
+
+	let hasError = $state(false);
+	let isLoading = $state(true);
+
+	let displaySrc = $derived(hasError ? '/images/icpc-logo.png' : (computedSrc ?? '/images/icpc-logo.png'));
 
 	function onError(): void {
-		imgSrc = '/images/icpc-logo.png';
+		hasError = true;
+		isLoading = false;
 	}
+
+	function onLoad(): void {
+		isLoading = false;
+	}
+
+	// Reset error state when source changes
+	$effect(() => {
+		if (computedSrc) {
+			hasError = false;
+			isLoading = true;
+		}
+	});
 </script>
 
-{#if imgSrc}
-	<img src={imgSrc} alt="logo" class="max-w-full max-h-full object-scale-down rounded-md" onerror={onError} />
-{/if}
+<img
+	src={displaySrc}
+	alt="logo"
+	class={{
+		'max-w-full max-h-full object-scale-down rounded-md': true,
+		'opacity-0': isLoading,
+		'opacity-100': !isLoading
+	}}
+	onerror={onError}
+	onload={onLoad} />
