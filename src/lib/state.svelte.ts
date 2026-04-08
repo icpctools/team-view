@@ -1,6 +1,6 @@
 import type { ContestAPI } from '@icpctools/contest-api';
 import { Contests } from '@icpctools/contest-api';
-import { CONTEST } from './hardcoded.svelte';
+import { CONFIG, CONTEST } from './hardcoded.svelte';
 
 let contest: ContestAPI | undefined;
 
@@ -37,10 +37,18 @@ export async function loadContest(): Promise<ContestAPI | undefined> {
 			throw new Error('CONTEST.url is not defined');
 		}
 
-		const contests = new Contests(CONTEST.url, {
-			user: CONTEST.user,
-			password: CONTEST.password
-		});
+		if (CONFIG.proxy) {
+			console.log('Proxy server enabled');
+		}
+
+		const contests = new Contests(
+			CONTEST.url,
+			{
+				user: CONTEST.user,
+				password: CONTEST.password
+			},
+			CONFIG.proxy ? '/proxy' : undefined
+		);
 		await contests.loadContests();
 
 		if (!contests) {
