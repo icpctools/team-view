@@ -11,13 +11,15 @@ export class Contests {
 	contestObjs: Contest[] | undefined;
 	baseURL: string;
 	credentials?: Credentials;
+	proxyURL?: string;
 
-	constructor(baseURL: string, credentials?: Credentials) {
+	constructor(baseURL: string, credentials?: Credentials, proxyURL?: string) {
 		if (!baseURL.endsWith('/')) {
 			baseURL += '/';
 		}
 		this.baseURL = baseURL;
 		this.credentials = credentials;
+		this.proxyURL = proxyURL;
 		console.log('Contest API URL: ' + this.baseURL);
 	}
 
@@ -88,7 +90,7 @@ export class Contests {
 		} else {
 			contestURL += this.contests[0].id;
 		}
-		return new ContestAPI(contestURL, this.credentials);
+		return new ContestAPI(contestURL, this.credentials, this.proxyURL);
 	}
 
 	getContestObjs(): Contest[] | undefined {

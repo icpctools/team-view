@@ -69,22 +69,31 @@ export class ContestAPI {
 
 	private unknownTypes: string[] = [];
 
-	constructor(contestURL: string, credentials?: Credentials) {
+	constructor(contestURL: string, credentials?: Credentials, proxyURL?: string) {
 		if (!contestURL.endsWith('/')) {
 			contestURL += '/';
 		}
 		this.contestURL = contestURL;
 		this.credentials = credentials;
 
-		// base url, e.g. http://example.com/api/
 		const bInd = this.contestURL.indexOf('/api/contests/');
-		this.baseURL = this.contestURL.substring(0, bInd + 5);
 		this.id = this.contestURL.substring(bInd + 14, this.contestURL.length - 1);
 
+		// base url, e.g. http://example.com/api/
+		if (proxyURL) {
+			this.baseURL = proxyURL + '/';
+		} else {
+			this.baseURL = this.contestURL.substring(0, bInd + 5);
+		}
+
 		// server url, e.g. http://example.com
-		const sInd = this.contestURL.indexOf('//');
-		const sInd2 = this.contestURL.indexOf('/', sInd + 2);
-		this.serverURL = this.contestURL.substring(0, sInd2);
+		if (proxyURL) {
+			this.serverURL = proxyURL + '/api';
+		} else {
+			const sInd = this.contestURL.indexOf('//');
+			const sInd2 = this.contestURL.indexOf('/', sInd + 2);
+			this.serverURL = this.contestURL.substring(0, sInd2);
+		}
 
 		//console.log('Contest URL: ' + this.contestURL);
 	}

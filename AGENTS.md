@@ -54,6 +54,8 @@ The app connects to a Contest API server via environment variables (or edit `src
 - `CONTEST_USER` - Contest server user
 - `CONTEST_PASSWORD` - User password
 
+- `CONTEST_PROXY` - Enable Contest API proxying by setting to 'true'
+
 ## Architecture
 
 ### Monorepo Structure
@@ -109,6 +111,22 @@ SvelteKit file-based routing:
 - `/map` - Floor map showing team locations
 - `/problem/[id]` - Problem details
 - `/clarifications` - Clarification requests
+- `/proxy/[...path]` - Server-side proxy to `CONTEST_URL/*` (GET requests only, authenticated)
+
+### API Proxy
+
+The `/proxy/*` route (`src/routes/proxy/[...path]/+server.ts`) acts as a server-side streaming proxy:
+
+- Client requests to `/proxy/contests/123` are proxied to `CONTEST_URL/contests/123`
+- Currently supports GET requests only (returns 501 for other methods)
+- **Streaming support** - Uses `got.stream()` to stream responses without buffering (enables MPEG-TS video and other large/streaming content)
+- Forwards request headers (excluding host, connection, content-length)
+- Includes HTTP Basic Auth using `CONTEST_USER` and `CONTEST_PASSWORD` from environment variables
+- **Accepts self-signed/invalid SSL certificates** (`rejectUnauthorized: false`) for development environments
+- Returns proxied response with appropriate headers and status codes
+- Handles errors with 502 Bad Gateway status
+
+This allows client-side code to call `/proxy/...` endpoints without CORS issues while streaming video and other large responses efficiently.
 
 ## Development Workflow
 

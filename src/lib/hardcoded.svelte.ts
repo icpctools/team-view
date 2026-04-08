@@ -10,3 +10,7 @@ export const CONTEST = $state(
 				password: process?.env?.CONTEST_PASSWORD || 'adm1n'
 			}
 );
+
+export const CONFIG = $state({
+	proxy: process?.env?.CONTEST_PROXY ? process?.env?.CONTEST_PROXY === 'true' : process.env.NODE_ENV === 'development'
+});
