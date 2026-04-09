@@ -2,16 +2,16 @@
 	import type { Snippet } from 'svelte';
 
 	interface Props {
-		title?: string;
+		title?: Snippet;
 		children?: Snippet;
 	}
 
-	let { title = '', children }: Props = $props();
+	let { title, children }: Props = $props();
 
 	let show = $state(false);
 	let modal = $state<HTMLDivElement>();
 
-	export function open(newTitle?: string) {
+	export function open(newTitle?: Snippet) {
 		if (newTitle) {
 			title = newTitle;
 		}
@@ -55,9 +55,9 @@
 					flex flex-col"
 			role="dialog">
 			<!-- Header -->
-			<div class="flex flex-row items-center justify-between px-4 py-2 border-b border-gray-200 dark:border-gray-400">
-				<div class="font-semibold text-black dark:text-white">
-					{title}
+			<div class="flex flex-row items-start px-3 py-2 border-b border-gray-200 dark:border-gray-400">
+				<div class="text-black dark:text-white grow">
+					{@render title?.()}
 				</div>
 				<button onclick={close} class="hover:bg-hover p-1 rounded" aria-label="close"
 					><i class="fa-solid fa-xmark"></i></button>
