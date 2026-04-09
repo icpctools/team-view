@@ -50,12 +50,7 @@
 			renderer: SourceColumn,
 			rendererProps: (object: SubmissionData) => ({
 				source: object.files,
-				onclick: () =>
-					sourceModal?.openSource(
-						object.files,
-						object.team?.display_name || object.team?.name + ' source code',
-						object.auth
-					)
+				onclick: () => sourceModal?.openSource(object)
 			})
 		}
 	];
@@ -67,11 +62,7 @@
 			renderer: ReactionColumn,
 			rendererProps: (object: SubmissionData) => ({
 				reaction: object.reaction,
-				onclick: () =>
-					reactionModal?.openReaction(
-						object.reaction,
-						object.team?.display_name || object.team?.name + ' reaction video'
-					)
+				onclick: () => reactionModal?.openReaction(object)
 			})
 		});
 	}

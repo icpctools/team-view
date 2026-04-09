@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { fetchAndUnzipSubmission, getFileLanguage } from '$lib/source-util';
+	import type { SubmissionData } from '$lib/submissionData';
+	import { JudgementUI, ProblemUI } from '@icpctools/contest-ui';
 	import CodeEditor from './CodeEditor.svelte';
 	import Modal from './Modal.svelte';
-	import type { FileReference } from '@icpctools/contest-api';
+	import { timeToMin } from '@icpctools/contest-api';
 
 	let modal = $state<Modal>();
 
@@ -11,13 +13,19 @@
 	let sourceCode = $state<string>('');
 	let language = $state('text');
 
-	export function openSource(files: FileReference[] | undefined, title: string, auth: string): void {
-		if (!files) return;
+	let submission = $state<SubmissionData>();
+
+	export function openSource(newSubmission: SubmissionData): void {
+		if (!newSubmission.files) {
+			return;
+		}
+
+		submission = newSubmission;
 
 		sourceFiles = [];
 		sourceCode = 'Loading...';
 
-		fetchAndUnzipSubmission(files, auth)
+		fetchAndUnzipSubmission(newSubmission.files, newSubmission.auth)
 			.then((map) => {
 				sourceMap = map;
 				if (!sourceMap) {
@@ -40,11 +48,27 @@
 				}
 			});
 
-		modal?.open(title);
+		modal?.open();
 	}
 </script>
 
 <Modal bind:this={modal}>
+	{#snippet title()}
+		<div class="flex flex-col">
+			<div class="flex flex-row text-lg font-semibold pb-2">
+				{submission?.team.display_name ?? submission?.team.name}
+			</div>
+			<div class="flex flex-row gap-x-8 items-center">
+				<div class="flex flex-row gap-x-2">
+					Problem: <div class="w-10"><ProblemUI problem={submission?.problem} /></div>
+				</div>
+				<div class="flex flex-row gap-x-2">Time: {timeToMin(submission?.time)} minutes</div>
+				<div class="flex flex-row gap-x-2">
+					Judgement: <JudgementUI judgement={submission?.judgement} judgementType={submission?.judgementType} />
+				</div>
+			</div>
+		</div>
+	{/snippet}
 	<div class="flex flex-row w-full h-full bg-black place-content-center">
 		<div class="flex flex-col px-2">
 			Files:
