@@ -34,10 +34,10 @@
 	class={{
 		'whitespace-nowrap': true,
 		'text-gray-400': state === 'unscheduled',
-	'text-green-300':state === 'countdown',
-	'text-blue-200': state === 'frozen',
-	'text-gray-300': state === 'finished',
-	'text-yellow-500': state === 'paused'
+		'text-green-300': state === 'countdown',
+		'text-blue-200': state === 'frozen',
+		'text-gray-300': state === 'finished',
+		'text-yellow-500': state === 'paused'
 	}}>
 	{clock}
 </span>

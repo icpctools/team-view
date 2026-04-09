@@ -1,12 +1,11 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { ProblemUI } from '@icpctools/contest-ui';
+	import { JudgementUI, ProblemUI } from '@icpctools/contest-ui';
 	import ReactionModal from '$lib/ui/ReactionModal.svelte';
 	import type { Column } from '$lib/ui/table/table.js';
 	import type { SubmissionData } from '../../../lib/submissionData.js';
 	import { parseRelTime, timeToMin } from '@icpctools/contest-api';
 	import SimpleColumn from '$lib/ui/table/SimpleColumn.svelte';
-	import JudgementTypeColumn from '$lib/ui/table/JudgementTypeColumn.svelte';
 	import ReactionColumn from '$lib/ui/table/ReactionColumn.svelte';
 	import Table from '$lib/ui/table/Table.svelte';
 	import TeamColumn from '$lib/ui/table/TeamColumn.svelte';
@@ -45,8 +44,8 @@
 		},
 		{
 			title: 'Judgement',
-			renderer: JudgementTypeColumn,
-			rendererProps: (object: SubmissionData) => ({ judgementType: object.judgementType }),
+			renderer: JudgementUI,
+			rendererProps: (object: SubmissionData) => ({ judgement: object.judgement, judgementType: object.judgementType }),
 			comparator: (a, b): number => (a.judgementType?.name ?? 'a').localeCompare(b.judgementType?.name ?? 'a')
 		},
 		{

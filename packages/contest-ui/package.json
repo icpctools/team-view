@@ -33,9 +33,13 @@
 			"types": "./dist/FloorMap.svelte.d.ts",
 			"svelte": "./dist/FloorMap.svelte"
 		},
-		"./JudgementType": {
-			"types": "./dist/JudgementType.svelte.d.ts",
-			"svelte": "./dist/JudgementType.svelte"
+		"./JudgementTypeUI": {
+			"types": "./dist/JudgementTypeUI.svelte.d.ts",
+			"svelte": "./dist/JudgementTypeUI.svelte"
+		},
+		"./JudgementUI": {
+			"types": "./dist/JudgementUI.svelte.d.ts",
+			"svelte": "./dist/JudgementUI.svelte"
 		},
 		"./Problem": {
 			"types": "./dist/Problem.svelte.d.ts",
