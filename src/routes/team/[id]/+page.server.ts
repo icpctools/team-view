@@ -1,7 +1,7 @@
 import { error } from '@sveltejs/kit';
 import { findById } from '@icpctools/contest-api';
 import { loadContest } from '$lib/state.svelte.js';
-import type { Judgement, JudgementType } from '@icpctools/contest-api';
+import type { Judgement } from '@icpctools/contest-api';
 import type { SubmissionData } from '$lib/submissionData';
 import { findManyBySubmissionId } from '@icpctools/contest-api';
 import { hasEndpointProperty } from '@icpctools/contest-api';
@@ -64,20 +64,14 @@ export const load = async ({ params, depends }) => {
 			if (!j) j = jud[0];
 		}
 
-		let judge = '';
-		let jt: JudgementType | undefined;
-		if (j) {
-			jt = findById(judgementTypes, j.judgement_type_id);
-			if (j.score != undefined) judge += j.score + '';
-		}
 		return {
 			id: s.id,
 			time: s.contest_time,
 			team: team,
 			problem: findById(problems, s.problem_id),
 			language: findById(languages, s.language_id),
-			judgement: judge,
-			judgementType: jt,
+			judgement: j,
+			judgementType: findById(judgementTypes, j?.judgement_type_id),
 			files: s.files,
 			reaction: s.reaction,
 			auth: cc.getAuth()
