@@ -5,7 +5,7 @@ import type { Judgement, JudgementType } from '@icpctools/contest-api';
 import type { SubmissionData } from '../../../lib/submissionData.js';
 
 export const load = async ({ params, depends }) => {
-	depends('data:problem');
+	depends('app:problems', 'app:submissions', 'app:judgements');
 	const cc = await loadContest();
 	if (!cc) throw error(404);
 

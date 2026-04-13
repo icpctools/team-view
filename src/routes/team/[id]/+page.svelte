@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { goto, invalidate } from '$app/navigation';
+	import { goto } from '$app/navigation';
 	import { Image, PersonUI } from '@icpctools/contest-ui';
-	import { onMount } from 'svelte';
 	import type { Column } from '$lib/ui/table/table';
 	import SimpleColumn from '$lib/ui/table/SimpleColumn.svelte';
 	import Table from '$lib/ui/table/Table.svelte';
@@ -77,16 +76,6 @@
 			})
 		});
 	}
-
-	onMount(() => {
-		const interval = setInterval(() => {
-			invalidate('data:team');
-		}, 3000);
-
-		return () => {
-			clearInterval(interval);
-		};
-	});
 </script>
 
 <div class="flex flex-col p-2 gap-1 h-full overflow-auto">

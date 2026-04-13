@@ -1,19 +1,7 @@
 <script lang="ts">
-	import { invalidate } from '$app/navigation';
 	import { Logo, ScoreboardRowUI } from '@icpctools/contest-ui';
-	import { onMount } from 'svelte';
 
 	let { data, children } = $props();
-
-	onMount(() => {
-		const interval = setInterval(() => {
-			invalidate('data:team-layout');
-		}, 3000);
-
-		return () => {
-			clearInterval(interval);
-		};
-	});
 </script>
 
 <div class="w-full h-full max-w-full max-h-full overflow-hidden flex flex-col bg-white dark:bg-gray-900">

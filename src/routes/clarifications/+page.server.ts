@@ -24,7 +24,7 @@ function createClarData(c: Clarification, teams: Team[], groups: Group[], proble
 }
 
 export const load = async ({ depends }) => {
-	depends('data:clarifications');
+	depends('app:clarifications');
 	const cc = await loadContest();
 	if (!cc) throw error(404);
 

@@ -6,16 +6,34 @@
 	import '@fortawesome/fontawesome-free/css/all.min.css';
 	import { invalidate } from '$app/navigation';
 	import { ModeWatcher } from 'mode-watcher';
+	import type { ContestEvent } from '@icpctools/contest-api';
 
 	let { data, children } = $props();
 
 	onMount(() => {
-		const interval = setInterval(() => {
-			invalidate('data:contest');
-		}, 5000);
+		const eventSource = new EventSource('/api/events');
+
+		eventSource.onmessage = (event) => {
+			try {
+				const change: ContestEvent = JSON.parse(event.data);
+
+				// invalidate any page containing the specific object or all objects of that type
+				if (change.id) {
+					invalidate('app:' + change.type + '/' + change.id);
+				}
+				invalidate('app:' + change.type);
+			} catch (error) {
+				console.error('Error processing SSE event:', error);
+			}
+		};
+
+		eventSource.onerror = (error) => {
+			console.error('SSE connection error:', error);
+			eventSource.close();
+		};
 
 		return () => {
-			clearInterval(interval);
+			eventSource.close();
 		};
 	});
 </script>
