@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { ContestAPI } from './contest-api.js';
+import { ContestAPI, ContestEvent } from './contest-api.js';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import type { Response } from 'got';
@@ -163,4 +163,101 @@ test('getAuth', () => {
 test('getTimeDelta', () => {
 	const contestAPI = new ContestAPI('https://api.example.com/api/contests/abc/');
 	expect(contestAPI.getTimeDelta()).toBe(0);
+});
+
+test('addChangeListener and fireChange', () => {
+	const contestAPI = new ContestAPI('https://api.example.com/api/contests/abc/');
+	const events: ContestEvent[] = [];
+
+	const listener = (event: ContestEvent) => {
+		events.push(event);
+	};
+
+	contestAPI.addChangeListener(listener);
+
+	// Simulate a notification
+	contestAPI.processNotification({
+		type: 'teams',
+		id: '123'
+	});
+
+	expect(events.length).toBe(1);
+	expect(events[0].type).toBe('teams');
+	expect(events[0].id).toBe('123');
+});
+
+test('removeChangeListener', () => {
+	const contestAPI = new ContestAPI('https://api.example.com/api/contests/abc/');
+	const events: ContestEvent[] = [];
+
+	const listener = (event: ContestEvent) => {
+		events.push(event);
+	};
+
+	contestAPI.addChangeListener(listener);
+	contestAPI.removeChangeListener(listener);
+
+	// Simulate a notification
+	contestAPI.processNotification({
+		type: 'teams',
+		id: '123'
+	});
+
+	expect(events.length).toBe(0);
+});
+
+test('multiple listeners receive events', () => {
+	const contestAPI = new ContestAPI('https://api.example.com/api/contests/abc/');
+	const events1: ContestEvent[] = [];
+	const events2: ContestEvent[] = [];
+
+	const listener1 = (event: ContestEvent) => {
+		events1.push(event);
+	};
+
+	const listener2 = (event: ContestEvent) => {
+		events2.push(event);
+	};
+
+	contestAPI.addChangeListener(listener1);
+	contestAPI.addChangeListener(listener2);
+
+	// Simulate a notification
+	contestAPI.processNotification({
+		type: 'submissions',
+		id: '456'
+	});
+
+	expect(events1.length).toBe(1);
+	expect(events2.length).toBe(1);
+	expect(events1[0].type).toBe('submissions');
+	expect(events2[0].type).toBe('submissions');
+});
+
+test('listener errors do not break other listeners', () => {
+	const contestAPI = new ContestAPI('https://api.example.com/api/contests/abc/');
+	const events: ContestEvent[] = [];
+	const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+	const errorListener = () => {
+		throw new Error('Listener error');
+	};
+
+	const goodListener = (event: ContestEvent) => {
+		events.push(event);
+	};
+
+	contestAPI.addChangeListener(errorListener);
+	contestAPI.addChangeListener(goodListener);
+
+	// Simulate a notification
+	contestAPI.processNotification({
+		type: 'teams',
+		id: '123'
+	});
+
+	expect(events.length).toBe(1);
+	expect(consoleErrorSpy).toHaveBeenCalled();
+
+	consoleErrorSpy.mockRestore();
 });

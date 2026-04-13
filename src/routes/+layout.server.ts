@@ -6,7 +6,7 @@ export const load = async ({ depends }) => {
 	const cc = await loadContest();
 	if (!cc) throw error(404);
 
-	depends('data:contest');
+	depends('app:contest');
 
 	await Promise.all([cc.loadContest(), cc.loadAccess()]);
 

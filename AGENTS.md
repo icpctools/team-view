@@ -112,6 +112,7 @@ SvelteKit file-based routing:
 - `/problem/[id]` - Problem details
 - `/clarifications` - Clarification requests
 - `/proxy/[...path]` - Server-side proxy to `CONTEST_URL/*` (GET requests only, authenticated)
+- `/api/events` - Server-Sent Events endpoint for real-time contest updates
 
 ### API Proxy
 
@@ -127,6 +128,28 @@ The `/proxy/*` route (`src/routes/proxy/[...path]/+server.ts`) acts as a server-
 - Handles errors with 502 Bad Gateway status
 
 This allows client-side code to call `/proxy/...` endpoints without CORS issues while streaming video and other large responses efficiently.
+
+### Server-Sent Events (SSE)
+
+The `/api/events` route provides real-time contest updates via Server-Sent Events:
+
+- **ContestAPI Change Listeners** - The `ContestAPI` class supports registering change listeners that fire when contest data changes
+- **Event Types** - Emits events for all contest data types: `contest`, `state`, `teams`, `submissions`, `judgements`, `clarifications`, `scoreboard`, etc.
+- **Event Structure** - `{ type: string, id?: string }`
+- **Auto-cleanup** - Listeners are automatically removed when clients disconnect
+- **Keep-alive** - Sends ping every 30 seconds to maintain connection
+
+Client usage:
+
+```typescript
+const eventSource = new EventSource('/api/events');
+eventSource.onmessage = (event) => {
+	const change = JSON.parse(event.data);
+	// { type: 'submissions', id: '123' }
+};
+```
+
+The main page (`src/routes/+layout.svelte`) uses SSE with SvelteKit's `invalidate()` to automatically refresh pages when contest data changes.
 
 ## Development Workflow
 

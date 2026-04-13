@@ -34,6 +34,13 @@ export interface Credentials {
 	password?: string;
 }
 
+export type ContestEvent = {
+	type: string;
+	id?: Id;
+};
+
+export type ContestListener = (event: ContestEvent) => void;
+
 export class ContestAPI {
 	private contest?: Contest;
 	private access?: Access;
@@ -68,6 +75,8 @@ export class ContestAPI {
 	private interval: number | NodeJS.Timeout | undefined;
 
 	private unknownTypes: string[] = [];
+
+	private changeListeners: ContestListener[] = [];
 
 	constructor(contestURL: string, credentials?: Credentials, proxyURL?: string) {
 		if (!contestURL.endsWith('/')) {
@@ -177,36 +186,42 @@ export class ContestAPI {
 	async loadContest(force?: boolean): Promise<void> {
 		if (force || !this.contest) {
 			this.contest = await this.loadObject('');
+			this.fireChange({ type: 'contest' });
 		}
 	}
 
 	async loadAccess(force?: boolean): Promise<void> {
 		if (force || !this.access) {
 			this.access = await this.loadObject('access');
+			this.fireChange({ type: 'access' });
 		}
 	}
 
 	async loadState(force?: boolean): Promise<void> {
 		if (force || !this.state) {
 			this.state = await this.loadObject('state');
+			this.fireChange({ type: 'state' });
 		}
 	}
 
 	async loadStartStatus(force?: boolean): Promise<void> {
 		if (force || !this.startStatus) {
 			this.startStatus = await this.loadObject('start-status');
+			this.fireChange({ type: 'start-status' });
 		}
 	}
 
 	async loadLanguages(force?: boolean): Promise<void> {
 		if (force || !this.languages) {
 			this.languages = await this.loadObject('languages');
+			this.fireChange({ type: 'languages' });
 		}
 	}
 
 	async loadJudgementTypes(force?: boolean): Promise<void> {
 		if (force || !this.judgementTypes) {
 			this.judgementTypes = await this.loadObject('judgement-types');
+			this.fireChange({ type: 'judgement-types' });
 		}
 	}
 
@@ -217,18 +232,21 @@ export class ContestAPI {
 	async loadProblems(force?: boolean): Promise<void> {
 		if (force || !this.problems) {
 			this.problems = this.sortProblems(await this.loadObject('problems'));
+			this.fireChange({ type: 'problems' });
 		}
 	}
 
 	async loadGroups(force?: boolean): Promise<void> {
 		if (force || !this.groups) {
 			this.groups = await this.loadObject('groups');
+			this.fireChange({ type: 'groups' });
 		}
 	}
 
 	async loadOrganizations(force?: boolean): Promise<void> {
 		if (force || !this.organizations) {
 			this.organizations = await this.loadObject('organizations');
+			this.fireChange({ type: 'organizations' });
 		}
 	}
 
@@ -249,54 +267,63 @@ export class ContestAPI {
 	async loadTeams(force?: boolean): Promise<void> {
 		if (force || !this.teams) {
 			this.teams = this.sortTeams(await this.loadObject('teams'));
+			this.fireChange({ type: 'teams' });
 		}
 	}
 
 	async loadPersons(force?: boolean): Promise<void> {
 		if (force || !this.persons) {
 			this.persons = await this.loadObject('persons');
+			this.fireChange({ type: 'persons' });
 		}
 	}
 
 	async loadAccounts(force?: boolean): Promise<void> {
 		if (force || !this.accounts) {
 			this.accounts = await this.loadObject('accounts');
+			this.fireChange({ type: 'accounts' });
 		}
 	}
 
 	async loadAccount(force?: boolean): Promise<void> {
 		if (force || !this.account) {
 			this.account = await this.loadObject('account');
+			this.fireChange({ type: 'account' });
 		}
 	}
 
 	async loadSubmissions(force?: boolean): Promise<void> {
 		if (force || !this.submissions) {
 			this.submissions = await this.loadObject('submissions');
+			this.fireChange({ type: 'submissions' });
 		}
 	}
 
 	async loadJudgements(force?: boolean): Promise<void> {
 		if (force || !this.judgements) {
 			this.judgements = await this.loadObject('judgements');
+			this.fireChange({ type: 'judgements' });
 		}
 	}
 
 	async loadRuns(force?: boolean): Promise<void> {
 		if (force || !this.runs) {
 			this.runs = await this.loadObject('runs');
+			this.fireChange({ type: 'runs' });
 		}
 	}
 
 	async loadClarifications(force?: boolean): Promise<void> {
 		if (force || !this.clarifications) {
 			this.clarifications = await this.loadObject('clarifications');
+			this.fireChange({ type: 'clarifications' });
 		}
 	}
 
 	async loadCommentary(force?: boolean): Promise<void> {
 		if (force || !this.commentary) {
 			this.commentary = await this.loadObject('commentary');
+			this.fireChange({ type: 'commentary' });
 		}
 	}
 
@@ -308,18 +335,21 @@ export class ContestAPI {
 			});
 
 			this.scoreboard = scoreboard2;
+			this.fireChange({ type: 'scoreboard' });
 		}
 	}
 
 	async loadAwards(force?: boolean): Promise<void> {
 		if (force || !this.awards) {
 			this.awards = await this.loadObject('awards');
+			this.fireChange({ type: 'awards' });
 		}
 	}
 
 	async loadMapInfo(force?: boolean): Promise<void> {
 		if (force || !this.mapInfo) {
 			this.mapInfo = await this.loadObject('map-info');
+			this.fireChange({ type: 'map-info' });
 		}
 	}
 
@@ -536,6 +566,7 @@ export class ContestAPI {
 		if ((!n.id || n.type === 'contest') && !Array.isArray(n.data)) {
 			// no id and not an array: must be a 'singleton' object (e.g. state)
 			this.processNotificationSingleton(n.type, n.data ?? {});
+			this.fireChange({ type: n.type, id: n.id });
 			return;
 		}
 
@@ -608,6 +639,8 @@ export class ContestAPI {
 				}
 			}
 		}
+
+		this.fireChange({ type: n.type, id: n.id });
 	}
 
 	watch(): void {
@@ -644,5 +677,26 @@ export class ContestAPI {
 			return;
 		}
 		clearInterval(this.interval);
+	}
+
+	addChangeListener(listener: ContestListener): void {
+		this.changeListeners.push(listener);
+	}
+
+	removeChangeListener(listener: ContestListener): void {
+		const index = this.changeListeners.indexOf(listener);
+		if (index >= 0) {
+			this.changeListeners.splice(index, 1);
+		}
+	}
+
+	private fireChange(event: ContestEvent): void {
+		for (const listener of this.changeListeners) {
+			try {
+				listener(event);
+			} catch (error) {
+				console.error('Error in change listener:', error);
+			}
+		}
 	}
 }

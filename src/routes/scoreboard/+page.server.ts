@@ -3,7 +3,7 @@ import { findById } from '@icpctools/contest-api';
 import { loadContest } from '$lib/state.svelte.js';
 
 export const load = async ({ depends }) => {
-	depends('data:scoreboard');
+	depends('app:teams', 'app:organizations', 'app:problems', 'app:scoreboard');
 
 	const cc = await loadContest();
 	if (!cc) throw error(404);
@@ -29,7 +29,6 @@ export const load = async ({ depends }) => {
 	const hasLogos = logos.filter((x) => x).length > 0;
 
 	return {
-		name: contest.name,
 		scoreboard_type: contest.scoreboard_type,
 		scoreboard: scoreboard,
 		teams: sortedTeams,

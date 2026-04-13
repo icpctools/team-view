@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { goto, invalidate } from '$app/navigation';
+	import { goto } from '$app/navigation';
 	import { ProblemUI } from '@icpctools/contest-ui';
-	import { onMount } from 'svelte';
 	import ReactionModal from '$lib/ui/ReactionModal.svelte';
 	import type { Column } from '$lib/ui/table/table.js';
 	import type { SubmissionData } from '../../../lib/submissionData.js';
@@ -18,16 +17,6 @@
 
 	let sourceModal = $state<SourceModal>();
 	let reactionModal = $state<ReactionModal>();
-
-	onMount(() => {
-		const interval = setInterval(() => {
-			invalidate('data:problem');
-		}, 3000);
-
-		return () => {
-			clearInterval(interval);
-		};
-	});
 
 	const columns: Column<SubmissionData>[] = [
 		{
