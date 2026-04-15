@@ -1,6 +1,6 @@
 import { CONFIG, CONTEST } from '$lib/hardcoded.svelte';
 import type { RequestHandler } from './$types';
-import got from 'got';
+import got, { RequestError } from 'got';
 import { Readable } from 'node:stream';
 
 // Proxy will only support GET for now
@@ -72,7 +72,11 @@ async function proxyRequest(path: string, url: URL, request: Request): Promise<R
 			});
 
 			stream.on('error', (error) => {
-				console.error('Proxy stream error:', error);
+				if (error instanceof RequestError && error.response?.statusCode === 304) {
+					// ignore Not Modified error, normal response is fine
+					return;
+				}
+				console.error('Proxy stream error:', error.message);
 				resolve(
 					new Response(JSON.stringify({ error: 'Proxy request failed' }), {
 						status: 502,
