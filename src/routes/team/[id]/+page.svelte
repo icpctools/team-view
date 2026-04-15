@@ -44,16 +44,29 @@
 			renderer: JudgementUI,
 			rendererProps: (object: SubmissionData) => ({ judgement: object.judgement, judgementType: object.judgementType }),
 			comparator: (a, b): number => (a.judgementType?.name ?? 'a').localeCompare(b.judgementType?.name ?? 'a')
-		},
-		{
-			title: 'Source Code',
-			renderer: SourceColumn,
-			rendererProps: (object: SubmissionData) => ({
-				source: object.files,
-				onclick: () => sourceModal?.openSource(object)
-			})
 		}
 	];
+
+	const scoreboard_type = () => data.scoreboard_type;
+	if (scoreboard_type() === 'score') {
+		columns.push({
+			title: 'Score',
+			renderer: SimpleColumn,
+			rendererProps: (object: SubmissionData) => ({
+				object: object.judgement?.score
+			}),
+			align: 'center'
+		});
+	}
+
+	columns.push({
+		title: 'Source Code',
+		renderer: SourceColumn,
+		rendererProps: (object: SubmissionData) => ({
+			source: object.files,
+			onclick: () => sourceModal?.openSource(object)
+		})
+	});
 
 	// svelte-ignore state_referenced_locally
 	if (data.hasReactions) {

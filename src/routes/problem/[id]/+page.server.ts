@@ -66,6 +66,7 @@ export const load = async ({ params, depends }) => {
 	return {
 		problem: problem,
 		submissions: submissionData,
-		hasReactions: hasEndpointProperty(cc.getAccess(), 'submissions', 'reaction')
+		hasReactions: hasEndpointProperty(cc.getAccess(), 'submissions', 'reaction'),
+		scoreboard_type: cc.getContest()?.scoreboard_type
 	};
 };
