@@ -6,10 +6,8 @@
 
 <div class="flex flex-col p-2 gap-1 h-full overflow-auto bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
 	<div class="flex flex-col">
-		<div class="text-xl">Clarifications</div>
-
 		{#if data.clarifications.length === 0}
-			<div>None</div>
+			<div>No clarifications</div>
 		{/if}
 
 		{#each data.clarifications as clar (clar.id)}
