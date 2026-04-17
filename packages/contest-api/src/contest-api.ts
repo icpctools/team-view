@@ -43,6 +43,10 @@ export type ContestEvent = {
 	id?: Id;
 };
 
+export type FeedOptions = {
+	ignore?: string[];
+};
+
 export type ContestListener = (event: ContestEvent) => void;
 
 class Mutex {
@@ -104,6 +108,8 @@ export class ContestAPI {
 	private changeListeners: ContestListener[] = [];
 
 	private scoreboardInvalid: boolean = false;
+
+	private ignore: string[] = [];
 
 	constructor(contestURL: string, credentials?: Credentials, proxyURL?: string) {
 		if (!contestURL.endsWith('/')) {
@@ -587,6 +593,9 @@ export class ContestAPI {
 	}
 
 	processNotification(n: Notification): void {
+		if (this.ignore.includes(n.type)) {
+			return;
+		}
 		if ((!n.id || n.type === 'contest') && !Array.isArray(n.data)) {
 			// no id and not an array: must be a 'singleton' object (e.g. state)
 			this.processNotificationSingleton(n.type, n.data ?? {});
@@ -747,7 +756,11 @@ export class ContestAPI {
 		this.mapInfo = undefined;
 	}
 
-	async watch(): Promise<void> {
+	async watch(options?: FeedOptions): Promise<void> {
+		if (options?.ignore) {
+			this.ignore = options.ignore;
+			console.log('Ignoring: ' + this.ignore);
+		}
 		if (this.interval) {
 			return;
 		}

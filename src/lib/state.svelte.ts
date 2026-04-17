@@ -56,7 +56,7 @@ export async function loadContest(): Promise<ContestAPI | undefined> {
 		}
 
 		contest = contests.getContest(CONTEST?.contest_id);
-		await contest?.watch();
+		await contest?.watch({ ignore: ['runs'] });
 		return contest;
 	} finally {
 		mutex.unlock();
