@@ -1,21 +1,27 @@
 import { loadContest } from '$lib/state.svelte.js';
-import { error } from '@sveltejs/kit';
-import { hasEndpoint } from '@icpctools/contest-api';
 
 export const load = async ({ depends }) => {
 	depends('app:contest');
 	const cc = await loadContest();
-	if (!cc) throw error(404);
+	if (!cc) {
+		return {
+			contest: null,
+			name: null,
+			banner: null,
+			logo: null,
+			map: null
+		};
+	}
 
 	const contest = cc.getContest();
-	if (!contest) throw error(404);
-
-	if (hasEndpoint(cc.getAccess(), 'map-info')) {
-		try {
-			await Promise.all([cc.loadMapInfo()]);
-		} catch (error) {
-			console.log(`Could not load map: ${error}`);
-		}
+	if (!contest) {
+		return {
+			contest: null,
+			name: null,
+			banner: null,
+			logo: null,
+			map: null
+		};
 	}
 
 	return {

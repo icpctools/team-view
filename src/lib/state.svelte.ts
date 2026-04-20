@@ -34,7 +34,8 @@ export async function loadContest(): Promise<ContestAPI | undefined> {
 		if (contest) return contest;
 
 		if (!CONTEST.url) {
-			throw new Error('CONTEST.url is not defined');
+			console.error('CONTEST.url is not defined');
+			return undefined;
 		}
 
 		if (CONFIG.proxy) {
@@ -58,6 +59,9 @@ export async function loadContest(): Promise<ContestAPI | undefined> {
 		contest = contests.getContest(CONTEST?.contest_id);
 		await contest?.watch({ ignore: ['runs'] });
 		return contest;
+	} catch (error) {
+		console.error('Error loading contest:', error);
+		return undefined;
 	} finally {
 		mutex.unlock();
 	}
