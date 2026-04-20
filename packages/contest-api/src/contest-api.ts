@@ -49,26 +49,47 @@ export type FeedOptions = {
 
 export type ContestListener = (event: ContestEvent) => void;
 
-class Mutex {
-	private first: boolean = true;
+class InitialLoadGate {
+	private loaded: boolean = false;
 	private queue: (() => void)[] = [];
+	private timeoutId?: NodeJS.Timeout;
 
-	async lock(): Promise<void> {
-		if (this.first) {
-			return new Promise<void>((resolve) => this.queue.push(resolve));
+	async wait(): Promise<void> {
+		if (this.loaded) {
+			return;
 		}
+
+		// start timeout on first call
+		if (!this.timeoutId) {
+			this.timeoutId = setTimeout(() => {
+				if (this.loaded) {
+					return;
+				}
+				console.log('Initial contest load timeout reached');
+				this.release();
+			}, 10000);
+		}
+
+		return new Promise<void>((resolve) => {
+			this.queue.push(resolve);
+		});
 	}
 
-	unlock(): void {
-		this.first = false;
-		if (this.queue.length > 0) {
-			const next = this.queue.shift();
-			next?.();
+	release(): void {
+		this.loaded = true;
+		if (this.timeoutId) {
+			clearTimeout(this.timeoutId);
+			this.timeoutId = undefined;
+		}
+		// release all waiting threads
+		while (this.queue.length > 0) {
+			const resolve = this.queue.shift();
+			resolve?.();
 		}
 	}
 }
 
-const mutex = new Mutex();
+const initialLoadGate = new InitialLoadGate();
 
 export class ContestAPI {
 	private contest?: Contest;
@@ -517,7 +538,7 @@ export class ContestAPI {
 				const obj = data as Contest;
 				this.processFileReferences(obj);
 				this.contest = obj;
-				mutex.unlock();
+				initialLoadGate.release();
 				return;
 			}
 			case 'state': {
@@ -719,6 +740,9 @@ export class ContestAPI {
 
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (error: any) {
+			// release the gate so waiting threads don't hang forever
+			initialLoadGate.release();
+
 			if (error instanceof HTTPError) {
 				throw new Error(`HTTP error ${error.response.statusCode} loading ${url}: ${error.response.statusMessage}`, {
 					cause: error
@@ -773,10 +797,12 @@ export class ContestAPI {
 		await this.loadAccess(true);
 		await this.loadScoreboard(true);
 
-		this.readEventFeed();
+		this.readEventFeed().catch((error) => {
+			console.error(`Event feed error: ${error}`);
+		});
 
-		// wait for initial contest load
-		await mutex.lock();
+		// wait for initial contest load (or timeout)
+		await initialLoadGate.wait();
 
 		this.interval = setInterval(async () => {
 			try {
