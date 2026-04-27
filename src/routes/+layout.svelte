@@ -128,7 +128,7 @@
 
 			<div class="text-2xl w-full">{data.name}</div>
 
-			<div class="w-48"><Clock contest={data.contest} /></div>
+			<div class="w-48"><Clock contest={data.contest} contestState={data.contestState} /></div>
 
 			<div class="text-lg hover:bg-hover hover:text-link p-2 rounded-md">
 				<a href="/" class="flex flex-row items-center"><i class="fa-solid fa-people-group pr-2"></i>Teams</a>

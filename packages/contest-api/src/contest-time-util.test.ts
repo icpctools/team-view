@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
-import { formatContestTime, getContestState, getContestClock, parseRelTime, timeToMin } from './contest-time-util.js';
-import type { Contest } from './contest-types.js';
+import { formatContestTime, getContestClock, parseRelTime, timeToMin } from './contest-time-util.js';
+import type { Contest, ContestState } from './contest-types.js';
 
 test('parseRelTime with number', () => {
 	expect(parseRelTime(5)).toBe(5 * 60 * 1000);
@@ -52,66 +52,111 @@ test('formatContestTime with floor false', () => {
 	expect(formatContestTime(500, false)).toBe('0:00:01');
 });
 
-test('getContestState with undefined contest', () => {
-	expect(getContestState(undefined)).toBe('unscheduled');
-});
-
-test('getContestState with unscheduled contest', () => {
-	const contest = {
-		id: 'test',
-		name: 'Test',
-		duration: '5:00:00',
-		scoreboard_type: 'pass-fail'
-	} as Contest;
-	expect(getContestState(contest)).toBe('unscheduled');
-});
-
-test('getContestState with countdown', () => {
-	const futureTime = new Date(Date.now() + 3600000).toISOString();
-	const contest = {
-		id: 'test',
-		name: 'Test',
-		start_time: futureTime,
-		duration: '5:00:00',
-		scoreboard_type: 'pass-fail'
-	} as Contest;
-	expect(getContestState(contest)).toBe('countdown');
-});
-
-test('getContestState with finished contest', () => {
-	const pastTime = new Date(Date.now() - 7200000).toISOString();
-	const contest = {
-		id: 'test',
-		name: 'Test',
-		start_time: pastTime,
-		duration: '1:00:00',
-		scoreboard_type: 'pass-fail'
-	} as Contest;
-	expect(getContestState(contest)).toBe('finished');
-});
-
-test('getContestClock with undefined contest', () => {
-	expect(getContestClock(undefined, false)).toBeUndefined();
+test('getContestClock with undefined parameters', () => {
+	expect(getContestClock(undefined, undefined)).toBeUndefined();
 });
 
 test('getContestClock when not scheduled', () => {
-	const contest = {
-		id: 'test',
-		name: 'Test',
-		duration: '5:00:00',
-		scoreboard_type: 'pass-fail'
-	} as Contest;
+	const contest = {} as Contest;
 	expect(getContestClock(contest)).toBeUndefined();
 });
 
-test('getContestClock when contest is over', () => {
-	const pastTime = new Date(Date.now() - 7200000).toISOString();
+test('getContestClock when scheduled', () => {
+	const startTime = new Date(Date.now() + 1800000).toISOString();
+	const contest = {
+		start_time: startTime
+	} as Contest;
+	expect(getContestClock(contest)).toBe('-0:30:00');
+});
+
+test('getContestClock when scheduled with time multiple', () => {
+	const startTime = new Date(Date.now() + 1800000).toISOString();
+	const contest = {
+		start_time: startTime,
+		time_multiplier: 2
+	} as Contest;
+	expect(getContestClock(contest)).toBe('-1:00:00');
+});
+
+test('getContestClock when countdown paused', () => {
+	const contest = {
+		countdown_pause_time: '1:00:00'
+	} as Contest;
+	expect(getContestClock(contest)).toBe('-1:00:00');
+});
+
+test('getContestClock when countdown paused with time mutliple', () => {
+	const contest = {
+		countdown_pause_time: '1:00:00',
+		time_multiplier: 2.5
+	} as Contest;
+	expect(getContestClock(contest)).toBe('-2:30:00');
+});
+
+test('getContestClock when contest in progress', () => {
+	const now = Date.now();
+	const pastTime = new Date(now - 3600000).toISOString();
 	const contest = {
 		id: 'test',
-		name: 'Test',
 		start_time: pastTime,
-		duration: '1:00:00',
-		scoreboard_type: 'pass-fail'
+		duration: '2:00:00'
 	} as Contest;
-	expect(getContestClock(contest)).toBe('2:00:00');
+	const state = {
+		started: pastTime
+	} as ContestState;
+	expect(getContestClock(contest, state, now)).toBe('1:00:00');
+});
+
+test('getContestClock when contest in progress with time multiple', () => {
+	const now = Date.now();
+	const startTime = new Date(now - 3600000).toISOString();
+	const contest = {
+		start_time: startTime,
+		time_multiplier: 2.5
+	} as Contest;
+	const state = {
+		started: startTime
+	} as ContestState;
+	expect(getContestClock(contest, state, now)).toBe('2:30:00');
+});
+
+test('getContestClock when contest is over', () => {
+	const now = Date.now();
+	const startTime = new Date(now - 7200000).toISOString();
+	const contest = {
+		start_time: startTime
+	} as Contest;
+	const state = {
+		started: startTime
+	} as ContestState;
+	expect(getContestClock(contest, state, now)).toBe('2:00:00');
+});
+
+test('getContestClock when contest in progress during removed interval', () => {
+	const now = Date.now();
+	const startTime = new Date(now - 7200000).toISOString();
+	const startIntervalTime = new Date(now - 3600000).toISOString();
+	const contest = {
+		start_time: startTime
+	} as Contest;
+	const state = {
+		started: startTime,
+		removed_intervals: [{ start: startIntervalTime, contest_time: '1:00:00' }]
+	} as ContestState;
+	expect(getContestClock(contest, state, now)).toBe('1:00:00');
+});
+
+test('getContestClock when contest in progress after removed interval', () => {
+	const now = Date.now();
+	const startTime = new Date(now - 7200000).toISOString();
+	const startIntervalTime = new Date(now - 3600000).toISOString();
+	const endIntervalTime = new Date(now - 1800000).toISOString();
+	const contest = {
+		start_time: startTime
+	} as Contest;
+	const state = {
+		started: startTime,
+		removed_intervals: [{ start: startIntervalTime, end: endIntervalTime, contest_time: '1:00:00' }]
+	} as ContestState;
+	expect(getContestClock(contest, state, now)).toBe('1:30:00');
 });
