@@ -1,13 +1,14 @@
 /**
  * Contest API Types
  *
- * This file supports both the 2023-06 and 2026-01 Contest API specifications, with optional
- * extensions from the Contest Data Server (CDS). Inline comments are used to indicate objects
- * and properties that are unique to any of these.
+ * This file supports both the 2023-06 and 2026-01 Contest API specifications, the current
+ * future spec draft (2026-draft), and optional extensions from the Contest Data Server (CDS).
+ * Inline comments are used to indicate objects and properties that are unique to any of these.
  *
  * References:
  *  - 2023-06 Contest API: https://ccs-specs.icpc.io/2023-06/
  *  - 2026-01 Contest API: https://ccs-specs.icpc.io/2026-01/
+ *  - 2026-draft Contest API: https://ccs-specs.icpc.io (current future spec draft)
  *  - CDS extensions: https://github.com/icpctools/icpctools/blob/main/doc/spec-extensions.md
  */
 
@@ -23,7 +24,7 @@ export interface Provider {
 	logo?: FileReference[];
 }
 
-export interface Info {
+export interface Version {
 	version: string;
 	version_url: string;
 	provider?: Provider;
@@ -77,6 +78,13 @@ export interface ContestState {
 	thawed?: Time;
 	finalized?: Time;
 	end_of_updates?: Time;
+	removed_intervals?: RemovedInterval[]; // 2026-draft spec
+}
+
+export interface RemovedInterval {
+	start: Time;
+	end?: Time;
+	contest_time: RelTime;
 }
 
 // CDS extension
@@ -158,7 +166,6 @@ export interface Organization {
 	twitter_hashtag?: string;
 	url?: string;
 	logo?: FileReference[];
-
 	audio?: FileReference[]; // CDS extension
 }
 
@@ -187,14 +194,20 @@ export interface Language {
 	name: string;
 }
 
+export interface PersonRole {
+	type: 'contestant' | 'coach' | 'staff' | 'other';
+	title?: string;
+	team_id?: Id;
+}
+
 export interface Person {
 	id: Id;
 	name: string;
 	team_ids?: Id[];
 	title?: string;
 	email?: string;
-	sex?: string;
-	role: 'contestant' | 'coach' | 'staff' | 'other';
+	sex?: 'male' | 'female';
+	role: 'contestant' | 'coach' | 'staff' | 'other' | PersonRole; // PersonRole only in 2026-draft spec
 	photo?: FileReference[];
 }
 
@@ -236,9 +249,9 @@ export interface Judgement {
 	score?: number;
 	current?: boolean; // 2026-01 spec
 	start_time: Time;
-	start_contest_time: RelTime;
+	start_contest_time?: RelTime; // optional only in 2026-draft spec
 	end_time: Time;
-	end_contest_time: RelTime;
+	end_contest_time?: RelTime; // optional only in 2026-draft spec
 	max_run_time: number;
 }
 
@@ -250,6 +263,7 @@ export interface Run {
 	time: Time;
 	contest_time: RelTime;
 	run_time: number;
+	score?: number; // 2026-draft spec
 }
 
 export interface Account {
@@ -257,7 +271,7 @@ export interface Account {
 	username: string;
 	password?: string;
 	name?: string;
-	type: 'team' | 'judge' | 'admin' | 'analyst' | 'staff';
+	type: 'team' | 'coach' | 'judge' | 'admin' | 'analyst' | 'staff'; // coach only in 2026-draft spec
 	ip?: string;
 	team_id?: Id;
 	person_id?: Id;

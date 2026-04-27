@@ -29,7 +29,8 @@ import type {
 	Scoreboard,
 	StartStatus,
 	Submission,
-	Team
+	Team,
+	Version
 } from './contest-types.js';
 import readline from 'node:readline';
 
@@ -92,6 +93,7 @@ class InitialLoadGate {
 const initialLoadGate = new InitialLoadGate();
 
 export class ContestAPI {
+	private version?: Version;
 	private contest?: Contest;
 	private access?: Access;
 	private state?: ContestState;
@@ -118,6 +120,7 @@ export class ContestAPI {
 	private contestURL: string;
 	private baseURL: string;
 	private serverURL: string;
+	private proxyURL?: string;
 	private credentials?: Credentials;
 
 	private timeDelta = [];
@@ -140,31 +143,29 @@ export class ContestAPI {
 		}
 		this.contestURL = contestURL;
 		this.credentials = credentials;
+		this.proxyURL = proxyURL;
 
 		const bInd = this.contestURL.indexOf('/api/contests/');
 		this.id = this.contestURL.substring(bInd + 14, this.contestURL.length - 1);
 
 		// base url, e.g. http://example.com/api/
-		if (proxyURL) {
-			this.baseURL = proxyURL + '/';
-		} else {
-			this.baseURL = this.contestURL.substring(0, bInd + 5);
-		}
+		this.baseURL = this.contestURL.substring(0, bInd + 5);
 
 		// server url, e.g. http://example.com
-		if (proxyURL) {
-			this.serverURL = proxyURL + '/api';
-		} else {
-			const sInd = this.contestURL.indexOf('//');
-			const sInd2 = this.contestURL.indexOf('/', sInd + 2);
-			this.serverURL = this.contestURL.substring(0, sInd2);
-		}
+		const sInd = this.contestURL.indexOf('//');
+		const sInd2 = this.contestURL.indexOf('/', sInd + 2);
+		this.serverURL = this.contestURL.substring(0, sInd2);
 
 		//console.log('Contest URL: ' + this.contestURL);
 	}
 
 	getURL(type: string, id?: string): string {
 		if (id == null) {
+			if (type === 'contest') {
+				return this.contestURL;
+			} else if (type === 'version') {
+				return this.baseURL;
+			}
 			return this.contestURL + type;
 		}
 		return this.contestURL + type + '/' + id;
@@ -235,9 +236,15 @@ export class ContestAPI {
 		});*/
 	}
 
+	async loadVersion(force?: boolean): Promise<void> {
+		if (force || !this.version) {
+			this.version = await this.loadObject('version');
+		}
+	}
+
 	async loadContest(force?: boolean): Promise<void> {
 		if (force || !this.contest) {
-			this.contest = await this.loadObject('');
+			this.contest = await this.loadObject('contest');
 			this.fireChange({ type: 'contest' });
 		}
 	}
@@ -408,6 +415,9 @@ export class ContestAPI {
 	getContestURL(): string {
 		return this.contestURL;
 	}
+	getVersion(): Version | undefined {
+		return this.version;
+	}
 	getContest(): Contest | undefined {
 		return this.contest;
 	}
@@ -481,7 +491,7 @@ export class ContestAPI {
 		return total / this.timeDelta.length;
 	}
 
-	resolveURL(ref: FileReference | undefined): string | undefined {
+	resolveClientURL(ref: FileReference): string | undefined {
 		if (!ref || !ref.href) {
 			return undefined;
 		}
@@ -491,9 +501,15 @@ export class ContestAPI {
 		}
 		// Prepend server-relative URLs
 		if (ref.href.startsWith('/')) {
+			if (this.proxyURL) {
+				return this.proxyURL + '/api' + ref.href;
+			}
 			return this.serverURL + ref.href;
 		}
 		// ... and base-relative URLs
+		if (this.proxyURL) {
+			return this.proxyURL + '/' + ref.href;
+		}
 		return this.baseURL + ref.href;
 	}
 
@@ -522,7 +538,7 @@ export class ContestAPI {
 
 				for (const item of prop) {
 					if (this.isFileReference(item)) {
-						item.href = this.resolveURL(item) || item.href;
+						item.href = this.resolveClientURL(item) || item.href;
 					}
 				}
 			}
@@ -790,6 +806,7 @@ export class ContestAPI {
 	}
 
 	private reset(): void {
+		this.version = undefined;
 		this.contest = undefined;
 		this.access = undefined;
 		this.state = undefined;
@@ -826,7 +843,8 @@ export class ContestAPI {
 		// reset the contest to empty arrays
 		this.reset();
 
-		// load the initial access and scoreboard endpoints since they're not in the feed
+		// load the initial version, access, and scoreboard endpoints since they're not in the feed
+		await this.loadVersion(true);
 		await this.loadAccess(true);
 		await this.loadScoreboard(true);
 
