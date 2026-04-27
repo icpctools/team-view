@@ -3,6 +3,7 @@ import { ContestAPI, ContestEvent } from './contest-api.js';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import type { Response } from 'got';
+import { FileReference } from './contest-types.js';
 
 function getFile(contestId: string, type: string): string {
 	// use contest.json for the root
@@ -132,24 +133,25 @@ test('getURL', () => {
 test('resolveURL with absolute href', () => {
 	const contestAPI = new ContestAPI('https://api.example.com/api/contests/abc/');
 	const ref = { href: 'https://cdn.example.com/logo.png', filename: 'logo.png', mime: 'image/png' };
-	expect(contestAPI.resolveURL(ref)).toBe('https://cdn.example.com/logo.png');
+	expect(contestAPI.resolveClientURL(ref)).toBe('https://cdn.example.com/logo.png');
 });
 
 test('resolveURL with server-relative href', () => {
 	const contestAPI = new ContestAPI('https://api.example.com/api/contests/abc/');
 	const ref = { href: '/static/logo.png', filename: 'logo.png', mime: 'image/png' };
-	expect(contestAPI.resolveURL(ref)).toBe('https://api.example.com/static/logo.png');
+	expect(contestAPI.resolveClientURL(ref)).toBe('https://api.example.com/static/logo.png');
 });
 
 test('resolveURL with base-relative href', () => {
 	const contestAPI = new ContestAPI('https://api.example.com/api/contests/abc/');
 	const ref = { href: 'contests/abc/logo.png', filename: 'logo.png', mime: 'image/png' };
-	expect(contestAPI.resolveURL(ref)).toBe('https://api.example.com/api/contests/abc/logo.png');
+	expect(contestAPI.resolveClientURL(ref)).toBe('https://api.example.com/api/contests/abc/logo.png');
 });
 
 test('resolveURL with undefined ref', () => {
 	const contestAPI = new ContestAPI('https://api.example.com/api/contests/abc/');
-	expect(contestAPI.resolveURL(undefined)).toBeUndefined();
+	const ref = { filename: 'no-href.png', mime: 'image/png' } as FileReference;
+	expect(contestAPI.resolveClientURL(ref)).toBeUndefined();
 });
 
 test('getAuth', () => {
