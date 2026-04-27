@@ -22,24 +22,32 @@
 		const maxReconnectDelay = 30000; // max 30 seconds
 		let isCleaningUp = false;
 
-		// debounce invalidations to avoid blocking the UI
+		// debounce invalidations with longer delay to avoid overwhelming the system
 		let invalidateTimer: ReturnType<typeof setTimeout> | undefined;
 		const pendingInvalidations = new SvelteSet<string>();
 
 		function scheduleInvalidate(key: string) {
+			// Limit queue size to prevent memory issues
+			if (pendingInvalidations.size > 100) {
+				console.warn(`Invalidation queue full, dropping: ${key}`);
+				return;
+			}
+
 			pendingInvalidations.add(key);
 
 			if (invalidateTimer) {
 				clearTimeout(invalidateTimer);
 			}
 
+			// Longer debounce (500ms instead of 100ms) to batch more events
 			invalidateTimer = setTimeout(() => {
+				// Process all invalidations at once (SvelteKit handles deduplication)
 				for (const k of pendingInvalidations) {
 					invalidate(k);
 				}
 				pendingInvalidations.clear();
 				invalidateTimer = undefined;
-			}, 100);
+			}, 500);
 		}
 
 		function connect() {

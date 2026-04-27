@@ -16,10 +16,11 @@ class Mutex {
 	}
 
 	unlock(): void {
-		this.locked = false;
 		if (this.queue.length > 0) {
 			const next = this.queue.shift();
 			next?.();
+		} else {
+			this.locked = false;
 		}
 	}
 }
@@ -27,11 +28,15 @@ class Mutex {
 const mutex = new Mutex();
 
 export async function loadContest(): Promise<ContestAPI | undefined> {
-	if (contest) return contest;
+	if (contest) {
+		return contest;
+	}
 
 	await mutex.lock();
 	try {
-		if (contest) return contest;
+		if (contest) {
+			return contest;
+		}
 
 		if (!CONTEST.url) {
 			console.error('CONTEST.url is not defined');
