@@ -79,9 +79,7 @@
 		const columnIndex = columns.findIndex((column) => column.title === defaultSortColumn);
 		if (columnIndex !== -1 && columns[columnIndex]?.comparator) {
 			sortColIndex = columnIndex;
-			sortAscending = columns[columnIndex].initialOrder
-				? columns[columnIndex].initialOrder !== 'descending'
-				: true;
+			sortAscending = columns[columnIndex].initialOrder ? columns[columnIndex].initialOrder !== 'descending' : true;
 		}
 	});
 
