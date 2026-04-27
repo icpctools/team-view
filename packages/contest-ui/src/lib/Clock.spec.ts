@@ -1,25 +1,30 @@
 import '@testing-library/jest-dom/vitest';
 
 import { render, screen } from '@testing-library/svelte';
-import { expect, test, vi } from 'vitest';
+import { afterEach, expect, test, vi } from 'vitest';
 
 import Clock from './Clock.svelte';
-import { Contest } from '@icpctools/contest-api';
+import { Contest, ContestState } from '@icpctools/contest-api';
 import { beforeEach } from 'vitest';
 
 beforeEach(() => {
+	vi.useFakeTimers();
 	vi.resetAllMocks();
 });
 
+afterEach(() => {
+	vi.useRealTimers();
+});
+
 test('Expect unscheduled styling', async () => {
-	await render(Clock);
+	render(Clock);
 
 	const clock = screen.getByLabelText('contest clock');
 	expect(clock).toBeInTheDocument();
 });
 
 test('Expect unscheduled styling', async () => {
-	await render(Clock, { contest: {} as Contest });
+	render(Clock, { contest: {} as Contest });
 
 	const clock = screen.getByLabelText('contest clock');
 	expect(clock).toBeInTheDocument();
@@ -29,7 +34,7 @@ test('Expect unscheduled styling', async () => {
 
 test('Expect paused styling', async () => {
 	const contest = { countdown_pause_time: '1:00:00.000' } as Contest;
-	await render(Clock, { contest: contest });
+	render(Clock, { contest: contest });
 
 	const clock = screen.getByLabelText('contest clock');
 	expect(clock).toBeInTheDocument();
@@ -39,7 +44,7 @@ test('Expect paused styling', async () => {
 
 test('Expect countdown styling', async () => {
 	const contest = { start_time: '2200-01-01T12:00:00+00:00' } as Contest;
-	await render(Clock, { contest: contest });
+	render(Clock, { contest: contest });
 
 	const clock = screen.getByLabelText('contest clock');
 	expect(clock).toBeInTheDocument();
@@ -52,9 +57,12 @@ test('Expect frozen styling', async () => {
 		duration: '99:00:00.000',
 		scoreboard_freeze_duration: '98:00:00.000'
 	} as Contest;
+	const state = {
+		frozen: '2026-03-03T12:00:00+00:00'
+	} as ContestState;
 	vi.spyOn(Date, 'now').mockReturnValue(1772569075932);
 
-	await render(Clock, { contest: contest });
+	render(Clock, { contest: contest, contestState: state });
 
 	const clock = screen.getByLabelText('contest clock');
 	expect(clock).toBeInTheDocument();
@@ -63,10 +71,12 @@ test('Expect frozen styling', async () => {
 
 test('Expect finished styling', async () => {
 	const contest = { start_time: '2000-01-01T12:00:00+00:00', duration: '5:00:00.000' } as Contest;
+	const state = {
+		ended: '2026-03-03T12:00:00+00:00'
+	} as ContestState;
 	// Mock Date.now to be after contest end (start 12:00 UTC + 5h duration)
-	vi.useFakeTimers();
 	vi.setSystemTime(new Date('2000-01-01T17:00:01Z'));
-	await render(Clock, { contest: contest });
+	render(Clock, { contest: contest, contestState: state });
 
 	const clock = screen.getByLabelText('contest clock');
 	expect(clock).toBeInTheDocument();

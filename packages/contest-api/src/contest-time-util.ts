@@ -1,7 +1,7 @@
 /**
  * Copyright later.
  */
-import type { Contest, RelTime } from './contest-types.js';
+import type { Contest, ContestState, RelTime } from './contest-types.js';
 
 function isNumber(value: unknown): value is number {
 	return typeof value === 'number';
@@ -67,47 +67,7 @@ function formatTimeInMin(timeMs: number | undefined): string {
 	return sb.join('');
 }
 
-export function getContestState(
-	contest: Contest | undefined
-): 'unscheduled' | 'countdown' | 'paused' | 'running' | 'frozen' | 'finished' {
-	if (!contest) {
-		return 'unscheduled';
-	}
-
-	let m = 1;
-	if (contest.time_multiplier) {
-		m = contest.time_multiplier;
-	}
-
-	if (!contest.start_time) {
-		if (contest.countdown_pause_time) {
-			return 'paused';
-		}
-		return 'unscheduled';
-	}
-
-	const d = new Date(contest.start_time);
-
-	const time = (Date.now() - d.getTime()) * m; // - contest.getTimeDelta();
-	if (time < 0) {
-		return 'countdown';
-	}
-	const duration = parseRelTime(contest.duration);
-	if (duration) {
-		if (time > duration) {
-			return 'finished';
-		}
-
-		const freeze = parseRelTime(contest.scoreboard_freeze_duration);
-		if (freeze && time > duration - freeze) {
-			return 'frozen';
-		}
-	}
-
-	return 'running';
-}
-
-export function getContestClock(contest: Contest | undefined, currentTimeMs?: number): string | undefined {
+export function getContestClock(contest?: Contest, state?: ContestState, currentTimeMs?: number): string | undefined {
 	if (!contest) {
 		return undefined;
 	}
@@ -117,23 +77,52 @@ export function getContestClock(contest: Contest | undefined, currentTimeMs?: nu
 		m = contest.time_multiplier;
 	}
 
-	if (!contest.start_time) {
-		if (!contest.countdown_pause_time) {
+	// pause time
+	if (contest.countdown_pause_time) {
+		const pause = parseRelTime(contest.countdown_pause_time);
+		if (!pause) {
+			return undefined;
+		}
+
+		return formatContestTime(-pause * m, false);
+	}
+
+	// scheduled
+	const currentTime = currentTimeMs ?? Date.now();
+	if (!state?.started) {
+		if (!contest.start_time) {
 			return undefined;
 		} else {
-			const pause = parseRelTime(contest.countdown_pause_time);
-			if (!pause) {
-				return undefined;
-			}
-
-			return formatContestTime(-pause * m, false);
+			const d = new Date(contest.start_time);
+			return formatContestTime((currentTime - d.getTime()) * m, true);
 		}
 	}
 
-	const d = new Date(contest.start_time);
+	// started
+	const d = new Date(state.started);
 
-	const currentTime = currentTimeMs ? currentTimeMs : Date.now();
-	return formatContestTime((currentTime - d.getTime()) * m, true);
+	// apply removed intervals
+	let removedTime = 0;
+	if (state.removed_intervals) {
+		for (const interval of state.removed_intervals) {
+			const intervalStart = new Date(interval.start).getTime();
+			if (intervalStart < currentTime) {
+				// interval started before now, so it applies
+				if (!interval.end) {
+					// we're in the interval
+					return formatContestTime(parseRelTime(interval.contest_time) ?? 0, true);
+				}
+				const intervalEnd = new Date(interval?.end).getTime();
+				if (intervalEnd > currentTime) {
+					// we're in the interval
+					return formatContestTime(parseRelTime(interval.contest_time) ?? 0, true);
+				}
+				removedTime += intervalEnd - intervalStart;
+			}
+		}
+	}
+
+	return formatContestTime((currentTime - d.getTime() - removedTime) * m, true);
 }
 
 export function formatContestTime(time: number, floor: boolean): string {

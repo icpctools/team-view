@@ -6,6 +6,7 @@ export const load = async ({ depends }) => {
 	if (!cc) {
 		return {
 			contest: null,
+			contestState: null,
 			name: null,
 			banner: null,
 			logo: null,
@@ -17,6 +18,7 @@ export const load = async ({ depends }) => {
 	if (!contest) {
 		return {
 			contest: null,
+			contestState: null,
 			name: null,
 			banner: null,
 			logo: null,
@@ -26,6 +28,7 @@ export const load = async ({ depends }) => {
 
 	return {
 		contest: contest,
+		contestState: cc.getState(),
 		name: contest.formal_name || contest.name,
 		banner: contest.banner,
 		logo: contest.logo,
