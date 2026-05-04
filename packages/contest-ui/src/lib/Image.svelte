@@ -2,6 +2,7 @@
 	import type { FileReference } from '@icpctools/contest-api';
 	import { bestLogo } from '@icpctools/contest-api';
 	import { mode } from 'mode-watcher';
+	import { onMount } from 'svelte';
 
 	interface Props {
 		ref?: FileReference[];
@@ -11,7 +12,13 @@
 
 	let { ref, size, tag }: Props = $props();
 
-	let tagg: string = $derived(tag ?? mode.current ?? '');
+	let mounted = $state(false);
+	onMount(() => {
+		mounted = true;
+	});
+
+	// use mode.current only after mounting to avoid server/client mismatch
+	let tagg: string = $derived(tag ?? (mounted ? (mode.current ?? '') : ''));
 
 	let computedSrc = $derived(bestLogo(ref, size * 10, size * 10, tagg)?.href);
 
