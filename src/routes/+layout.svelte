@@ -8,21 +8,47 @@
 	import { ModeWatcher } from 'mode-watcher';
 	import type { ContestEvent } from '@icpctools/contest-api';
 	import ICPCtools from '$lib/ui/ICPCtools.svelte';
+	import { SvelteSet } from 'svelte/reactivity';
 
 	let { data, children } = $props();
 
 	onMount(() => {
 		const eventSource = new EventSource('/api/events');
 
+		// debounce invalidations to avoid blocking the UI
+		let invalidateTimer: ReturnType<typeof setTimeout> | null = null;
+		const pendingInvalidations = new SvelteSet<string>();
+
+		function scheduleInvalidate(key: string) {
+			pendingInvalidations.add(key);
+
+			if (invalidateTimer) {
+				clearTimeout(invalidateTimer);
+			}
+
+			invalidateTimer = setTimeout(() => {
+				for (const k of pendingInvalidations) {
+					invalidate(k);
+				}
+				pendingInvalidations.clear();
+				invalidateTimer = null;
+			}, 100);
+		}
+
 		eventSource.onmessage = (event) => {
 			try {
 				const change: ContestEvent = JSON.parse(event.data);
 
+				if (change.type === 'connected') {
+					console.log('SSE connected');
+					return;
+				}
+
 				// invalidate any page containing the specific object or all objects of that type
 				if (change.id) {
-					invalidate('app:' + change.type + '/' + change.id);
+					scheduleInvalidate('app:' + change.type + '/' + change.id);
 				}
-				invalidate('app:' + change.type);
+				scheduleInvalidate('app:' + change.type);
 			} catch (error) {
 				console.error('Error processing SSE event:', error);
 			}
@@ -34,6 +60,9 @@
 		};
 
 		return () => {
+			if (invalidateTimer) {
+				clearTimeout(invalidateTimer);
+			}
 			eventSource.close();
 		};
 	});
