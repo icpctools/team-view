@@ -14,10 +14,16 @@
 	let { data, children } = $props();
 
 	onMount(() => {
-		const eventSource = new EventSource('/api/events');
+		let eventSource: EventSource | undefined = undefined;
+
+		// reconnection settings
+		let reconnectTimer: ReturnType<typeof setTimeout>;
+		let reconnectDelay = 1000; // start with 1 second
+		const maxReconnectDelay = 30000; // max 30 seconds
+		let isCleaningUp = false;
 
 		// debounce invalidations to avoid blocking the UI
-		let invalidateTimer: ReturnType<typeof setTimeout> | null = null;
+		let invalidateTimer: ReturnType<typeof setTimeout> | undefined;
 		const pendingInvalidations = new SvelteSet<string>();
 
 		function scheduleInvalidate(key: string) {
@@ -32,39 +38,62 @@
 					invalidate(k);
 				}
 				pendingInvalidations.clear();
-				invalidateTimer = null;
+				invalidateTimer = undefined;
 			}, 100);
 		}
 
-		eventSource.onmessage = (event) => {
-			try {
-				const change: ContestEvent = JSON.parse(event.data);
+		function connect() {
+			if (isCleaningUp) return;
 
-				if (change.type === 'connected') {
-					console.log('SSE connected');
-					return;
+			eventSource = new EventSource('/api/events');
+
+			eventSource.onopen = () => {
+				console.log('SSE connected');
+				reconnectDelay = 1000; // Reset delay on successful connection
+			};
+
+			eventSource.onmessage = (event) => {
+				try {
+					const change: ContestEvent = JSON.parse(event.data);
+
+					if (change.type === 'connected') return;
+
+					// invalidate any page containing the specific object or all objects of that type
+					if (change.id) {
+						scheduleInvalidate('app:' + change.type + '/' + change.id);
+					}
+					scheduleInvalidate('app:' + change.type);
+				} catch (error) {
+					console.error('Error processing SSE event:', error);
 				}
+			};
 
-				// invalidate any page containing the specific object or all objects of that type
-				if (change.id) {
-					scheduleInvalidate('app:' + change.type + '/' + change.id);
+			eventSource.onerror = (error) => {
+				console.error('SSE connection error:', error);
+				eventSource?.close();
+				eventSource = undefined;
+
+				if (!isCleaningUp) {
+					console.log(`Reconnecting in ${reconnectDelay / 1000}s...`);
+					reconnectTimer = setTimeout(() => {
+						reconnectDelay = Math.min(reconnectDelay * 2, maxReconnectDelay);
+						connect();
+					}, reconnectDelay);
 				}
-				scheduleInvalidate('app:' + change.type);
-			} catch (error) {
-				console.error('Error processing SSE event:', error);
-			}
-		};
+			};
+		}
 
-		eventSource.onerror = (error) => {
-			console.error('SSE connection error:', error);
-			eventSource.close();
-		};
+		connect();
 
 		return () => {
+			isCleaningUp = true;
+			if (reconnectTimer) {
+				clearTimeout(reconnectTimer);
+			}
 			if (invalidateTimer) {
 				clearTimeout(invalidateTimer);
 			}
-			eventSource.close();
+			eventSource?.close();
 		};
 	});
 </script>
