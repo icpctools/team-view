@@ -132,6 +132,8 @@ export class ContestAPI {
 
 	private ignore: string[] = [];
 
+	private shouldReconnect: boolean = false;
+
 	constructor(contestURL: string, credentials?: Credentials, proxyURL?: string) {
 		if (!contestURL.endsWith('/')) {
 			contestURL += '/';
@@ -717,9 +719,9 @@ export class ContestAPI {
 		};
 	}
 
-	async readEventFeed(): Promise<void> {
+	async connectToFeed(): Promise<boolean> {
 		const url = this.getURL('event-feed');
-		console.log(`Connecting to ${url}`);
+		let connected = false;
 		try {
 			const stream = got.stream(url, this.getStreamOptions());
 
@@ -730,6 +732,11 @@ export class ContestAPI {
 
 			// TODO 120s timeout
 			for await (const line of rl) {
+				if (!connected) {
+					// reset delay on successful connection
+					console.log('Connected to feed');
+					connected = true;
+				}
 				if (line && line.length > 0) {
 					const obj: Notification = JSON.parse(line, (_key, value) => {
 						return value === null ? undefined : value;
@@ -738,22 +745,48 @@ export class ContestAPI {
 				}
 			}
 
+			console.log(`Event feed stream ended for ${url}`);
+
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (error: any) {
 			// release the gate so waiting threads don't hang forever
 			initialLoadGate.release();
 
 			if (error instanceof HTTPError) {
-				throw new Error(`HTTP error ${error.response.statusCode} loading ${url}: ${error.response.statusMessage}`, {
-					cause: error
-				});
+				console.error(`HTTP error ${error.response.statusCode} loading ${url}: ${error.response.statusMessage}`);
 			} else if (error instanceof RequestError) {
-				throw new Error(`Error loading ${url}: ${error.code}`, { cause: error });
+				console.error(`Error loading ${url}: ${error.code}`);
 			} else {
-				throw new Error(`Unexpected error loading ${url}: ${error}`, { cause: error });
+				console.error(`Unexpected error loading ${url}: ${error}`);
 			}
 		}
-		console.log(`Done connecting to ${url}`);
+		return connected;
+	}
+
+	async readEventFeed(): Promise<void> {
+		console.log('Connecting to event feed');
+
+		let reconnectDelay: number = 1000;
+		const maxReconnectDelay = 30000; // max 30 seconds
+
+		while (this.shouldReconnect) {
+			// TODO should we reset here, or support event feed token?
+			if (await this.connectToFeed()) {
+				reconnectDelay = 1000;
+			}
+
+			if (this.state?.end_of_updates) {
+				this.shouldReconnect = false;
+			}
+
+			if (this.shouldReconnect) {
+				console.log(`Reconnecting to event feed in ${reconnectDelay / 1000}s...`);
+				await new Promise((resolve) => setTimeout(resolve, reconnectDelay));
+				reconnectDelay = Math.min(reconnectDelay * 2, maxReconnectDelay);
+			}
+		}
+
+		console.log('Done reading event feed');
 	}
 
 	private reset(): void {
@@ -797,6 +830,9 @@ export class ContestAPI {
 		await this.loadAccess(true);
 		await this.loadScoreboard(true);
 
+		// Enable reconnection and start reading the event feed
+		this.shouldReconnect = true;
+
 		this.readEventFeed().catch((error) => {
 			console.error(`Event feed error: ${error}`);
 		});
@@ -822,6 +858,7 @@ export class ContestAPI {
 		if (!this.interval) {
 			return;
 		}
+		this.shouldReconnect = false;
 		clearInterval(this.interval);
 	}
 
