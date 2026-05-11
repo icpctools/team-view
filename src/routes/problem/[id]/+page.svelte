@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import { JudgementUI, ProblemUI } from '@icpctools/contest-ui';
 	import ReactionModal from '$lib/ui/ReactionModal.svelte';
 	import type { Column } from '$lib/ui/table/table.js';
@@ -11,6 +10,7 @@
 	import TeamColumn from '$lib/ui/table/TeamColumn.svelte';
 	import SourceModal from '$lib/ui/SourceModal.svelte';
 	import SourceColumn from '$lib/ui/table/SourceColumn.svelte';
+	import { gotoTeam } from '$lib/navigation.js';
 
 	let { data } = $props();
 
@@ -31,7 +31,7 @@
 			rendererProps: (object: SubmissionData) => ({
 				team: object.team,
 				logo: object.logo,
-				onclick: () => goto(`/team/${object.team?.id}`)
+				onclick: () => gotoTeam(object.team)
 			}),
 			comparator: (a, b): number =>
 				(a.team.display_name ?? a.team.name ?? 'a').localeCompare(b.team.display_name ?? b.team.name ?? 'a')
