@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import { Image, JudgementUI, PersonUI } from '@icpctools/contest-ui';
 	import type { Column } from '$lib/ui/table/table';
 	import SimpleColumn from '$lib/ui/table/SimpleColumn.svelte';
@@ -11,6 +10,7 @@
 	import type { SubmissionData } from '$lib/submissionData.js';
 	import SourceColumn from '$lib/ui/table/SourceColumn.svelte';
 	import SourceModal from '$lib/ui/SourceModal.svelte';
+	import { gotoProblem } from '$lib/navigation.js';
 
 	let { data } = $props();
 
@@ -29,7 +29,7 @@
 			renderer: ProblemColumn,
 			rendererProps: (object: SubmissionData) => ({
 				problem: object.problem,
-				onclick: () => goto(`/problem/${object.problem.id}`)
+				onclick: () => gotoProblem(object.problem)
 			}),
 			comparator: (a, b): number => a.problem.ordinal - b.problem.ordinal
 		},

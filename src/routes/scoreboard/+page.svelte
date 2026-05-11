@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import { timeToMin, type ScoreboardRow } from '@icpctools/contest-api';
 	import type { Column } from '$lib/ui/table/table.js';
 	import Table from '$lib/ui/table/Table.svelte';
@@ -8,6 +7,7 @@
 	import TeamColumn from '$lib/ui/table/TeamColumn.svelte';
 	import ProblemColumn from '$lib/ui/table/ProblemColumn.svelte';
 	import ScoreboardSolved from '$lib/ui/table/ScoreboardSolved.svelte';
+	import { gotoProblem, gotoTeamId } from '$lib/navigation.js';
 
 	let { data } = $props();
 
@@ -26,7 +26,7 @@
 			rendererProps: (row: ScoreboardRow, index: number) => ({
 				team: data.teams[index],
 				logo: data.logos[index],
-				onclick: () => goto(`/team/${row.team_id}`)
+				onclick: () => gotoTeamId(row.team_id)
 			})
 		}
 	];
@@ -68,7 +68,7 @@
 			title: ProblemColumn,
 			titleProps: {
 				problem: probs()[i],
-				onclick: () => goto(`/problem/${data.problems[i].id}`)
+				onclick: () => gotoProblem(data.problems[i])
 			},
 			titleAlign: 'center',
 			renderer: ScoreboardProblem,

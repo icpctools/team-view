@@ -3,7 +3,7 @@
 	import type { ClarificationData } from '../../routes/clarifications/clarificationData';
 	import ClarificationUI from './ClarificationUI.svelte';
 	import TeamColumn from './table/TeamColumn.svelte';
-	import { goto } from '$app/navigation';
+	import { gotoTeam } from '$lib/navigation';
 
 	interface Props {
 		clar: ClarificationData;
@@ -21,7 +21,7 @@
 					team={clar.from_team}
 					logo={logos?.get(clar.from_team.id)}
 					noGap
-					onclick={() => goto(`/team/${clar.from_team?.id}`)} />
+					onclick={() => gotoTeam(clar.from_team)} />
 			{:else}
 				Jury
 			{/if}
@@ -32,7 +32,7 @@
 				To:
 				{#if clar.to_teams && clar.to_teams?.length > 0}
 					{#each clar.to_teams as team (team.id)}
-						<TeamColumn {team} logo={logos?.get(team.id)} noGap onclick={() => goto(`/team/${team.id}`)} />
+						<TeamColumn {team} logo={logos?.get(team.id)} noGap onclick={() => gotoTeam(team)} />
 					{/each}
 				{/if}
 				{#if clar.to_groups && clar.to_groups?.length > 0}
