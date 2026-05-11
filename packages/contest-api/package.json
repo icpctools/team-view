@@ -19,7 +19,7 @@
 		}
 	},
 	"scripts": {
-		"build": "echo 'No build needed for contest-api yet - using TypeScript source directly'",
+		"build": "tsx scripts/merge-types.ts",
 		"test": "vitest"
 	},
 	"dependencies": {
@@ -27,6 +27,7 @@
 	},
 	"devDependencies": {
 		"@types/node": "^24.12.2",
+		"tsx": "^4.23.1",
 		"typescript": "^5.9.3",
 		"vitest": "^4.1.8"
 	}
