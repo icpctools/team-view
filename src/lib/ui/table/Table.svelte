@@ -20,8 +20,10 @@
 		keyProperty = 'id' as keyof T
 	}: Props = $props();
 
-	let sortCol = $state<Column<T>>();
+	let sortColIndex = $state<number | undefined>(undefined);
 	let sortAscending = $state<boolean>();
+
+	let sortCol = $derived(sortColIndex !== undefined ? columns[sortColIndex] : undefined);
 
 	let data2 = $derived.by(() => {
 		if (!data || !sortCol) {
@@ -31,7 +33,8 @@
 		}
 	});
 
-	function sort(column: Column<T>): void {
+	function sort(columnIndex: number): void {
+		const column = columns[columnIndex];
 		if (!column) {
 			return;
 		}
@@ -42,10 +45,10 @@
 			return;
 		}
 
-		if (sortCol === column) {
+		if (sortColIndex === columnIndex) {
 			sortAscending = !sortAscending;
 		} else {
-			sortCol = column;
+			sortColIndex = columnIndex;
 			sortAscending = column.initialOrder ? column.initialOrder !== 'descending' : true;
 		}
 		sortImpl();
@@ -73,10 +76,12 @@
 	}
 
 	onMount(async () => {
-		const column: Column<T> | undefined = columns.find((column) => column.title === defaultSortColumn);
-		if (column?.comparator) {
-			sortCol = column;
-			sortAscending = column.initialOrder ? column.initialOrder !== 'descending' : true;
+		const columnIndex = columns.findIndex((column) => column.title === defaultSortColumn);
+		if (columnIndex !== -1 && columns[columnIndex]?.comparator) {
+			sortColIndex = columnIndex;
+			sortAscending = columns[columnIndex].initialOrder
+				? columns[columnIndex].initialOrder !== 'descending'
+				: true;
 		}
 	});
 
@@ -112,10 +117,10 @@
 							'justify-self-end': (column.titleAlign ?? column.align) === 'right',
 							'justify-self-stretch': (column.titleAlign ?? column.align) === 'stretch',
 							'cursor-pointer': column.comparator,
-							'hover:text-black': sortCol !== column,
-							'hover:dark:text-white': sortCol !== column
+							'hover:text-black': sortColIndex !== colIndex,
+							'hover:dark:text-white': sortColIndex !== colIndex
 						}}
-						onclick={sort.bind(undefined, column)}
+						onclick={sort.bind(undefined, colIndex)}
 						role="columnheader">
 						{#if typeof column.title === 'string'}
 							<div class="overflow-hidden text-ellipsis">
@@ -127,10 +132,10 @@
 
 						{#if column.comparator}<i
 								class="fas pl-0.5"
-								class:fa-sort={sortCol !== column}
-								class:fa-sort-up={sortCol === column && sortAscending}
-								class:fa-sort-down={sortCol === column && !sortAscending}
-								class:text-gray-500={sortCol !== column}
+								class:fa-sort={sortColIndex !== colIndex}
+								class:fa-sort-up={sortColIndex === colIndex && sortAscending}
+								class:fa-sort-down={sortColIndex === colIndex && !sortAscending}
+								class:text-gray-500={sortColIndex !== colIndex}
 								aria-hidden="true"></i
 							>{/if}
 					</div>
