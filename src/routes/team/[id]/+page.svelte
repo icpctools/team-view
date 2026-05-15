@@ -55,7 +55,9 @@
 			rendererProps: (object: SubmissionData) => ({
 				object: object.judgement?.score
 			}),
-			align: 'center'
+			align: 'center',
+			comparator: (a, b): number => (a.judgement?.score ?? 0) - (b.judgement?.score ?? 0),
+			initialOrder: 'descending'
 		});
 	}
 
