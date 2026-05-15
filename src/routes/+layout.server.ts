@@ -1,7 +1,7 @@
 import { loadContest } from '$lib/state.svelte.js';
 
 export const load = async ({ depends }) => {
-	depends('app:contest');
+	depends('app:contest', 'app:state');
 	const cc = await loadContest();
 	if (!cc) {
 		return {

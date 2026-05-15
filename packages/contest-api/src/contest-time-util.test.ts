@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { formatContestTime, getContestState, getContestTime, parseRelTime, timeToMin } from './contest-time-util.js';
+import { formatContestTime, getContestState, getContestClock, parseRelTime, timeToMin } from './contest-time-util.js';
 import type { Contest } from './contest-types.js';
 
 test('parseRelTime with number', () => {
@@ -90,21 +90,21 @@ test('getContestState with finished contest', () => {
 	expect(getContestState(contest)).toBe('finished');
 });
 
-test('getContestTime with undefined contest', () => {
-	expect(getContestTime(undefined, false)).toBeUndefined();
+test('getContestClock with undefined contest', () => {
+	expect(getContestClock(undefined, false)).toBeUndefined();
 });
 
-test('getContestTime when not scheduled', () => {
+test('getContestClock when not scheduled', () => {
 	const contest = {
 		id: 'test',
 		name: 'Test',
 		duration: '5:00:00',
 		scoreboard_type: 'pass-fail'
 	} as Contest;
-	expect(getContestTime(contest, false)).toBe('Contest not scheduled');
+	expect(getContestClock(contest)).toBeUndefined();
 });
 
-test('getContestTime when contest is over', () => {
+test('getContestClock when contest is over', () => {
 	const pastTime = new Date(Date.now() - 7200000).toISOString();
 	const contest = {
 		id: 'test',
@@ -113,5 +113,5 @@ test('getContestTime when contest is over', () => {
 		duration: '1:00:00',
 		scoreboard_type: 'pass-fail'
 	} as Contest;
-	expect(getContestTime(contest, false)).toBe('Contest is over');
+	expect(getContestClock(contest)).toBe('2:00:00');
 });
