@@ -107,7 +107,7 @@ export function getContestState(
 	return 'running';
 }
 
-export function getContestTime(contest: Contest | undefined, short: boolean): string | undefined {
+export function getContestClock(contest: Contest | undefined, currentTimeMs?: number): string | undefined {
 	if (!contest) {
 		return undefined;
 	}
@@ -119,37 +119,21 @@ export function getContestTime(contest: Contest | undefined, short: boolean): st
 
 	if (!contest.start_time) {
 		if (!contest.countdown_pause_time) {
-			return 'Contest not scheduled';
+			return undefined;
 		} else {
 			const pause = parseRelTime(contest.countdown_pause_time);
 			if (!pause) {
-				return 'Paused';
+				return undefined;
 			}
 
-			if (short) {
-				return formatContestTime(-pause * m, false) + ' (paused)';
-			} else {
-				return 'Countdown paused: ' + formatContestTime(-pause * m, false);
-			}
+			return formatContestTime(-pause * m, false);
 		}
 	}
 
 	const d = new Date(contest.start_time);
 
-	const time = (Date.now() - d.getTime()) * m; // - contest.getTimeDelta();
-	if (time < 0) {
-		if (short) {
-			return formatContestTime(time, true);
-		} else {
-			return 'Countdown: ' + formatContestTime(time, true);
-		}
-	}
-	const duration = parseRelTime(contest.duration);
-	if (duration && time > duration) {
-		return 'Contest is over';
-	}
-
-	return formatContestTime(time, true);
+	const currentTime = currentTimeMs ? currentTimeMs : Date.now();
+	return formatContestTime((currentTime - d.getTime()) * m, true);
 }
 
 export function formatContestTime(time: number, floor: boolean): string {

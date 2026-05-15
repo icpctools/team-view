@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getContestTime, getContestState } from '@icpctools/contest-api';
+	import { getContestClock, getContestState } from '@icpctools/contest-api';
 	import type { Contest } from '@icpctools/contest-api';
 	import { onMount } from 'svelte';
 
@@ -8,17 +8,18 @@
 	}
 
 	let { contest }: Props = $props();
-	let clock: string | undefined = $derived('?');
+	let clockTime: string = $state('?');
 
-	let state = $derived(getContestState(contest));
+	let contestState = $derived(getContestState(contest));
+	let clock = $derived(clockTime);
 
 	onMount(() => {
 		// set initial value, then schedule updates
-		clock = getContestTime(contest, true);
+		clockTime = getContestClock(contest) || 'Not scheduled';
 
 		const clockInt = setInterval(
 			() => {
-				clock = getContestTime(contest, true);
+				clockTime = getContestClock(contest) || 'Not scheduled';
 			},
 			contest && contest.time_multiplier ? 50 : 350
 		);
@@ -33,11 +34,11 @@
 	aria-label="contest clock"
 	class={{
 		'whitespace-nowrap': true,
-		'text-gray-400': state === 'unscheduled',
-		'text-green-300': state === 'countdown',
-		'text-blue-200': state === 'frozen',
-		'text-gray-300': state === 'finished',
-		'text-yellow-500': state === 'paused'
+		'text-gray-400': contestState === 'unscheduled',
+		'text-green-300': contestState === 'countdown',
+		'text-blue-200': contestState === 'frozen',
+		'text-gray-300': contestState === 'finished',
+		'text-yellow-500': contestState === 'paused'
 	}}>
 	{clock}
 </span>

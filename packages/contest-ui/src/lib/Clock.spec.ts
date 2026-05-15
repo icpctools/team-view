@@ -19,11 +19,11 @@ test('Expect unscheduled styling', async () => {
 });
 
 test('Expect unscheduled styling', async () => {
-	await render(Clock, { contest: {} });
+	await render(Clock, { contest: {} as Contest });
 
 	const clock = screen.getByLabelText('contest clock');
 	expect(clock).toBeInTheDocument();
-	expect(clock).toHaveTextContent('Contest not scheduled');
+	expect(clock).toHaveTextContent('Not scheduled');
 	expect(clock).toHaveClass('text-gray-400');
 });
 
@@ -33,7 +33,7 @@ test('Expect paused styling', async () => {
 
 	const clock = screen.getByLabelText('contest clock');
 	expect(clock).toBeInTheDocument();
-	expect(clock).toHaveTextContent('-1:00:00 (paused)');
+	expect(clock).toHaveTextContent('-1:00:00');
 	expect(clock).toHaveClass('text-yellow-500');
 });
 
