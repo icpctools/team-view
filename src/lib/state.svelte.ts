@@ -53,7 +53,7 @@ export async function loadContest(): Promise<ContestAPI | undefined> {
 				user: CONTEST.user,
 				password: CONTEST.password
 			},
-			CONFIG.proxy ? '/proxy' : undefined
+			CONFIG.proxy ? '/api/proxy' : undefined
 		);
 		await contests.loadContests();
 
