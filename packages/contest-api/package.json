@@ -23,11 +23,11 @@
 		"test": "vitest"
 	},
 	"dependencies": {
-		"got": "^14.6.6"
+		"got": "^15.0.5"
 	},
 	"devDependencies": {
 		"@types/node": "^24.12.2",
 		"typescript": "^5.9.3",
-		"vitest": "^4.1.5"
+		"vitest": "^4.1.8"
 	}
 }
