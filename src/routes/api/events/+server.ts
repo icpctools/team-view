@@ -39,7 +39,7 @@ export const GET: RequestHandler = async () => {
 			};
 
 			// Add listener to contest
-			contest.addChangeListener(listener);
+			contest.addContestListener(listener);
 
 			// Keep-alive ping every 30 seconds
 			const keepAliveInterval = setInterval(() => {
@@ -63,7 +63,7 @@ export const GET: RequestHandler = async () => {
 				if (isClosed) return; // Already cleaned up
 				isClosed = true;
 				clearInterval(keepAliveInterval);
-				contest.removeChangeListener(listener);
+				contest.removeContestListener(listener);
 				console.log('SSE client disconnected');
 			};
 

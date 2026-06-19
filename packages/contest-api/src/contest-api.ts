@@ -129,7 +129,7 @@ export class ContestAPI {
 
 	private unknownTypes: string[] = [];
 
-	private changeListeners: ContestListener[] = [];
+	private contestListeners: ContestListener[] = [];
 
 	private scoreboardInvalid: boolean = false;
 
@@ -880,14 +880,14 @@ export class ContestAPI {
 		clearInterval(this.interval);
 	}
 
-	addChangeListener(listener: ContestListener): void {
-		this.changeListeners.push(listener);
+	addContestListener(listener: ContestListener): void {
+		this.contestListeners.push(listener);
 	}
 
-	removeChangeListener(listener: ContestListener): void {
-		const index = this.changeListeners.indexOf(listener);
+	removeContestListener(listener: ContestListener): void {
+		const index = this.contestListeners.indexOf(listener);
 		if (index >= 0) {
-			this.changeListeners.splice(index, 1);
+			this.contestListeners.splice(index, 1);
 		}
 	}
 
@@ -895,11 +895,11 @@ export class ContestAPI {
 		if (event.type === 'submissions' || event.type === 'judgements') {
 			this.scoreboardInvalid = true;
 		}
-		for (const listener of this.changeListeners) {
+		for (const listener of this.contestListeners) {
 			try {
 				listener(event);
 			} catch (error) {
-				console.error('Error in change listener:', error);
+				console.error('Error in contest listener:', error);
 			}
 		}
 	}
