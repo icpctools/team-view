@@ -133,7 +133,7 @@ This allows client-side code to call `/proxy/...` endpoints without CORS issues 
 
 The `/api/events` route provides real-time contest updates via Server-Sent Events:
 
-- **ContestAPI Change Listeners** - The `ContestAPI` class supports registering change listeners that fire when contest data changes
+- **ContestAPI Contest Listeners** - The `ContestAPI` class supports registering contest listeners that fire when contest data changes
 - **Event Types** - Emits events for all contest data types: `contest`, `state`, `teams`, `submissions`, `judgements`, `clarifications`, `scoreboard`, etc.
 - **Event Structure** - `{ type: string, id?: string }`
 - **Auto-cleanup** - Listeners are automatically removed when clients disconnect

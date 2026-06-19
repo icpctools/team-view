@@ -167,7 +167,7 @@ test('getTimeDelta', () => {
 	expect(contestAPI.getTimeDelta()).toBe(0);
 });
 
-test('addChangeListener and fireChange', () => {
+test('addContestListener and fireChange', () => {
 	const contestAPI = new ContestAPI('https://api.example.com/api/contests/abc/');
 	const events: ContestEvent[] = [];
 
@@ -175,7 +175,7 @@ test('addChangeListener and fireChange', () => {
 		events.push(event);
 	};
 
-	contestAPI.addChangeListener(listener);
+	contestAPI.addContestListener(listener);
 
 	// Simulate a notification
 	contestAPI.processNotification({
@@ -188,7 +188,7 @@ test('addChangeListener and fireChange', () => {
 	expect(events[0].id).toBe('123');
 });
 
-test('removeChangeListener', () => {
+test('removeContestListener', () => {
 	const contestAPI = new ContestAPI('https://api.example.com/api/contests/abc/');
 	const events: ContestEvent[] = [];
 
@@ -196,8 +196,8 @@ test('removeChangeListener', () => {
 		events.push(event);
 	};
 
-	contestAPI.addChangeListener(listener);
-	contestAPI.removeChangeListener(listener);
+	contestAPI.addContestListener(listener);
+	contestAPI.removeContestListener(listener);
 
 	// Simulate a notification
 	contestAPI.processNotification({
@@ -221,8 +221,8 @@ test('multiple listeners receive events', () => {
 		events2.push(event);
 	};
 
-	contestAPI.addChangeListener(listener1);
-	contestAPI.addChangeListener(listener2);
+	contestAPI.addContestListener(listener1);
+	contestAPI.addContestListener(listener2);
 
 	// Simulate a notification
 	contestAPI.processNotification({
@@ -249,8 +249,8 @@ test('listener errors do not break other listeners', () => {
 		events.push(event);
 	};
 
-	contestAPI.addChangeListener(errorListener);
-	contestAPI.addChangeListener(goodListener);
+	contestAPI.addContestListener(errorListener);
+	contestAPI.addContestListener(goodListener);
 
 	// Simulate a notification
 	contestAPI.processNotification({
