@@ -62,7 +62,8 @@ export async function loadContest(): Promise<ContestAPI | undefined> {
 		}
 
 		contest = contests.getContest(CONTEST?.contest_id);
-		await contest?.watch({ ignore: ['runs'] });
+		contest?.addContestModifier((n) => n.type !== 'runs');
+		await contest?.watch();
 		return contest;
 	} catch (error) {
 		console.error('Error loading contest:', error);

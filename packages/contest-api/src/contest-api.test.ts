@@ -3,7 +3,7 @@ import { ContestAPI, ContestEvent } from './contest-api.js';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import type { Response } from 'got';
-import { FileReference } from './contest-types.js';
+import { FileReference, Notification } from './contest-types.js';
 
 function getFile(contestId: string, type: string): string {
 	// use contest.json for the root
@@ -262,4 +262,71 @@ test('listener errors do not break other listeners', () => {
 	expect(consoleErrorSpy).toHaveBeenCalled();
 
 	consoleErrorSpy.mockRestore();
+});
+
+test('addContestModifier and fireChange', () => {
+	const contestAPI = new ContestAPI('https://api.example.com/api/contests/abc/');
+	const events: Notification[] = [];
+
+	const listener = (event: Notification) => {
+		events.push(event);
+		return true;
+	};
+
+	contestAPI.addContestModifier(listener);
+
+	// Simulate a notification
+	contestAPI.processNotification({
+		type: 'teams',
+		id: '123',
+		data: { id: '123' }
+	});
+
+	expect(events.length).toBe(1);
+	expect(events[0].type).toBe('teams');
+	expect(events[0].id).toBe('123');
+	expect(contestAPI.getTeams().length).toBe(1);
+});
+
+test('contestModifier rejection', () => {
+	const contestAPI = new ContestAPI('https://api.example.com/api/contests/abc/');
+	const events: Notification[] = [];
+
+	const listener = (event: Notification) => {
+		events.push(event);
+		return false;
+	};
+
+	contestAPI.addContestModifier(listener);
+
+	// Simulate a notification
+	contestAPI.processNotification({
+		type: 'teams',
+		id: '123',
+		data: { id: '123' }
+	});
+
+	expect(events.length).toBe(1);
+	expect(contestAPI.getTeams().length).toBe(0);
+});
+
+test('removeContestModifier', () => {
+	const contestAPI = new ContestAPI('https://api.example.com/api/contests/abc/');
+	const events: Notification[] = [];
+
+	const listener = (event: Notification) => {
+		events.push(event);
+		return true;
+	};
+
+	contestAPI.addContestModifier(listener);
+	contestAPI.removeContestModifier(listener);
+
+	// Simulate a notification
+	contestAPI.processNotification({
+		type: 'teams',
+		id: '123'
+	});
+
+	expect(events.length).toBe(0);
 });

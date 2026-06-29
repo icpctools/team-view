@@ -45,11 +45,9 @@ export type ContestEvent = {
 	id?: Id;
 };
 
-export type FeedOptions = {
-	ignore?: string[];
-};
-
 export type ContestListener = (event: ContestEvent) => void;
+
+export type ContestModifier = (event: Notification) => boolean;
 
 class InitialLoadGate {
 	private loaded: boolean = false;
@@ -131,10 +129,9 @@ export class ContestAPI {
 	private unknownTypes: string[] = [];
 
 	private contestListeners: ContestListener[] = [];
+	private contestModifiers: ContestModifier[] = [];
 
 	private scoreboardInvalid: boolean = false;
-
-	private ignore: string[] = [];
 
 	private shouldReconnect: boolean = false;
 
@@ -633,9 +630,10 @@ export class ContestAPI {
 	}
 
 	processNotification(n: Notification): void {
-		if (this.ignore.includes(n.type)) {
+		if (!this.modify(n)) {
 			return;
 		}
+
 		if ((!n.id || n.type === 'contest') && !Array.isArray(n.data)) {
 			// no id and not an array: must be a 'singleton' object (e.g. state)
 			this.processNotificationSingleton(n.type, n.data ?? {});
@@ -831,11 +829,7 @@ export class ContestAPI {
 		this.mapInfo = undefined;
 	}
 
-	async watch(options?: FeedOptions): Promise<void> {
-		if (options?.ignore) {
-			this.ignore = options.ignore;
-			console.log('Ignoring: ' + this.ignore);
-		}
+	async watch(): Promise<void> {
 		if (this.interval) {
 			return;
 		}
@@ -903,5 +897,29 @@ export class ContestAPI {
 				console.error('Error in contest listener:', error);
 			}
 		}
+	}
+
+	addContestModifier(modifier: ContestModifier): void {
+		this.contestModifiers.push(modifier);
+	}
+
+	removeContestModifier(modifier: ContestModifier): void {
+		const index = this.contestModifiers.indexOf(modifier);
+		if (index >= 0) {
+			this.contestModifiers.splice(index, 1);
+		}
+	}
+
+	private modify(event: Notification): boolean {
+		for (const modifier of this.contestModifiers) {
+			try {
+				if (!modifier(event)) {
+					return false;
+				}
+			} catch (error) {
+				console.error('Error in contest modifier:', error);
+			}
+		}
+		return true;
 	}
 }
