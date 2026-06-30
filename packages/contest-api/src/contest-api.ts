@@ -14,6 +14,7 @@ import type {
 	Commentary,
 	Contest,
 	ContestState,
+	ContestType,
 	FileReference,
 	Group,
 	Id,
@@ -193,7 +194,7 @@ export class ContestAPI {
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	async loadObject(type: string): Promise<any> {
+	async loadObject(type: ContestType): Promise<any> {
 		const startTime = performance.now();
 		const url = this.getURL(type);
 		try {
