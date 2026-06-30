@@ -12,6 +12,30 @@
  *  - CDS extensions: https://github.com/icpctools/icpctools/blob/main/doc/spec-extensions.md
  */
 
+export type ContestType =
+	| 'version'
+	| 'access'
+	| 'contest'
+	| 'judgement-types'
+	| 'languages'
+	| 'problems'
+	| 'groups'
+	| 'organizations'
+	| 'teams'
+	| 'persons'
+	| 'account'
+	| 'accounts'
+	| 'state'
+	| 'submissions'
+	| 'judgements'
+	| 'runs'
+	| 'clarifications'
+	| 'awards'
+	| 'commentary'
+	| 'scoreboard'
+	| 'map-info'
+	| 'start-status';
+
 export type Id = string;
 
 export type RelTime = string;
@@ -317,7 +341,7 @@ export interface StartStatus {
 }
 
 export interface Notification {
-	type: string;
+	type: ContestType;
 	id?: Id;
 	data?: { id: Id }[] | object;
 	token?: string;
