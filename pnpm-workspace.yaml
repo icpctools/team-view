@@ -2,5 +2,9 @@ packages:
   - '*'
   - 'packages/*'
   - tests/*
-onlyBuiltDependencies:
-  - esbuild
+allowBuilds:
+  esbuild: true
+  msw: true
+engineStrict: true
+overrides:
+  webworkify-webpack: ^2.1.5

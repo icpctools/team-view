@@ -10,8 +10,8 @@
 		"build:packages": "pnpm --filter '@icpctools/*' build",
 		"preview": "vite preview",
 		"test": "npm run test:unit && npm run test:integration",
-		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --config vite.config.ts",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --config vite.config.ts --watch",
 		"lint": "eslint .",
 		"format": "prettier --write .",
 		"test:integration": "playwright test",
@@ -55,5 +55,5 @@
 		"video.js": "^8.23.7",
 		"videojs-mpegtsjs": "^1.0.0"
 	},
-	"packageManager": "pnpm@10.33.3"
+	"packageManager": "pnpm@11.15.1+sha512.gTULB+U8lTigLx8jA7QpD6LXvgTlbiqXDEzEtBfcdh3hlu2r1J1Vx9yVgNuBAHxEFD5OPX5GKzAA0jwlUSLQZQ=="
 }
