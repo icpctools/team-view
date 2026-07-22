@@ -1,6 +1,6 @@
 # Use Node.js LTS as base image
-FROM node:22-alpine
-RUN npm install -g pnpm && apk add --no-cache tini git
+FROM node:24-alpine
+RUN npm install -g pnpm@11 && apk add --no-cache tini git
 
 # Set working directory
 WORKDIR /app
@@ -11,7 +11,7 @@ COPY packages/contest-api/package.json ./packages/contest-api/
 COPY packages/contest-ui/package.json ./packages/contest-ui/
 
 # Install dependencies (including devDependencies needed for build)
-RUN pnpm install --frozen-lockfile
+RUN CI=true pnpm install --frozen-lockfile
 
 # Copy source code
 COPY . .
