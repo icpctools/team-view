@@ -57,7 +57,7 @@ export interface Endpoint {
 	properties: string[];
 }
 
-export interface ContestLocation {
+export interface Location {
 	latitude: number;
 	longitude: number;
 }
@@ -67,13 +67,15 @@ export interface Contest {
 	name: string;
 	formal_name?: string;
 	start_time?: string;
+	countdown_pause_time?: RelTime;
 	duration: RelTime;
 	scoreboard_freeze_duration?: RelTime;
+	scoreboard_thaw_time?: Time;
 	scoreboard_type: 'pass-fail' | 'score';
 	penalty_time?: number;
-	countdown_pause_time?: RelTime;
 	banner?: FileReference[];
 	logo?: FileReference[];
+	location?: Location;
 }
 
 export interface FileReference {
@@ -94,18 +96,30 @@ export interface ContestState {
 	end_of_updates?: Time;
 }
 
+export interface TeamLocation {
+	x: number;
+	y: number;
+	rotation: number;
+}
+
 export interface Team {
 	id: Id;
+	icpc_id?: string;
 	label: string;
 	name: string;
-	display_name: string;
-	organization_id: string;
+	display_name?: string;
+	organization_id?: string;
 	group_ids?: string[];
+	hidden?: boolean;
 	photo?: FileReference[];
 	video?: FileReference[];
+	backup?: FileReference[];
+	key_log?: FileReference[];
+	tool_data?: FileReference[];
 	desktop?: FileReference[];
 	webcam?: FileReference[];
 	audio?: FileReference[];
+	location?: TeamLocation;
 }
 
 export interface Problem {
@@ -116,24 +130,33 @@ export interface Problem {
 	ordinal: number;
 	rgb?: string;
 	color?: string;
+	time_limit: number;
+	test_data_count: number;
 	max_score?: number;
-	statement: FileReference[];
+	package?: FileReference[];
+	statement?: FileReference[];
 }
 
 export interface Group {
 	id: Id;
+	icpc_id?: string;
 	name: string;
 	type?: string;
+	location?: Location;
 }
 
 export interface Organization {
 	id: Id;
+	icpc_id?: string;
 	name: string;
 	formal_name?: string;
 	country?: string;
+	country_flag?: FileReference[];
 	twitter_hashtag?: string;
+	twitter_account?: string;
 	url?: string;
 	logo?: FileReference[];
+	location?: Location;
 }
 
 export interface Submission {
@@ -143,6 +166,7 @@ export interface Submission {
 	team_id: Id;
 	time: Time;
 	contest_time: RelTime;
+	entry_point?: string;
 	files: FileReference[];
 	reaction?: FileReference[];
 }
@@ -161,6 +185,7 @@ export interface Language {
 
 export interface Person {
 	id: Id;
+	icpc_id?: string;
 	name: string;
 	team_ids?: Id[];
 	title?: string;
@@ -203,13 +228,13 @@ export interface ScoreboardProblem {
 export interface Judgement {
 	id: Id;
 	submission_id: Id;
-	judgement_type_id: Id;
+	judgement_type_id?: Id;
 	score?: number;
 	start_time: Time;
 	start_contest_time: RelTime;
-	end_time: Time;
-	end_contest_time: RelTime;
-	max_run_time: number;
+	end_time?: Time;
+	end_contest_time?: RelTime;
+	max_run_time?: number;
 }
 
 export interface Run {
