@@ -61,7 +61,7 @@ export interface Endpoint {
 	properties: string[];
 }
 
-export interface ContestLocation {
+export interface Location {
 	latitude: number;
 	longitude: number;
 }
@@ -71,14 +71,16 @@ export interface Contest {
 	name: string;
 	formal_name?: string;
 	start_time?: string;
+	countdown_pause_time?: RelTime;
 	duration: RelTime;
 	scoreboard_freeze_duration?: RelTime;
+	scoreboard_thaw_time?: Time;
 	scoreboard_type: 'pass-fail' | 'score';
 	penalty_time?: number | RelTime; // 2023-06 | 2026-01 spec
-	countdown_pause_time?: RelTime;
+	main_scoreboard_group_id?: Id; // 2026-01 spec
 	banner?: FileReference[];
 	logo?: FileReference[];
-	location?: ContestLocation; // CDS extension
+	location?: Location;
 	time_multiplier?: number; // CDS extension
 }
 
@@ -89,7 +91,7 @@ export interface FileReference {
 	hash?: string;
 	width?: number;
 	height?: number;
-	tags?: string[]; // 2026-01 spec
+	tag?: string[]; // 2026-01 spec
 }
 
 export interface ContestState {
@@ -102,19 +104,34 @@ export interface ContestState {
 	removed_intervals?: RemovedInterval[]; // 2026-01-next spec
 }
 
+export interface TeamLocation {
+	x: number;
+	y: number;
+	rotation: number;
+}
+
 export interface Team {
 	id: Id;
+	icpc_id?: string;
 	label: string;
 	name: string;
-	display_name: string;
-	organization_id: string;
+	display_name?: string;
+	organization_id?: string;
 	group_ids?: string[];
+	hidden?: boolean; // 2023-06 spec
 	photo?: FileReference[];
 	video?: FileReference[];
+	backup?: FileReference[];
+	key_log?: FileReference[];
+	tool_data?: FileReference[];
 	desktop?: FileReference[];
 	webcam?: FileReference[];
 	audio?: FileReference[];
-	location?: TeamLocation; // CDS extension
+	location?: TeamLocation;
+	primary_rgb?: string; // 2026-01-next spec
+	primary_color?: string; // 2026-01-next spec
+	secondary_rgb?: string; // 2026-01-next spec
+	secondary_color?: string; // 2026-01-next spec
 }
 
 export interface Problem {
@@ -125,32 +142,41 @@ export interface Problem {
 	ordinal: number;
 	rgb?: string;
 	color?: string;
+	time_limit: number;
+	test_data_count: number;
 	max_score?: number;
-	statement: FileReference[];
+	package?: FileReference[];
+	statement?: FileReference[];
 	memory_limit?: number; // 2026-01 spec
 	output_limit?: number; // 2026-01 spec
 	code_limit?: number; // 2026-01 spec
 	attachments?: FileReference[]; // 2026-01 spec
-	location?: Location; // CDS extension
+	location?: FloorLocation; // CDS extension
 }
 
 export interface Group {
 	id: Id;
+	icpc_id?: string;
 	name: string;
 	type?: string;
+	location?: Location;
 	logo?: FileReference[]; // CDS extension
 }
 
 export interface Organization {
 	id: Id;
+	icpc_id?: string;
 	name: string;
 	formal_name?: string;
 	country?: string;
+	country_flag?: FileReference[];
 	country_subdivision?: string; // 2026-01 spec
 	country_subdivision_flag?: FileReference[]; // 2026-01 spec
 	twitter_hashtag?: string;
+	twitter_account?: string;
 	url?: string;
 	logo?: FileReference[];
+	location?: Location;
 	audio?: FileReference[]; // CDS extension
 }
 
@@ -162,6 +188,7 @@ export interface Submission {
 	account_id?: Id; // 2026-01 spec
 	time: Time;
 	contest_time: RelTime;
+	entry_point?: string;
 	files: FileReference[];
 	reaction?: FileReference[];
 }
@@ -181,12 +208,14 @@ export interface Language {
 
 export interface Person {
 	id: Id;
+	icpc_id?: string;
 	name: string;
-	team_ids?: Id[];
-	title?: string;
+	team_ids?: Id[]; // 2023-06 spec
+	title?: string; // 2023-06 spec
 	email?: string;
 	sex?: string | 'male' | 'female'; // 2023-06 | 2026-01-next spec
-	role: 'contestant' | 'coach' | 'staff' | 'other' | PersonRole; // 2023-06 | 2026-01-next spec
+	roles?: PersonRole[]; // 2026-01-next spec
+	role?: 'contestant' | 'coach' | 'staff' | 'other'; // 2023-06 spec
 	photo?: FileReference[];
 }
 
@@ -223,15 +252,15 @@ export interface ScoreboardProblem {
 export interface Judgement {
 	id: Id;
 	submission_id: Id;
-	judgement_type_id: Id;
+	judgement_type_id?: Id;
 	simplified_judgement_type_id?: Id; // 2026-01 spec
 	score?: number;
 	current?: boolean; // 2026-01 spec
 	start_time: Time;
 	start_contest_time?: RelTime; // 2023-06 spec
-	end_time: Time;
+	end_time?: Time;
 	end_contest_time?: RelTime; // 2023-06 spec
-	max_run_time: number;
+	max_run_time?: number;
 }
 
 export interface Run {
@@ -240,7 +269,7 @@ export interface Run {
 	ordinal: number;
 	judgement_type_id: Id;
 	time: Time;
-	contest_time: RelTime;
+	contest_time?: RelTime; // 2023-06 spec
 	run_time: number;
 	score?: number; // 2026-01-next spec
 }
@@ -317,7 +346,7 @@ export interface MapInfo {
 	team_area_depth: number;
 	aisles?: Aisle[];
 	spare_teams?: TeamLocation[];
-	printer?: Location;
+	printer?: FloorLocation;
 }
 
 // CDS extension
@@ -329,14 +358,9 @@ export interface Aisle {
 }
 
 // CDS extension
-export interface Location {
+export interface FloorLocation {
 	x: number;
 	y: number;
-}
-
-// CDS extension
-export interface TeamLocation extends Location {
-	rotation: number;
 }
 
 // CDS extension

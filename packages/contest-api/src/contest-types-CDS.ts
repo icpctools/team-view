@@ -13,7 +13,6 @@
 export type ContestType = 'map-info' | 'start-status';
 
 export interface Contest {
-	location?: ContestLocation;
 	time_multiplier?: number;
 }
 
@@ -25,7 +24,7 @@ export interface MapInfo {
 	team_area_depth: number;
 	aisles?: Aisle[];
 	spare_teams?: TeamLocation[];
-	printer?: Location;
+	printer?: FloorLocation;
 }
 
 // CDS extension
@@ -37,22 +36,13 @@ export interface Aisle {
 }
 
 // CDS extension
-export interface Location {
+export interface FloorLocation {
 	x: number;
 	y: number;
 }
 
-// CDS extension
-export interface TeamLocation extends Location {
-	rotation: number;
-}
-
-export interface Team {
-	location?: TeamLocation;
-}
-
 export interface Problem {
-	location?: Location;
+	location?: FloorLocation;
 }
 
 export interface Group {
