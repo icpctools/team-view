@@ -77,8 +77,8 @@ export function getFileByTag(files: FileReference[] | undefined, tag: string): F
 
 	// look for a file that has the given tag
 	for (const file of files) {
-		if (file.tags) {
-			for (const tag2 of file.tags) {
+		if (file.tag) {
+			for (const tag2 of file.tag) {
 				if (tag2 === tag) {
 					return file;
 				}
@@ -108,9 +108,9 @@ export function bestLogo(
 	// filter looking for files with matching tag
 	if (tag) {
 		for (const logo of logos) {
-			if (logo.tags) {
+			if (logo.tag) {
 				let found = false;
-				for (const tag2 of logo.tags) {
+				for (const tag2 of logo.tag) {
 					if (tag2 === tag) {
 						matchingTags.push(logo);
 						found = true;
@@ -129,7 +129,7 @@ export function bestLogo(
 		}
 	} else {
 		for (const logo of logos) {
-			if (!logo.tags || logo.tags.length === 0) {
+			if (!logo.tag || logo.tag.length === 0) {
 				matchingTags.push(logo);
 			}
 		}
