@@ -1,20 +1,20 @@
 {
 	"compilerOptions": {
-		"module": "nodenext",
+		"module": "esnext",
 		"target": "esnext",
 		"sourceMap": false,
-		"moduleResolution": "nodenext",
+		"moduleResolution": "bundler",
 		"strict": true,
 		"allowSyntheticDefaultImports": true,
 		"isolatedModules": true,
 		"resolveJsonModule": true,
 
-		"types": ["node"],
+		"lib": ["esnext", "dom"],
 
 		"paths": {
 			"/@/*": ["./src/*"]
 		}
 	},
 	"include": ["src/**/*"],
-	"exclude": ["node_modules", "dist"]
+	"exclude": ["node_modules", "dist", "src/contest-types-*.ts", "scripts"]
 }
