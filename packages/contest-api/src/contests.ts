@@ -1,10 +1,6 @@
-/**
- * Copyright later.
- */
-import type { HttpsOptions, OptionsOfTextResponseBody } from 'got';
-import got, { HTTPError, RequestError } from 'got';
 import type { Contest } from './contest-types.js';
 import { ContestAPI, type Credentials } from './contest-api.js';
+import { fetchOptions } from './fetch-utils.js';
 
 export class Contests {
 	contests: Contest[] | undefined;
@@ -24,52 +20,22 @@ export class Contests {
 	}
 
 	public async loadContests(): Promise<void> {
+		const url = this.baseURL + 'contests';
 		const startTime = performance.now();
 		try {
-			const response = await got.get(this.baseURL + 'contests', this.getHttpOptions());
-			this.contests = JSON.parse(response.body) as Contest[];
+			const response = await fetch(url, fetchOptions(this.credentials));
+			if (!response.ok) {
+				throw new Error(`HTTP error ${response.status} loading contests: ${response.statusText}`);
+			}
+			this.contests = JSON.parse(await response.text()) as Contest[];
 			const endTime = performance.now();
 			console.log(`Fetched ${this.baseURL} in ${(endTime - startTime).toFixed(1)}ms`);
 		} catch (error: unknown) {
-			if (error instanceof HTTPError) {
-				throw new Error(`HTTP error ${error.response.statusCode} loading contests: ${error.response.statusMessage}`, {
-					cause: error
-				});
-			} else if (error instanceof RequestError) {
-				throw new Error(`Error loading contests: ${error.code}`, { cause: error });
-			} else {
-				throw new Error(`Unexpected error loading contests: ${error}`, { cause: error });
+			if (error instanceof Error) {
+				throw new Error(`Error loading contests: ${error.message}`, { cause: error });
 			}
+			throw new Error(`Unexpected error loading contests: ${error}`, { cause: error });
 		}
-	}
-
-	getHttpOptions(): OptionsOfTextResponseBody {
-		const httpsOptions: HttpsOptions = {
-			rejectUnauthorized: false
-		};
-		const user = this.credentials?.user;
-		const password = this.credentials?.password;
-		const options: OptionsOfTextResponseBody = {
-			https: httpsOptions,
-			retry: { limit: 0 },
-			username: user,
-			password: password,
-			// specify short timeout
-			timeout: {
-				lookup: 2000,
-				connect: 2000,
-				secureConnect: 2000,
-				socket: 2000,
-				send: 10000,
-				response: 2000
-			}
-		};
-
-		/*if (options.https) {
-			options.https.certificateAuthority = this.certificates.getAllCertificates();
-		}*/
-
-		return options;
 	}
 
 	getBaseURL(): string {

@@ -47,7 +47,6 @@
 		"@icpctools/contest-api": "workspace:*",
 		"@icpctools/contest-ui": "workspace:*",
 		"@monaco-editor/loader": "^1.7.0",
-		"got": "^15.1.0",
 		"i18n-iso-countries": "^7.14.0",
 		"mode-watcher": "^1.1.0",
 		"monaco-editor": "^0.55.1",

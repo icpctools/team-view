@@ -4,8 +4,7 @@
  * watch() to connect to an event feed. After doing either, call getXxx() to get
  * contest data.
  */
-import type { OptionsInit, OptionsOfTextResponseBody } from 'got';
-import got, { HTTPError, RequestError } from 'got';
+import { fetchOptions } from './fetch-utils.js';
 import type {
 	Access,
 	Account,
@@ -33,7 +32,6 @@ import type {
 	Team,
 	Version
 } from './contest-types.js';
-import readline from 'node:readline';
 
 export interface Credentials {
 	user?: string;
@@ -169,34 +167,17 @@ export class ContestAPI {
 		return this.contestURL + type + '/' + id;
 	}
 
-	getHttpOptions(): OptionsOfTextResponseBody {
-		return {
-			https: {
-				rejectUnauthorized: false
-				//certificateAuthority = this.certificates.getAllCertificates();
-			},
-			retry: { limit: 0 },
-			username: this.credentials?.user,
-			password: this.credentials?.password,
-			// specify short timeout
-			timeout: {
-				lookup: 2000,
-				connect: 2000,
-				secureConnect: 2000,
-				socket: 2000,
-				send: 10000,
-				response: 2000
-			}
-		};
-	}
-
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	async loadObject(type: ContestType): Promise<any> {
 		const startTime = performance.now();
 		const url = this.getURL(type);
 		try {
-			const response = await got(url, this.getHttpOptions());
-			const obj = JSON.parse(response.body, (_key, value) => {
+			const response = await fetch(url, fetchOptions(this.credentials));
+			if (!response.ok) {
+				throw new Error(`HTTP error ${response.status} loading ${url}: ${response.statusText}`);
+			}
+			const body = await response.text();
+			const obj = JSON.parse(body, (_key, value) => {
 				return value === null ? undefined : value;
 			});
 			const endTime = performance.now();
@@ -204,34 +185,11 @@ export class ContestAPI {
 			this.processFileReferences(obj);
 			return obj;
 		} catch (error: unknown) {
-			if (error instanceof HTTPError) {
-				throw new Error(`HTTP error ${error.response.statusCode} loading ${url}: ${error.response.statusMessage}`, {
-					cause: error
-				});
-			} else if (error instanceof RequestError) {
-				throw new Error(`Error loading ${url}: ${error.code}`, { cause: error });
-			} else {
-				throw new Error(`Unexpected error loading ${url}: ${error}`, { cause: error });
+			if (error instanceof Error) {
+				throw new Error(`Error loading ${url}: ${error.message}`, { cause: error });
 			}
+			throw new Error(`Unexpected error loading ${url}: ${error}`, { cause: error });
 		}
-		/*return $.ajax({
-			url: this.getURL(type),
-			success: (result, status, xhr) => {
-				var time = xhr.getResponseHeader("ICPC-Time");
-				var d = null;
-				if (time == null)
-					d = new Date(xhr.getResponseHeader("Date"));
-				else
-					d = new Date(parseInt(time));
-					
-					this.end = Date.now();
-				var serverTime = (Date.now() - d.getTime()) - (this.end - this.start) / 2;
-				if (this.timeDelta.length > 4)
-					this.timeDelta.shift();
-				this.timeDelta.push(serverTime);
-				ok(result);
-			}
-		});*/
 	}
 
 	async loadVersion(force?: boolean): Promise<void> {
@@ -714,41 +672,31 @@ export class ContestAPI {
 		this.fireChange({ type: n.type, id: n.id });
 	}
 
-	getStreamOptions(): OptionsInit & { isStream?: true } {
-		return {
-			https: {
-				rejectUnauthorized: false
-				//certificateAuthority = this.certificates.getAllCertificates();
-			},
-			retry: { limit: 0 },
-			username: this.credentials?.user,
-			password: this.credentials?.password,
-			// specify short timeouts
-			timeout: {
-				lookup: 2000,
-				connect: 2000,
-				secureConnect: 2000,
-				send: 10000
-			},
-			isStream: true
-		};
-	}
-
 	async connectToFeed(): Promise<boolean> {
 		const url = this.getURL('event-feed');
 		let connected = false;
 		try {
-			const stream = got.stream(url, this.getStreamOptions());
+			const { Readable } = await import('node:stream');
+			const readline = await import('node:readline');
 
+			const opts = fetchOptions(this.credentials);
+			delete opts.signal; // no timeout for long-lived stream
+			const response = await fetch(url, opts);
+			if (!response.ok) {
+				throw new Error(`HTTP error ${response.status}: ${response.statusText}`);
+			}
+			if (!response.body) {
+				throw new Error('No response body');
+			}
+
+			const nodeStream = Readable.fromWeb(response.body as import('stream/web').ReadableStream);
 			const rl = readline.createInterface({
-				input: stream,
-				crlfDelay: Infinity // Recognizes all instances of CR LF as a single line break
+				input: nodeStream,
+				crlfDelay: Infinity
 			});
 
-			// TODO 120s timeout
 			for await (const line of rl) {
 				if (!connected) {
-					// reset delay on successful connection
 					console.log('Connected to feed');
 					connected = true;
 				}
@@ -761,16 +709,11 @@ export class ContestAPI {
 			}
 
 			console.log(`Event feed stream ended for ${url}`);
-
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		} catch (error: any) {
-			// release the gate so waiting threads don't hang forever
+		} catch (error: unknown) {
 			initialLoadGate.release();
 
-			if (error instanceof HTTPError) {
-				console.error(`HTTP error ${error.response.statusCode} loading ${url}: ${error.response.statusMessage}`);
-			} else if (error instanceof RequestError) {
-				console.error(`Error loading ${url}: ${error.code}`);
+			if (error instanceof Error) {
+				console.error(`Error loading ${url}: ${error.message}`);
 			} else {
 				console.error(`Unexpected error loading ${url}: ${error}`);
 			}
