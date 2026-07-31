@@ -50,7 +50,7 @@ export type ContestModifier = (event: Notification) => boolean;
 class InitialLoadGate {
 	private loaded: boolean = false;
 	private queue: (() => void)[] = [];
-	private timeoutId?: NodeJS.Timeout;
+	private timeoutId?: ReturnType<typeof setTimeout>;
 
 	async wait(): Promise<void> {
 		if (this.loaded) {
@@ -122,7 +122,7 @@ export class ContestAPI {
 
 	private timeDelta = [];
 
-	private interval: number | NodeJS.Timeout | undefined;
+	private interval: ReturnType<typeof setInterval> | undefined;
 
 	private unknownTypes: string[] = [];
 
@@ -672,13 +672,34 @@ export class ContestAPI {
 		this.fireChange({ type: n.type, id: n.id });
 	}
 
+	private async *readLines(stream: ReadableStream<Uint8Array>): AsyncGenerator<string> {
+		const reader = stream.getReader();
+		const decoder = new TextDecoder();
+		let buffer = '';
+		try {
+			while (true) {
+				const { done, value } = await reader.read();
+				if (done) break;
+				buffer += decoder.decode(value, { stream: true });
+				const lines = buffer.split('\n');
+				buffer = lines.pop()!;
+				for (const line of lines) {
+					yield line.replace(/\r$/, '');
+				}
+			}
+			buffer += decoder.decode();
+			if (buffer.length > 0) {
+				yield buffer.replace(/\r$/, '');
+			}
+		} finally {
+			reader.releaseLock();
+		}
+	}
+
 	async connectToFeed(): Promise<boolean> {
 		const url = this.getURL('event-feed');
 		let connected = false;
 		try {
-			const { Readable } = await import('node:stream');
-			const readline = await import('node:readline');
-
 			const opts = fetchOptions(this.credentials);
 			delete opts.signal; // no timeout for long-lived stream
 			const response = await fetch(url, opts);
@@ -689,18 +710,12 @@ export class ContestAPI {
 				throw new Error('No response body');
 			}
 
-			const nodeStream = Readable.fromWeb(response.body as import('stream/web').ReadableStream);
-			const rl = readline.createInterface({
-				input: nodeStream,
-				crlfDelay: Infinity
-			});
-
-			for await (const line of rl) {
+			for await (const line of this.readLines(response.body)) {
 				if (!connected) {
 					console.log('Connected to feed');
 					connected = true;
 				}
-				if (line && line.length > 0) {
+				if (line.length > 0) {
 					const obj: Notification = JSON.parse(line, (_key, value) => {
 						return value === null ? undefined : value;
 					});
