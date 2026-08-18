@@ -138,7 +138,7 @@ function getPropertyComment(prop: PropertyInfo): string | undefined {
 // --- Parse ---
 
 function parseFile(source: SourceFile): ParsedFile {
-	const sourcePath = path.join(SRC_DIR, `contest-types-${source.label}.ts`);
+	const sourcePath = path.join(SRC_DIR, 'contest-types', `${source.label}.ts`);
 	const content = fs.readFileSync(sourcePath, 'utf-8');
 	const sf = ts.createSourceFile(sourcePath, content, ts.ScriptTarget.Latest, true);
 	const interfaces = new Map<string, InterfaceInfo>();
