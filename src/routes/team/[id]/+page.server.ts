@@ -81,6 +81,8 @@ export const load = async ({ params, depends }) => {
 		contestants: contestants,
 		submissions: submissionData,
 		country: country,
+		hasLanguage: hasEndpointProperty(cc.getAccess(), 'submissions', 'language_id'),
+		hasFiles: hasEndpointProperty(cc.getAccess(), 'submissions', 'files'),
 		hasReactions: hasEndpointProperty(cc.getAccess(), 'submissions', 'reaction')
 	};
 };

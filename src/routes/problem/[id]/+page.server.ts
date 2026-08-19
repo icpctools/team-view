@@ -56,6 +56,8 @@ export const load = async ({ params, depends }) => {
 	return {
 		problem: problem,
 		submissions: submissionData,
+		hasLanguage: hasEndpointProperty(cc.getAccess(), 'submissions', 'language_id'),
+		hasFiles: hasEndpointProperty(cc.getAccess(), 'submissions', 'files'),
 		hasReactions: hasEndpointProperty(cc.getAccess(), 'submissions', 'reaction'),
 		scoreboard_type: cc.getContest()?.scoreboard_type
 	};
