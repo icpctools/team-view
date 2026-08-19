@@ -154,7 +154,10 @@
 	let gridTemplateColumns = $derived.by(() => {
 		let columnWidths: string[] = [];
 
-		columns.map((c) => c.width ?? '1fr').forEach((w) => columnWidths.push(w));
+		columns
+			.filter((c) => !c.hidden)
+			.map((c) => c.width ?? '1fr')
+			.forEach((w) => columnWidths.push(w));
 
 		columnWidths.push('5px');
 
@@ -175,38 +178,40 @@
 		<div role="rowgroup" class="sticky top-0 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm rounded z-10">
 			<div class="grid grid-table mx-1 gap-x-0.5 h-7 text-gray-600 dark:text-gray-300 uppercase" role="row">
 				{#each columns as column, colIndex (colIndex)}
-					<!-- svelte-ignore a11y_click_events_have_key_events -->
-					<!-- svelte-ignore a11y_interactive_supports_focus -->
-					<div
-						class={{
-							'flex items-center max-w-full overflow-hidden text-sm font-semibold whitespace-nowrap select-none': true,
-							'justify-self-start': (column.titleAlign ?? column.align) === 'left',
-							'justify-self-center': (column.titleAlign ?? column.align) === 'center',
-							'justify-self-end': (column.titleAlign ?? column.align) === 'right',
-							'justify-self-stretch': (column.titleAlign ?? column.align) === 'stretch',
-							'cursor-pointer': column.comparator,
-							'hover:text-black': sortCol !== column,
-							'hover:dark:text-white': sortCol !== column
-						}}
-						onclick={sort.bind(undefined, column)}
-						role="columnheader">
-						{#if typeof column.title === 'string'}
-							<div class="overflow-hidden text-ellipsis">
-								{column.title}
-							</div>
-						{:else}
-							<column.title {...column.titleProps} />
-						{/if}
+					{#if !column.hidden}
+						<!-- svelte-ignore a11y_click_events_have_key_events -->
+						<!-- svelte-ignore a11y_interactive_supports_focus -->
+						<div
+							class={{
+								'flex items-center max-w-full overflow-hidden text-sm font-semibold whitespace-nowrap select-none': true,
+								'justify-self-start': (column.titleAlign ?? column.align) === 'left',
+								'justify-self-center': (column.titleAlign ?? column.align) === 'center',
+								'justify-self-end': (column.titleAlign ?? column.align) === 'right',
+								'justify-self-stretch': (column.titleAlign ?? column.align) === 'stretch',
+								'cursor-pointer': column.comparator,
+								'hover:text-black': sortCol !== column,
+								'hover:dark:text-white': sortCol !== column
+							}}
+							onclick={sort.bind(undefined, column)}
+							role="columnheader">
+							{#if typeof column.title === 'string'}
+								<div class="overflow-hidden text-ellipsis">
+									{column.title}
+								</div>
+							{:else}
+								<column.title {...column.titleProps} />
+							{/if}
 
-						{#if column.comparator}<i
-								class="fas pl-0.5"
-								class:fa-sort={sortCol !== column}
-								class:fa-sort-up={sortCol === column && sortAscending}
-								class:fa-sort-down={sortCol === column && !sortAscending}
-								class:text-gray-500={sortCol !== column}
-								aria-hidden="true"></i
-							>{/if}
-					</div>
+							{#if column.comparator}<i
+									class="fas pl-0.5"
+									class:fa-sort={sortCol !== column}
+									class:fa-sort-up={sortCol === column && sortAscending}
+									class:fa-sort-down={sortCol === column && !sortAscending}
+									class:text-gray-500={sortCol !== column}
+									aria-hidden="true"></i
+								>{/if}
+						</div>
+					{/if}
 				{/each}
 			</div>
 		</div>
@@ -230,18 +235,20 @@
 				animate:flip={{ duration: 1500 }}
 				role="row">
 				{#each columns as column, colIndex (colIndex)}
-					<div
-						class={{
-							'flex items-center max-w-full py-px whitespace-nowrap': true,
-							'justify-self-start': column.align === 'left',
-							'justify-self-center': column.align === 'center',
-							'justify-self-end': column.align === 'right',
-							'justify-self-stretch': column.align === 'stretch',
-							'overflow-hidden': column.overflow !== true
-						}}
-						role="cell">
-						<column.renderer {...column.rendererProps?.(object, rowIndex)} />
-					</div>
+					{#if !column.hidden}
+						<div
+							class={{
+								'flex items-center max-w-full py-px whitespace-nowrap': true,
+								'justify-self-start': column.align === 'left',
+								'justify-self-center': column.align === 'center',
+								'justify-self-end': column.align === 'right',
+								'justify-self-stretch': column.align === 'stretch',
+								'overflow-hidden': column.overflow !== true
+							}}
+							role="cell">
+							<column.renderer {...column.rendererProps?.(object, rowIndex)} />
+						</div>
+					{/if}
 				{/each}
 			</div>
 		{/each}

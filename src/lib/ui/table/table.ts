@@ -25,6 +25,13 @@ export interface Column<Type> {
 	readonly titleAlign?: 'left' | 'center' | 'right' | 'stretch';
 
 	/**
+	 * Ability to hide a column.
+	 *
+	 * Defaults to 'false'.
+	 */
+	readonly hidden?: boolean;
+
+	/**
 	 * Column alignment, one of 'left', 'center', 'right', or 'stretch',
 	 *
 	 * Defaults to 'left' alignment.
