@@ -18,6 +18,8 @@
 	let reactionModal = $state<ReactionModal>();
 
 	const scoreboard_type = () => data.scoreboard_type;
+	const hasLanguage = () => data.hasLanguage;
+	const hasFiles = () => data.hasFiles;
 	const hasReactions = () => data.hasReactions;
 	const columns: Column<SubmissionData>[] = [
 		{
@@ -33,13 +35,14 @@
 				problem: object.problem,
 				onclick: () => gotoProblem(object.problem)
 			}),
-			comparator: (a, b): number => a.problem.ordinal - b.problem.ordinal
+			comparator: (a, b): number => a.problem?.ordinal - b.problem?.ordinal
 		},
 		{
 			title: 'Language',
+			hidden: !hasLanguage(),
 			renderer: SimpleColumn,
-			rendererProps: (object: SubmissionData) => ({ object: object.language.name }),
-			comparator: (a, b): number => a.language.name.localeCompare(b.language.name)
+			rendererProps: (object: SubmissionData) => ({ object: object.language?.name }),
+			comparator: (a, b): number => a.language?.name.localeCompare(b.language?.name)
 		},
 		{
 			title: 'Judgement',
@@ -60,6 +63,7 @@
 		},
 		{
 			title: 'Source Code',
+			hidden: !hasFiles(),
 			renderer: SourceColumn,
 			rendererProps: (object: SubmissionData) => ({
 				source: object.files,
