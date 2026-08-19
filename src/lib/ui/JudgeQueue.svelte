@@ -26,6 +26,7 @@
 	);
 	let solvedTop = $derived([...solved, ...unjudged]);
 
+	const scoreboard_type = () => scoreboardType;
 	const columns: Column<SubmissionData>[] = [
 		{
 			title: 'Team',
@@ -53,20 +54,17 @@
 			renderer: JudgementUI,
 			rendererProps: (object: SubmissionData) => ({ judgement: object.judgement, judgementType: object.judgementType }),
 			comparator: (a, b): number => (a.judgementType?.name ?? 'a').localeCompare(b.judgementType?.name ?? 'a')
-		}
-	];
-
-	const scoreboard_type = () => scoreboardType;
-	if (scoreboard_type() === 'score') {
-		columns.push({
+		},
+		{
 			title: 'Score',
+			hidden: scoreboard_type() !== 'score',
 			renderer: SimpleColumn,
 			rendererProps: (object: SubmissionData) => ({
 				object: object.judgement?.score
 			}),
 			align: 'center'
-		});
-	}
+		}
+	];
 </script>
 
 <div class="grow min-h-0 overflow-hidden">

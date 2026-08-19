@@ -11,6 +11,7 @@
 
 	let { data } = $props();
 
+	const scoreboard_type = () => data.scoreboard_type;
 	const columns: Column<ScoreboardRow>[] = [
 		{
 			title: 'Rank',
@@ -28,39 +29,35 @@
 				logo: data.logos[index],
 				onclick: () => gotoTeamId(row.team_id)
 			})
-		}
-	];
-
-	const scoreboard_type = () => data.scoreboard_type;
-	if (scoreboard_type() === 'pass-fail') {
-		columns.push(
-			{
-				title: 'Solved',
-				renderer: ScoreboardSolved,
-				rendererProps: (row: ScoreboardRow) => ({
-					score: row.score
-				}),
-				align: 'center'
-			},
-			{
-				title: 'Penalty',
-				renderer: SimpleColumn,
-				rendererProps: (row: ScoreboardRow) => ({
-					object: timeToMin(row.score.total_time)
-				}),
-				align: 'center'
-			}
-		);
-	} else if (scoreboard_type() === 'score') {
-		columns.push({
+		},
+		{
+			title: 'Solved',
+			hidden: scoreboard_type() !== 'pass-fail',
+			renderer: ScoreboardSolved,
+			rendererProps: (row: ScoreboardRow) => ({
+				score: row.score
+			}),
+			align: 'center'
+		},
+		{
+			title: 'Penalty',
+			hidden: scoreboard_type() !== 'pass-fail',
+			renderer: SimpleColumn,
+			rendererProps: (row: ScoreboardRow) => ({
+				object: timeToMin(row.score.total_time)
+			}),
+			align: 'center'
+		},
+		{
 			title: 'Score',
+			hidden: scoreboard_type() !== 'score',
 			renderer: SimpleColumn,
 			rendererProps: (row: ScoreboardRow) => ({
 				object: row.score.score ? row.score.score : ''
 			}),
 			align: 'center'
-		});
-	}
+		}
+	];
 
 	let probs = () => data.problems;
 	for (let i = 0; i < probs().length; i++) {

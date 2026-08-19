@@ -17,6 +17,8 @@
 	let sourceModal = $state<SourceModal>();
 	let reactionModal = $state<ReactionModal>();
 
+	const scoreboard_type = () => data.scoreboard_type;
+	const hasReactions = () => data.hasReactions;
 	const columns: Column<SubmissionData>[] = [
 		{
 			title: 'Time',
@@ -47,41 +49,34 @@
 			renderer: JudgementUI,
 			rendererProps: (object: SubmissionData) => ({ judgement: object.judgement, judgementType: object.judgementType }),
 			comparator: (a, b): number => (a.judgementType?.name ?? 'a').localeCompare(b.judgementType?.name ?? 'a')
-		}
-	];
-
-	const scoreboard_type = () => data.scoreboard_type;
-	if (scoreboard_type() === 'score') {
-		columns.push({
+		},
+		{
 			title: 'Score',
+			hidden: scoreboard_type() !== 'score',
 			renderer: SimpleColumn,
 			rendererProps: (object: SubmissionData) => ({
 				object: object.judgement?.score
 			}),
 			align: 'center'
-		});
-	}
-
-	columns.push({
-		title: 'Source Code',
-		renderer: SourceColumn,
-		rendererProps: (object: SubmissionData) => ({
-			source: object.files,
-			onclick: () => sourceModal?.openSource(object)
-		})
-	});
-
-	// svelte-ignore state_referenced_locally
-	if (data.hasReactions) {
-		columns.push({
+		},
+		{
+			title: 'Source Code',
+			renderer: SourceColumn,
+			rendererProps: (object: SubmissionData) => ({
+				source: object.files,
+				onclick: () => sourceModal?.openSource(object)
+			})
+		},
+		{
 			title: 'Reaction Video',
+			hidden: !hasReactions(),
 			renderer: ReactionColumn,
 			rendererProps: (object: SubmissionData) => ({
 				reaction: object.reaction,
 				onclick: () => reactionModal?.openReaction(object)
 			})
-		});
-	}
+		}
+	];
 </script>
 
 <div class="flex flex-col p-2 gap-1 h-full overflow-auto bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
