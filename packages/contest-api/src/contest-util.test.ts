@@ -23,13 +23,13 @@ test('getFileByTag', () => {
 		href: 'href',
 		filename: 'name',
 		mime: 'mime',
-		tag: ['a', 'b']
+		tags: ['a', 'b']
 	} as FileReference;
 	const file2 = {
 		href: 'href',
 		filename: 'name',
 		mime: 'mime',
-		tag: ['c', 'd']
+		tags: ['c', 'd']
 	} as FileReference;
 	const file3 = {
 		href: 'href',
@@ -105,7 +105,7 @@ test('sortProblems', () => {
 			ordinal: 1,
 			statement: []
 		}
-	] as unknown as Problem[];
+	] as Problem[];
 
 	const problems2 = sortProblems(problems);
 	expect(problems2[0].ordinal).toBe(0);

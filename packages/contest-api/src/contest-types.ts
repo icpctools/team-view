@@ -91,7 +91,7 @@ export interface FileReference {
 	hash?: string;
 	width?: number;
 	height?: number;
-	tag?: string[]; // 2026-01 spec
+	tags?: string[]; // 2026-01 spec
 }
 
 export interface ContestState {
