@@ -86,7 +86,7 @@ export interface FileReference {
 	hash?: string;
 	width?: number;
 	height?: number;
-	tag: string[];
+	tags: string[];
 }
 
 export interface ContestState {
