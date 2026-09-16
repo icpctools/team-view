@@ -12,71 +12,74 @@
 	let { data } = $props();
 
 	const scoreboard_type = () => data.scoreboard_type;
-	const columns: Column<ScoreboardRow>[] = [
-		{
-			title: 'Rank',
-			width: '50px',
-			renderer: SimpleColumn,
-			rendererProps: (row: ScoreboardRow) => ({ object: row.rank }),
-			align: 'center'
-		},
-		{
-			title: 'Team',
-			width: '3fr',
-			renderer: TeamColumn,
-			rendererProps: (row: ScoreboardRow, index: number) => ({
-				team: data.teams[index],
-				logo: data.logos[index],
-				onclick: () => gotoTeamId(row.team_id)
-			})
-		},
-		{
-			title: 'Solved',
-			hidden: scoreboard_type() !== 'pass-fail',
-			renderer: ScoreboardSolved,
-			rendererProps: (row: ScoreboardRow) => ({
-				score: row.score
-			}),
-			align: 'center'
-		},
-		{
-			title: 'Penalty',
-			hidden: scoreboard_type() !== 'pass-fail',
-			renderer: SimpleColumn,
-			rendererProps: (row: ScoreboardRow) => ({
-				object: timeToMin(row.score.total_time)
-			}),
-			align: 'center'
-		},
-		{
-			title: 'Score',
-			hidden: scoreboard_type() !== 'score',
-			renderer: SimpleColumn,
-			rendererProps: (row: ScoreboardRow) => ({
-				object: row.score.score ? row.score.score : ''
-			}),
-			align: 'center'
-		}
-	];
-
-	let probs = () => data.problems;
-	for (let i = 0; i < probs().length; i++) {
-		columns.push({
-			title: ProblemColumn,
-			titleProps: {
-				problem: probs()[i],
-				onclick: () => gotoProblem(data.problems[i])
+	const columns: Column<ScoreboardRow>[] = $derived.by(() => {
+		const cols: Column<ScoreboardRow>[] = [
+			{
+				title: 'Rank',
+				width: '50px',
+				renderer: SimpleColumn,
+				rendererProps: (row: ScoreboardRow) => ({ object: row.rank }),
+				align: 'center'
 			},
-			titleAlign: 'center',
-			renderer: ScoreboardProblem,
-			rendererProps: (row: ScoreboardRow) => ({
-				scoreboard_type: data.scoreboard_type,
-				rp: row.problems?.find((p) => p.problem_id == data.problems[i].id),
-				problem: data.problems[i]
-			}),
-			align: 'stretch'
-		});
-	}
+			{
+				title: 'Team',
+				width: '3fr',
+				renderer: TeamColumn,
+				rendererProps: (row: ScoreboardRow, index: number) => ({
+					team: data.teams[index],
+					logo: data.logos[index],
+					onclick: () => gotoTeamId(row.team_id)
+				})
+			},
+			{
+				title: 'Solved',
+				hidden: scoreboard_type() !== 'pass-fail',
+				renderer: ScoreboardSolved,
+				rendererProps: (row: ScoreboardRow) => ({
+					score: row.score
+				}),
+				align: 'center'
+			},
+			{
+				title: 'Penalty',
+				hidden: scoreboard_type() !== 'pass-fail',
+				renderer: SimpleColumn,
+				rendererProps: (row: ScoreboardRow) => ({
+					object: timeToMin(row.score.total_time)
+				}),
+				align: 'center'
+			},
+			{
+				title: 'Score',
+				hidden: scoreboard_type() !== 'score',
+				renderer: SimpleColumn,
+				rendererProps: (row: ScoreboardRow) => ({
+					object: row.score.score ? row.score.score : ''
+				}),
+				align: 'center'
+			}
+		];
+
+		for (let i = 0; i < data.problems.length; i++) {
+			cols.push({
+				title: ProblemColumn,
+				titleProps: {
+					problem: data.problems[i],
+					onclick: () => gotoProblem(data.problems[i])
+				},
+				titleAlign: 'center',
+				renderer: ScoreboardProblem,
+				rendererProps: (row: ScoreboardRow) => ({
+					scoreboard_type: data.scoreboard_type,
+					rp: row.problems?.find((p) => p.problem_id == data.problems[i].id),
+					problem: data.problems[i]
+				}),
+				align: 'stretch'
+			});
+		}
+
+		return cols;
+	});
 </script>
 
 <div class="w-full h-full overflow-auto text-sm">

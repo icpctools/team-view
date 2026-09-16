@@ -845,7 +845,7 @@ export class ContestAPI {
 	}
 
 	private fireChange(event: ContestEvent): void {
-		if (event.type === 'submissions' || event.type === 'judgements') {
+		if (event.type === 'submissions' || event.type === 'judgements' || event.type === 'problems') {
 			this.scoreboardInvalid = true;
 		}
 		for (const listener of this.contestListeners) {
