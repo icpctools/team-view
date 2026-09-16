@@ -4,7 +4,7 @@
 	import { onMount } from 'svelte';
 	import '../app.css';
 	import '@fortawesome/fontawesome-free/css/all.min.css';
-	import { invalidate } from '$app/navigation';
+	import { invalidate, invalidateAll } from '$app/navigation';
 	import { ModeWatcher } from 'mode-watcher';
 	import type { ContestEvent } from '@icpctools/contest-api';
 	import ICPCtools from '$lib/ui/ICPCtools.svelte';
@@ -58,6 +58,10 @@
 			eventSource.onopen = () => {
 				console.log('SSE connected');
 				reconnectDelay = 1000; // Reset delay on successful connection
+
+				// Events fired from the server while this client was subscribing (or missed
+				// while reconnecting) are lost, so re-run every load function to catch up
+				invalidateAll();
 			};
 
 			eventSource.onmessage = (event) => {

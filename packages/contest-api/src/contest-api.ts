@@ -48,16 +48,22 @@ export type ContestListener = (event: ContestEvent) => void;
 export type ContestModifier = (event: Notification) => boolean;
 
 class InitialLoadGate {
+	// hard backstop: release after this long even if the feed is still busy
+	private static readonly MAX_WAIT_MS = 10000;
+	// release once the feed has been idle this long (historical burst drained)
+	private static readonly IDLE_MS = 500;
+
 	private loaded: boolean = false;
 	private queue: (() => void)[] = [];
 	private timeoutId?: ReturnType<typeof setTimeout>;
+	private idleTimeoutId?: ReturnType<typeof setTimeout>;
 
 	async wait(): Promise<void> {
 		if (this.loaded) {
 			return;
 		}
 
-		// start timeout on first call
+		// start hard timeout backstop on first call
 		if (!this.timeoutId) {
 			this.timeoutId = setTimeout(() => {
 				if (this.loaded) {
@@ -65,7 +71,7 @@ class InitialLoadGate {
 				}
 				console.log('Initial contest load timeout reached');
 				this.release();
-			}, 10000);
+			}, InitialLoadGate.MAX_WAIT_MS);
 		}
 
 		return new Promise<void>((resolve) => {
@@ -73,11 +79,31 @@ class InitialLoadGate {
 		});
 	}
 
+	// Called for each processed notification during startup. The initial event
+	// feed sends all historical data as a burst; once it goes idle for IDLE_MS
+	// we assume the burst has drained and release the gate. Resetting the timer
+	// on every event means we keep waiting as long as data is still arriving.
+	touch(): void {
+		if (this.loaded) {
+			return;
+		}
+		if (this.idleTimeoutId) {
+			clearTimeout(this.idleTimeoutId);
+		}
+		this.idleTimeoutId = setTimeout(() => {
+			this.release();
+		}, InitialLoadGate.IDLE_MS);
+	}
+
 	release(): void {
 		this.loaded = true;
 		if (this.timeoutId) {
 			clearTimeout(this.timeoutId);
 			this.timeoutId = undefined;
+		}
+		if (this.idleTimeoutId) {
+			clearTimeout(this.idleTimeoutId);
+			this.idleTimeoutId = undefined;
 		}
 		// release all waiting threads
 		while (this.queue.length > 0) {
@@ -512,7 +538,6 @@ export class ContestAPI {
 				const obj = data as Contest;
 				this.processFileReferences(obj);
 				this.contest = obj;
-				initialLoadGate.release();
 				return;
 			}
 			case 'state': {
@@ -591,6 +616,9 @@ export class ContestAPI {
 		if (!this.modify(n)) {
 			return;
 		}
+
+		// keep the initial-load gate open as long as feed data is still arriving
+		initialLoadGate.touch();
 
 		if ((!n.id || n.type === 'contest') && !Array.isArray(n.data)) {
 			// no id and not an array: must be a 'singleton' object (e.g. state)
