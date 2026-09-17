@@ -1,13 +1,9 @@
 /**
  * Contest API Types
  *
- * This file supports both the 2023-06 and 2026-01 Contest API specifications, with optional
- * extensions from the Contest Data Server (CDS). Inline comments are used to indicate objects
- * and properties that are unique to any of these.
+ * This file defines the optional spec extensions supported by the ICPC Tools, including the Contest Data Server (CDS).
  *
- * References:
- *  - 2026-01 Contest API: https://ccs-specs.icpc.io/2026-01/
- *  - CDS extensions: https://github.com/icpctools/icpctools/blob/main/doc/spec-extensions.md
+ * ICPC Tools extension reference: https://github.com/icpctools/icpctools/blob/main/doc/spec-extensions.md
  */
 
 export type ContestType = 'map-info' | 'start-status';
@@ -16,7 +12,6 @@ export interface Contest {
 	time_multiplier?: number;
 }
 
-// CDS extension
 export interface MapInfo {
 	table_width: number;
 	table_depth: number;
@@ -27,7 +22,6 @@ export interface MapInfo {
 	printer?: FloorLocation;
 }
 
-// CDS extension
 export interface Aisle {
 	x1: number;
 	y1: number;
@@ -35,7 +29,6 @@ export interface Aisle {
 	y2: number;
 }
 
-// CDS extension
 export interface FloorLocation {
 	x: number;
 	y: number;
@@ -55,9 +48,20 @@ export interface Organization {
 
 export interface Award {
 	display_mode?: string;
+	parameters?: AwardParameters;
 }
 
-// CDS extension
+export interface AwardParameters {
+	numTeams?: number;
+	solvedTop?: number;
+	solvedBottom?: number;
+	percentileTop?: number;
+	percentileBottom?: number;
+	//before?: number;
+	//highlight?: boolean;
+	//showScoreboardBefore?: boolean;
+}
+
 export interface StartStatus {
 	id: Id;
 	label: string;
