@@ -12,5 +12,7 @@ export const CONTEST = browser
 		};
 
 export const CONFIG = {
-	proxy: process?.env?.CONTEST_PROXY ? process?.env?.CONTEST_PROXY === 'true' : process.env.NODE_ENV === 'development'
+	proxy: process?.env?.CONTEST_PROXY ? process?.env?.CONTEST_PROXY === 'true' : process.env.NODE_ENV === 'development',
+	desktop: process?.env?.CONTEST_DESKTOP ? process?.env?.CONTEST_DESKTOP === 'true' : true,
+	webcam: process?.env?.CONTEST_WEBCAM ? process?.env?.CONTEST_WEBCAM === 'true' : true
 };

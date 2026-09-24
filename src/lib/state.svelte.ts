@@ -1,4 +1,4 @@
-import type { ContestAPI } from '@icpctools/contest-api';
+import type { ContestAPI, Team } from '@icpctools/contest-api';
 import { Contests } from '@icpctools/contest-api';
 import { CONFIG, CONTEST } from './hardcoded.svelte';
 
@@ -63,6 +63,21 @@ export async function loadContest(): Promise<ContestAPI | undefined> {
 
 		contest = contests.getContest(CONTEST?.contest_id);
 		contest?.addContestModifier((n) => n.type !== 'runs');
+
+		// if video feeds are disabled, strip them from team data so they're never exposed to the client
+		if (!CONFIG.desktop || !CONFIG.webcam) {
+			contest?.addContestModifier((n) => {
+				if (n.type === 'teams' && n.data) {
+					const teams = (Array.isArray(n.data) ? n.data : [n.data]) as Team[];
+					for (const team of teams) {
+						if (!CONFIG.desktop) delete team.desktop;
+						if (!CONFIG.webcam) delete team.webcam;
+					}
+				}
+				return true;
+			});
+		}
+
 		await contest?.watch();
 		return contest;
 	} catch (error) {
