@@ -148,14 +148,16 @@ export class ContestAPI {
 
 	private timeDelta = [];
 
-	private interval: ReturnType<typeof setInterval> | undefined;
+	private watching: boolean = false;
+
+	// throttle timer for reloading the scoreboard after relevant events
+	private scoreboardReloadTimeout: ReturnType<typeof setTimeout> | undefined;
+	private static readonly SCOREBOARD_RELOAD_THROTTLE_MS = 500;
 
 	private unknownTypes: string[] = [];
 
 	private contestListeners: ContestListener[] = [];
 	private contestModifiers: ContestModifier[] = [];
-
-	private scoreboardInvalid: boolean = false;
 
 	private shouldReconnect: boolean = false;
 
@@ -816,9 +818,10 @@ export class ContestAPI {
 	}
 
 	async watch(): Promise<void> {
-		if (this.interval) {
+		if (this.watching) {
 			return;
 		}
+		this.watching = true;
 		console.log(`Watching ${this.id}`);
 
 		// reset the contest to empty arrays
@@ -839,26 +842,36 @@ export class ContestAPI {
 		// wait for initial contest load (or timeout)
 		await initialLoadGate.wait();
 
-		this.interval = setInterval(async () => {
-			try {
-				if (this.scoreboardInvalid) {
-					this.scoreboardInvalid = false;
-					await this.loadScoreboard(true);
-				}
-			} catch (error: unknown) {
-				console.error(`Error reloading contest data: ${error}`);
-			}
-		}, 2000);
-
 		console.log(`Done watching ${this.id}`);
 	}
 
 	unwatch(): void {
-		if (!this.interval) {
+		if (!this.watching) {
 			return;
 		}
+		this.watching = false;
 		this.shouldReconnect = false;
-		clearInterval(this.interval);
+		if (this.scoreboardReloadTimeout) {
+			clearTimeout(this.scoreboardReloadTimeout);
+			this.scoreboardReloadTimeout = undefined;
+		}
+	}
+
+	// Schedule a scoreboard reload, throttled so bursts of events trigger at most one reload
+	// per throttle window. If a reload is already pending we leave it, so a steady stream of
+	// events (faster than the window) still reloads regularly instead of being starved.
+	private scheduleScoreboardReload(): void {
+		if (this.scoreboardReloadTimeout) {
+			return;
+		}
+		this.scoreboardReloadTimeout = setTimeout(async () => {
+			this.scoreboardReloadTimeout = undefined;
+			try {
+				await this.loadScoreboard(true);
+			} catch (error: unknown) {
+				console.error(`Error reloading scoreboard: ${error}`);
+			}
+		}, ContestAPI.SCOREBOARD_RELOAD_THROTTLE_MS);
 	}
 
 	addContestListener(listener: ContestListener): void {
@@ -874,7 +887,7 @@ export class ContestAPI {
 
 	private fireChange(event: ContestEvent): void {
 		if (event.type === 'submissions' || event.type === 'judgements' || event.type === 'problems') {
-			this.scoreboardInvalid = true;
+			this.scheduleScoreboardReload();
 		}
 		for (const listener of this.contestListeners) {
 			try {
