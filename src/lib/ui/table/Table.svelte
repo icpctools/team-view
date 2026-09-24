@@ -1,7 +1,7 @@
 <script lang="ts" generics="T">
 	import { onMount } from 'svelte';
-	import { flip } from 'svelte/animate';
 	import { fade } from 'svelte/transition';
+	import { smoothFlip } from './smooth-flip';
 	import type { Column } from './table';
 
 	interface Props {
@@ -230,9 +230,9 @@
 	<div role="rowgroup" class="relative">
 		{#each data2 as object, rowIndex (object?.[keyProperty])}
 			<div
-				class="grid grid-table gap-x-0.5 min-h-10 ml-1 hover:bg-gray-300/80 dark:hover:bg-gray-800/80 rounded-lg relative"
+				class="grid grid-table gap-x-0.5 min-h-10 ml-1 hover:bg-gray-300/80 dark:hover:bg-gray-800/80 rounded-lg relative will-change-transform"
 				in:fade={{ duration: 1000 }}
-				animate:flip={{ duration: 1500 }}
+				animate:smoothFlip
 				role="row">
 				{#each columns as column, colIndex (colIndex)}
 					{#if !column.hidden}
