@@ -22,7 +22,7 @@
 		const maxReconnectDelay = 30000; // max 30 seconds
 		let isCleaningUp = false;
 
-		// debounce invalidations with longer delay to avoid overwhelming the system
+		// throttle invalidations to avoid overwhelming the system
 		let invalidateTimer: ReturnType<typeof setTimeout> | undefined;
 		const pendingInvalidations = new SvelteSet<string>();
 
@@ -35,18 +35,20 @@
 
 			pendingInvalidations.add(key);
 
+			// Throttle (not debounce): if a flush is already pending we leave it, so a steady
+			// stream of events (faster than the window) still flushes regularly instead of being
+			// starved by the timer restarting on every event.
 			if (invalidateTimer) {
-				clearTimeout(invalidateTimer);
+				return;
 			}
 
-			// Longer debounce (500ms instead of 100ms) to batch more events
 			invalidateTimer = setTimeout(() => {
+				invalidateTimer = undefined;
 				// Process all invalidations at once (SvelteKit handles deduplication)
 				for (const k of pendingInvalidations) {
 					invalidate(k);
 				}
 				pendingInvalidations.clear();
-				invalidateTimer = undefined;
 			}, 500);
 		}
 
