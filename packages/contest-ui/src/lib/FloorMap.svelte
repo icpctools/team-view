@@ -21,14 +21,16 @@
 			return;
 		}
 
-		//let x = event.pageX - canvas.offsetLeft;
-		//let y = event.pageY - canvas.offsetTop;
-		let x = event.offsetX;
-		let y = event.offsetY;
+		// map mouse coordinates (CSS pixels) into the canvas buffer's pixel space.
+		// the buffer and CSS sizes don't scale uniformly (see drawFloor), so derive
+		// the real scale from the rendered size rather than assuming devicePixelRatio.
+		const scaleX = canvas.width / canvas.clientWidth;
+		const scaleY = canvas.height / canvas.clientHeight;
+		let x = event.offsetX * scaleX;
+		let y = event.offsetY * scaleY;
 
 		let area_width = (mapInfo?.team_area_width || 3) * scale;
 		let area_depth = (mapInfo?.team_area_depth || 2.2) * scale;
-		let desk_depth = (mapInfo?.table_depth || 1) * scale;
 
 		x -= ix;
 		y -= iy;
@@ -37,17 +39,23 @@
 		for (const team of teams) {
 			if (team.location) {
 				const l = team.location;
-				let xx = x - l.x * scale;
-				let yy = y - l.y * scale;
 
-				yy -= desk_depth / 2 + 0.21 * scale;
+				// translate mouse into the team's local (unrotated) coordinate space,
+				// mirroring the translate/rotate used when drawing the team area
+				const dx = x - l.x * scale;
+				const dy = y - l.y * scale;
 
-				// TODO rotation
-				//let rotation = ((90 - l.rotation) * Math.PI) / 180;
-				//ctx.rotate(rotation);
+				const rotation = ((90 - l.rotation) * Math.PI) / 180;
+				const cos = Math.cos(rotation);
+				const sin = Math.sin(rotation);
+				const xx = dx * cos + dy * sin;
+				const yy = -dx * sin + dy * cos;
+
+				// drawTeamArea offsets the rectangle by +0.21 * scale in y
+				const oy = yy - 0.21 * scale;
 
 				if (xx > -area_width / 2 && xx < area_width / 2) {
-					if (yy > -area_depth / 2 && yy < area_depth / 2) {
+					if (oy > -area_depth / 2 && oy < area_depth / 2) {
 						select = team;
 						break;
 					}
@@ -71,13 +79,12 @@
 			return;
 		}
 
-		// TODO need to set both sizes below to avoid the aspect ratio changing, but
-		// should be a way to do this better
-		c.width = window.innerWidth;
-		c.height = window.innerHeight - 250;
+		const dpi = window.devicePixelRatio;
+		c.width = window.innerWidth * dpi;
+		c.height = window.innerHeight * dpi;
 
-		canvas.style.width = `${c.width}px`;
-		canvas.style.height = `${c.height}px`;
+		canvas.style.width = `${window.innerWidth}px`;
+		canvas.style.height = `${window.innerHeight}px`;
 
 		let ctx = c.getContext('2d');
 		if (ctx == null) {
