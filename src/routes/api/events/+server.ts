@@ -17,10 +17,6 @@ export const GET: RequestHandler = async () => {
 			const encoder = new TextEncoder();
 			let isClosed = false;
 
-			// Send initial connection message
-			const initMessage = `data: ${JSON.stringify({ type: 'connected', timestamp: new Date().toISOString() })}\n\n`;
-			controller.enqueue(encoder.encode(initMessage));
-
 			// Create listener for contest changes
 			const listener: ContestListener = (event) => {
 				if (isClosed) return;

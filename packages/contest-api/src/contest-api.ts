@@ -39,7 +39,7 @@ export interface Credentials {
 }
 
 export type ContestEvent = {
-	type: string;
+	type: ContestType;
 	id?: Id;
 };
 
