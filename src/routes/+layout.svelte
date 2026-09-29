@@ -68,8 +68,6 @@
 				try {
 					const change: ContestEvent = JSON.parse(event.data);
 
-					if (change.type === 'connected') return;
-
 					// invalidate any page containing the specific object or all objects of that type
 					if (change.id) {
 						scheduleInvalidate('app:' + change.type + '/' + change.id);
