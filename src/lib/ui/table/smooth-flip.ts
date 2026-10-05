@@ -20,15 +20,16 @@ import type { AnimationConfig } from 'svelte/animate';
 
 interface SmoothFlipParams {
 	delay?: number;
-	/** Constant acceleration / deceleration, in px per ms². */
-	accel?: number;
-	/** Speed cap the row coasts at on long moves, in px per ms. */
-	maxSpeed?: number;
+	/**
+	 * Overall speed multiplier. Keeps the exact same motion profile, just time-compressed.
+	 */
+	speed?: number;
 }
 
-// Tuned so a large reorder (~400px) takes ~1.3s and a single-row move (~40px) takes ~0.4s.
-const DEFAULT_ACCEL = 0.0009;
-const DEFAULT_MAX_SPEED = 0.6;
+// Tuned (at the default speed of 1) so a large reorder (~400px) takes ~0.6s and a single-row move
+// (~40px) takes ~0.2s.
+const DEFAULT_ACCEL = 0.0045;
+const DEFAULT_MAX_SPEED = 1.2;
 
 // A constant-acceleration segment of the motion, expressed in terms of `dist` = distance still to
 // travel to the target (starts at the initial distance, ends at 0) and its rate of change `vd`.
@@ -118,7 +119,11 @@ export function smoothFlip(
 	{ from, to }: { from: DOMRect; to: DOMRect },
 	params: SmoothFlipParams = {}
 ): AnimationConfig {
-	const { delay = 0, accel = DEFAULT_ACCEL, maxSpeed = DEFAULT_MAX_SPEED } = params;
+	// Velocity scales by `speed` and acceleration by `speed`, which keeps the motion profile's shape
+	// identical and just time-compresses it.
+	const { delay = 0, speed = 1 } = params;
+	const accel = DEFAULT_ACCEL * speed * speed;
+	const maxSpeed = DEFAULT_MAX_SPEED * speed;
 
 	const style = getComputedStyle(node);
 	const transform = style.transform === 'none' ? '' : style.transform;

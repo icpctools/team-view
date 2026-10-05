@@ -13,6 +13,8 @@
 		keyProperty?: keyof T;
 		fitToScreen?: boolean;
 		visibleRowCount?: number;
+		/** Row-reorder animation speed multiplier (see smoothFlip). */
+		animationSpeed?: number;
 	}
 	let {
 		kind,
@@ -22,7 +24,8 @@
 		showHeader = true,
 		keyProperty = 'id' as keyof T,
 		fitToScreen = false,
-		visibleRowCount = $bindable(Infinity)
+		visibleRowCount = $bindable(Infinity),
+		animationSpeed = 1
 	}: Props = $props();
 
 	let sortCol = $state<Column<T>>();
@@ -232,7 +235,7 @@
 			<div
 				class="grid grid-table gap-x-0.5 min-h-10 ml-1 hover:bg-gray-300/80 dark:hover:bg-gray-800/80 rounded-lg relative will-change-transform"
 				in:fade={{ duration: 1000 }}
-				animate:smoothFlip
+				animate:smoothFlip={{ speed: animationSpeed }}
 				role="row">
 				{#each columns as column, colIndex (colIndex)}
 					{#if !column.hidden}
