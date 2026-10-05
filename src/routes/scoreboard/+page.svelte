@@ -3,6 +3,7 @@
 	import type { Column } from '$lib/ui/table/table.js';
 	import Table from '$lib/ui/table/Table.svelte';
 	import SimpleColumn from '$lib/ui/table/SimpleColumn.svelte';
+	import RankColumn from '$lib/ui/table/RankColumn.svelte';
 	import ScoreboardProblem from '$lib/ui/table/ScoreboardProblem.svelte';
 	import TeamColumn from '$lib/ui/table/TeamColumn.svelte';
 	import ProblemColumn from '$lib/ui/table/ProblemColumn.svelte';
@@ -17,8 +18,8 @@
 			{
 				title: 'Rank',
 				width: '50px',
-				renderer: SimpleColumn,
-				rendererProps: (row: ScoreboardRow) => ({ object: row.rank }),
+				renderer: RankColumn,
+				rendererProps: (row: ScoreboardRow) => ({ rank: row.rank }),
 				align: 'center'
 			},
 			{
@@ -83,5 +84,5 @@
 </script>
 
 <div class="w-full h-full overflow-auto text-sm">
-	<Table kind="scoreboard" data={data.scoreboard.rows} {columns} keyProperty="team_id"></Table>
+	<Table kind="scoreboard" data={data.scoreboard.rows} {columns} keyProperty="team_id" animationSpeed={0.3}></Table>
 </div>

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import RankColumn from '$lib/ui/table/RankColumn.svelte';
 	import ScoreboardProblem from '$lib/ui/table/ScoreboardProblem.svelte';
 	import ScoreboardSolved from '$lib/ui/table/ScoreboardSolved.svelte';
 	import SimpleColumn from '$lib/ui/table/SimpleColumn.svelte';
@@ -14,8 +15,8 @@
 		{
 			title: 'Rank',
 			width: '50px',
-			renderer: SimpleColumn,
-			rendererProps: (row: ScoreboardRow) => ({ object: row.rank }),
+			renderer: RankColumn,
+			rendererProps: (row: ScoreboardRow) => ({ rank: row.rank }),
 			align: 'center'
 		},
 		{
