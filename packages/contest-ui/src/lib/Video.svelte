@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { FileReference } from 'contest-api';
+	import type { FileReference } from '@icpctools/contest-api';
 
 	import { onMount, onDestroy } from 'svelte';
 	import videojs from 'video.js';
