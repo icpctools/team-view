@@ -51,7 +51,7 @@ jobs:
 
           # Add the new version in package.json files
           sed -i  "s#version\":\ \"\(.*\)\",#version\":\ \"${{ steps.tag_util.outputs.releaseVersion }}\",#g" package.json
-          find packages/* -maxdepth 1 -name "package.json" | xargs -I {} sed -i "s#version\":\ \"\(.*\)\",#version\":\ \"${{ steps.TAG_UTIL.outputs.releaseVersion }}\",#g" {}
+          find packages/* -maxdepth 1 -name "package.json" | xargs -I {} sed -i "s#version\":\ \"\(.*\)\",#version\":\ \"${{ steps.tag_util.outputs.releaseVersion }}\",#g" {}
           git add package.json packages/*/package.json
 
           # commit the changes
@@ -145,6 +145,54 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  npm-publish:
+    name: Publish npm packages
+    runs-on: ubuntu-24.04
+    needs: [tag]
+    if: github.event.inputs.branch == 'main'
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6.0.2
+        with:
+          ref: ${{ needs.tag.outputs.githubTag }}
+
+      - name: Install pnpm and Node
+        uses: pnpm/setup@v1
+        with:
+          runtime: node@24
+          cache: true
+
+      - name: Build packages
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm build:packages
+
+      # pnpm pack replaces workspace:* dependencies with the released version
+      - name: Pack packages
+        run: |
+          mkdir packed
+          (cd packages/contest-api && pnpm pack --pack-destination ../../packed)
+          (cd packages/contest-ui && pnpm pack --pack-destination ../../packed)
+
+      # Uses npm trusted publishing (OIDC) once it is configured for each package on npmjs.com. Until
+      # then (i.e. the very first publish), set an NPM_TOKEN secret; delete it afterwards.
+      - name: Publish to npm
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -n "$NPM_TOKEN" ]; then
+            echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+          fi
+          # contest-api first, since contest-ui depends on it
+          for pkg in packed/icpctools-contest-api-*.tgz packed/icpctools-contest-ui-*.tgz; do
+            pnpm dlx npm@^11.5.1 publish "$pkg" --access public
+          done
 
   release:
     name: Release
