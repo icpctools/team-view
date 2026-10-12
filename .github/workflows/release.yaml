@@ -185,13 +185,20 @@ jobs:
       - name: Publish to npm
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          VERSION: ${{ needs.tag.outputs.releaseVersion }}
         run: |
           if [ -n "$NPM_TOKEN" ]; then
             echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
           fi
-          # contest-api first, since contest-ui depends on it
-          for pkg in packed/icpctools-contest-api-*.tgz packed/icpctools-contest-ui-*.tgz; do
-            pnpm dlx npm@^11.5.1 publish "$pkg" --access public
+          # npm requires a dist-tag for prerelease versions (e.g. 1.0.0-rc1), and they shouldn't become latest
+          DIST_TAG=latest
+          if [[ "$VERSION" == *-* ]]; then
+            DIST_TAG=next
+          fi
+          # contest-api first, since contest-ui depends on it. The ./ prefix is required, otherwise npm
+          # treats 'packed/<file>' as a GitHub repository shorthand
+          for pkg in ./packed/icpctools-contest-api-*.tgz ./packed/icpctools-contest-ui-*.tgz; do
+            pnpm dlx npm@^11.5.1 publish "$pkg" --access public --tag "$DIST_TAG"
           done
 
   release:
