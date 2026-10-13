@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Clock, Image, Logo } from '@icpctools/contest-ui';
+	import { Clock, Image, Logo, ICPC, ICPCtools } from '@icpctools/contest-ui';
 	import DarkModeToggle from '$lib/ui/DarkModeToggle.svelte';
 	import { onMount } from 'svelte';
 	import '../app.css';
@@ -7,9 +7,7 @@
 	import { invalidate, invalidateAll } from '$app/navigation';
 	import { ModeWatcher } from 'mode-watcher';
 	import type { ContestEvent } from '@icpctools/contest-api';
-	import ICPCtools from '$lib/ui/ICPCtools.svelte';
 	import { SvelteSet } from 'svelte/reactivity';
-	import ICPC from '$lib/ui/ICPC.svelte';
 
 	let { data, children } = $props();
 

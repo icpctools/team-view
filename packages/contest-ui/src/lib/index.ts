@@ -7,7 +7,9 @@ import JudgementUI from './JudgementUI.svelte';
 import PersonUI from './PersonUI.svelte';
 import ProblemUI from './ProblemUI.svelte';
 import Video from './Video.svelte';
+import ICPC from './ICPC.svelte';
+import ICPCtools from './ICPCtools.svelte';
 
-export { Logo, Image, Clock, FloorMap, JudgementTypeUI, JudgementUI, PersonUI, ProblemUI, Video };
+export { Logo, Image, Clock, FloorMap, JudgementTypeUI, JudgementUI, PersonUI, ProblemUI, Video, ICPC, ICPCtools };
 
 export * from './colors.js';

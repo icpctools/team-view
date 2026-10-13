@@ -55,6 +55,14 @@
 			"types": "./dist/PersonUI.svelte.d.ts",
 			"svelte": "./dist/PersonUI.svelte"
 		},
+		"./ICPC": {
+			"types": "./dist/ICPC.svelte.d.ts",
+			"svelte": "./dist/ICPC.svelte"
+		},
+		"./ICPCtools": {
+			"types": "./dist/ICPCtools.svelte.d.ts",
+			"svelte": "./dist/ICPCtools.svelte"
+		},
 		"./colors": {
 			"types": "./dist/colors.d.ts",
 			"default": "./dist/colors.js"
