@@ -5,6 +5,7 @@
 	import videojs from 'video.js';
 	import type Player from 'video.js/dist/types/player';
 	import 'video.js/dist/video-js.css'; // default Video.js CSS
+	import defaultImage from './default-image.png';
 
 	interface Props {
 		ref?: FileReference;
@@ -27,7 +28,7 @@
 		responsive: true,
 		fluid: true,
 		aspectRatio: '16:9',
-		poster: '/images/icpc-logo.png',
+		poster: defaultImage,
 		preload: 'auto',
 		mpegtsjs: {
 			mediaDataSource: {

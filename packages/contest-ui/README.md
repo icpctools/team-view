@@ -39,8 +39,10 @@ And import the Font Awesome stylesheet once, e.g. in your root layout:
 import '@fortawesome/fontawesome-free/css/all.min.css';
 ```
 
-Light/dark logo selection uses [mode-watcher](https://www.npmjs.com/package/mode-watcher). A
-fallback image is loaded from `/images/icpc-logo.png`, so serve one from your static assets.
+Light/dark logo selection uses [mode-watcher](https://www.npmjs.com/package/mode-watcher).
+
+Components import CSS and image assets directly (e.g. the default image), so your bundler
+must handle asset imports. Vite and SvelteKit do this out of the box.
 
 ## Components
 

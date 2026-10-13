@@ -3,6 +3,7 @@
 	import { bestLogo } from '@icpctools/contest-api';
 	import { mode } from 'mode-watcher';
 	import { onMount } from 'svelte';
+	import defaultImage from './default-image.png';
 
 	interface Props {
 		ref?: FileReference[];
@@ -25,7 +26,7 @@
 	let hasError = $state(false);
 	let isLoading = $state(true);
 
-	let displaySrc = $derived(hasError ? '/images/icpc-logo.png' : (computedSrc ?? '/images/icpc-logo.png'));
+	let displaySrc = $derived(hasError ? defaultImage : (computedSrc ?? defaultImage));
 
 	function onError(): void {
 		hasError = true;
