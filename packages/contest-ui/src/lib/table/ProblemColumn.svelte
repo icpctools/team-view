@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Problem } from '@icpctools/contest-api';
-	import { ProblemUI } from '@icpctools/contest-ui';
+	import ProblemUI from '../ProblemUI.svelte';
 
 	interface Props {
 		problem: Problem;

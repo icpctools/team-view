@@ -1,14 +1,18 @@
 <script lang="ts">
-	import { Image, JudgementUI, PersonUI } from '@icpctools/contest-ui';
-	import type { Column } from '$lib/ui/table/table';
-	import SimpleColumn from '$lib/ui/table/SimpleColumn.svelte';
-	import Table from '$lib/ui/table/Table.svelte';
+	import {
+		Image,
+		JudgementUI,
+		PersonUI,
+		SimpleColumn,
+		Table,
+		ProblemColumn,
+		ReactionColumn,
+		SourceColumn,
+		type Column
+	} from '@icpctools/contest-ui';
 	import { timeToMin, parseRelTime } from '@icpctools/contest-api';
-	import ProblemColumn from '$lib/ui/table/ProblemColumn.svelte';
-	import ReactionColumn from '$lib/ui/table/ReactionColumn.svelte';
 	import ReactionModal from '$lib/ui/ReactionModal.svelte';
 	import type { SubmissionData } from '$lib/submissionData.js';
-	import SourceColumn from '$lib/ui/table/SourceColumn.svelte';
 	import SourceModal from '$lib/ui/SourceModal.svelte';
 	import { gotoProblem } from '$lib/navigation.js';
 

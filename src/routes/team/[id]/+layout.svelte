@@ -1,12 +1,14 @@
 <script lang="ts">
-	import RankColumn from '$lib/ui/table/RankColumn.svelte';
-	import ScoreboardProblem from '$lib/ui/table/ScoreboardProblem.svelte';
-	import ScoreboardSolved from '$lib/ui/table/ScoreboardSolved.svelte';
-	import SimpleColumn from '$lib/ui/table/SimpleColumn.svelte';
-	import type { Column } from '$lib/ui/table/table.js';
-	import Table from '$lib/ui/table/Table.svelte';
 	import { timeToMin, type ScoreboardRow } from '@icpctools/contest-api';
-	import { Logo } from '@icpctools/contest-ui';
+	import {
+		Logo,
+		RankColumn,
+		ScoreboardProblem,
+		ScoreboardSolved,
+		SimpleColumn,
+		Table,
+		type Column
+	} from '@icpctools/contest-ui';
 
 	let { data, children } = $props();
 

@@ -63,6 +63,46 @@
 			"types": "./dist/ICPCtools.svelte.d.ts",
 			"svelte": "./dist/ICPCtools.svelte"
 		},
+		"./table/Table": {
+			"types": "./dist/table/Table.svelte.d.ts",
+			"svelte": "./dist/table/Table.svelte"
+		},
+		"./table/SimpleColumn": {
+			"types": "./dist/table/SimpleColumn.svelte.d.ts",
+			"svelte": "./dist/table/SimpleColumn.svelte"
+		},
+		"./table/RankColumn": {
+			"types": "./dist/table/RankColumn.svelte.d.ts",
+			"svelte": "./dist/table/RankColumn.svelte"
+		},
+		"./table/TeamColumn": {
+			"types": "./dist/table/TeamColumn.svelte.d.ts",
+			"svelte": "./dist/table/TeamColumn.svelte"
+		},
+		"./table/ProblemColumn": {
+			"types": "./dist/table/ProblemColumn.svelte.d.ts",
+			"svelte": "./dist/table/ProblemColumn.svelte"
+		},
+		"./table/ReactionColumn": {
+			"types": "./dist/table/ReactionColumn.svelte.d.ts",
+			"svelte": "./dist/table/ReactionColumn.svelte"
+		},
+		"./table/SourceColumn": {
+			"types": "./dist/table/SourceColumn.svelte.d.ts",
+			"svelte": "./dist/table/SourceColumn.svelte"
+		},
+		"./table/ScoreboardProblem": {
+			"types": "./dist/table/ScoreboardProblem.svelte.d.ts",
+			"svelte": "./dist/table/ScoreboardProblem.svelte"
+		},
+		"./table/ScoreboardSolved": {
+			"types": "./dist/table/ScoreboardSolved.svelte.d.ts",
+			"svelte": "./dist/table/ScoreboardSolved.svelte"
+		},
+		"./table/table": {
+			"types": "./dist/table/table.d.ts",
+			"default": "./dist/table/table.js"
+		},
 		"./colors": {
 			"types": "./dist/colors.d.ts",
 			"default": "./dist/colors.js"

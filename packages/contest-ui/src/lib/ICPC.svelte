@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ICPC_BLUE, ICPC_RED, ICPC_YELLOW } from '@icpctools/contest-ui';
+	import { ICPC_BLUE, ICPC_RED, ICPC_YELLOW } from './colors.js';
 
 	// future animation/props
 </script>

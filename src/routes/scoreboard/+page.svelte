@@ -1,13 +1,15 @@
 <script lang="ts">
 	import { timeToMin, type ScoreboardRow } from '@icpctools/contest-api';
-	import type { Column } from '$lib/ui/table/table.js';
-	import Table from '$lib/ui/table/Table.svelte';
-	import SimpleColumn from '$lib/ui/table/SimpleColumn.svelte';
-	import RankColumn from '$lib/ui/table/RankColumn.svelte';
-	import ScoreboardProblem from '$lib/ui/table/ScoreboardProblem.svelte';
-	import TeamColumn from '$lib/ui/table/TeamColumn.svelte';
-	import ProblemColumn from '$lib/ui/table/ProblemColumn.svelte';
-	import ScoreboardSolved from '$lib/ui/table/ScoreboardSolved.svelte';
+	import {
+		Table,
+		SimpleColumn,
+		RankColumn,
+		ScoreboardProblem,
+		TeamColumn,
+		ProblemColumn,
+		ScoreboardSolved,
+		type Column
+	} from '@icpctools/contest-ui';
 	import { gotoProblem, gotoTeamId } from '$lib/navigation.js';
 
 	let { data } = $props();
