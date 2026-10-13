@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Judgement, JudgementType } from '@icpctools/contest-api';
-	import { JudgementTypeUI } from '@icpctools/contest-ui';
+	import JudgementTypeUI from './JudgementTypeUI.svelte';
 
 	interface Props {
 		judgement?: Judgement;

@@ -2,7 +2,7 @@
 	import { timeToMin, type FileReference } from '@icpctools/contest-api';
 	import type { ClarificationData } from '../../routes/clarifications/clarificationData';
 	import ClarificationUI from './ClarificationUI.svelte';
-	import TeamColumn from './table/TeamColumn.svelte';
+	import { TeamColumn } from '@icpctools/contest-ui';
 	import { gotoTeam } from '$lib/navigation';
 
 	interface Props {

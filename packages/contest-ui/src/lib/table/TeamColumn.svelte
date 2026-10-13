@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { FileReference, Team } from '@icpctools/contest-api';
-	import { Logo } from '@icpctools/contest-ui';
+	import Logo from '../Logo.svelte';
 
 	interface Props {
 		team: Team;

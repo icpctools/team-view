@@ -1,11 +1,6 @@
 <script lang="ts">
-	import { JudgementUI } from '@icpctools/contest-ui';
+	import { JudgementUI, ProblemColumn, SimpleColumn, Table, TeamColumn, type Column } from '@icpctools/contest-ui';
 	import type { SubmissionData } from '$lib/submissionData';
-	import SimpleColumn from './table/SimpleColumn.svelte';
-	import TeamColumn from './table/TeamColumn.svelte';
-	import type { Column } from './table/table';
-	import Table from './table/Table.svelte';
-	import ProblemColumn from './table/ProblemColumn.svelte';
 	import { gotoProblem, gotoTeam } from '$lib/navigation';
 
 	interface Props {

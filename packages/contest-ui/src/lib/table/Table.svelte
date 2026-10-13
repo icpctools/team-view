@@ -1,8 +1,8 @@
 <script lang="ts" generics="T">
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import { smoothFlip } from './smooth-flip';
-	import type { Column } from './table';
+	import { smoothFlip } from './smooth-flip.js';
+	import type { Column } from './table.js';
 
 	interface Props {
 		kind: string;

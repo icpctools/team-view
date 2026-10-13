@@ -1,17 +1,17 @@
 <script lang="ts">
-	import { timeToMin, type Problem, type ScoreboardProblem } from '@icpctools/contest-api';
-	import { parseHexColor, rgbToHex } from './color-util.js';
-	import { FAILED, PENDING, SCORING_MID, SOLVED } from '@icpctools/contest-ui';
+	import { timeToMin, type Problem, type ScoreboardProblem as ScoreboardProblemData } from '@icpctools/contest-api';
+	import { parseHexColor, rgbToHex } from '../color-util.js';
+	import { FAILED, PENDING, SCORING_MID, SOLVED } from '../colors.js';
 
 	interface Props {
 		scoreboard_type: 'pass-fail' | 'score';
 		problem: Problem;
-		rp: ScoreboardProblem;
+		rp: ScoreboardProblemData;
 		mode?: 'full' | 'summary';
 	}
 	let { scoreboard_type, rp, problem, mode = 'full' }: Props = $props();
 
-	function scoreBg(rp: ScoreboardProblem, problem: Problem): string {
+	function scoreBg(rp: ScoreboardProblemData, problem: Problem): string {
 		if (rp.num_pending > 0) {
 			return PENDING;
 		}
@@ -46,7 +46,7 @@
 		return 'transparent';
 	}
 
-	function attempts(rp: ScoreboardProblem): string {
+	function attempts(rp: ScoreboardProblemData): string {
 		const num = rp.num_judged + rp.num_pending;
 		if (num === 0) {
 			return '';
