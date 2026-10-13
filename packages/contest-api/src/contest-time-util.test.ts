@@ -82,12 +82,13 @@ test('getContestTime when scheduled', () => {
 });
 
 test('getContestTime when scheduled with time multiple', () => {
-	const startTime = new Date(Date.now() + 1800000).toISOString();
+	const now = Date.now();
+	const startTime = new Date(now + 1800000).toISOString();
 	const contest = {
 		start_time: startTime,
 		time_multiplier: 2
 	} as Contest;
-	expect(getContestTime(contest)).toBe(-3600000);
+	expect(getContestTime(contest, undefined, now)).toBe(-3600000);
 });
 
 test('getContestTime when countdown paused', () => {
