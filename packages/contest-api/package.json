@@ -1,6 +1,6 @@
 {
 	"name": "@icpctools/contest-api",
-	"version": "0.9.0-next",
+	"version": "0.9.0",
 	"license": "MIT",
 	"repository": {
 		"type": "git",
