@@ -112,7 +112,7 @@
 		"test": "vitest",
 		"build": "svelte-package",
 		"watch": "svelte-package -w",
-		"svelte:check": "svelte-check --tsconfig ./tsconfig.json",
+		"check": "svelte-check --tsconfig ./tsconfig.json",
 		"publish:next": "pnpm publish  --registry=https://registry.npmjs.org/ --no-git-tag-version --new-version 0.0.1-\"$(date +%s)\""
 	},
 	"files": [

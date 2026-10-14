@@ -22,7 +22,8 @@
 	},
 	"scripts": {
 		"build": "tsx scripts/merge-types.ts && tsc -p tsconfig.build.json",
-		"test": "vitest"
+		"test": "vitest",
+		"check": "tsc --noEmit"
 	},
 	"files": [
 		"dist",

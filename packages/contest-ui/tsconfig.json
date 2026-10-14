@@ -1,17 +1,16 @@
 {
 	"compilerOptions": {
-		"module": "nodenext",
+		"module": "esnext",
 		"target": "esnext",
 		"sourceMap": false,
-		"moduleResolution": "nodenext",
+		"moduleResolution": "bundler",
 		"strict": true,
 		"allowSyntheticDefaultImports": true,
 		"isolatedModules": true,
 		"resolveJsonModule": true,
 		"allowJs": true,
 		"checkJs": true,
-
-		"types": ["@testing-library/jest-dom"],
+		"skipLibCheck": true,
 
 		"paths": {
 			"/@/*": ["./src/*"]
