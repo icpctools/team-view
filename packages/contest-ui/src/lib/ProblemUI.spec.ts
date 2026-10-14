@@ -4,7 +4,7 @@ import { render, screen } from '@testing-library/svelte';
 import { expect, test } from 'vitest';
 
 import ProblemUI from './ProblemUI.svelte';
-import { Problem } from '@icpctools/contest-api';
+import type { Problem } from '@icpctools/contest-api';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 
@@ -34,6 +34,6 @@ test('Expect clicking works', async () => {
 	expect(pr).toBeInTheDocument();
 	expect(pr.parentElement).toHaveClass('cursor-pointer');
 
-	await userEvent.click(pr.parentElement);
+	await userEvent.click(pr);
 	expect(mock).toHaveBeenCalled();
 });

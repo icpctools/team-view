@@ -1,7 +1,7 @@
 import { join } from 'path';
 import { defineConfig } from 'vite';
 
-const PACKAGE_ROOT = __dirname;
+const PACKAGE_ROOT = import.meta.dirname;
 
 /**
  * @type {import('vite').UserConfig}

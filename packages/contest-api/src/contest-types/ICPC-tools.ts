@@ -6,6 +6,8 @@
  * ICPC Tools extension reference: https://github.com/icpctools/icpctools/blob/main/doc/spec-extensions.md
  */
 
+import type { FileReference, Id, TeamLocation } from './2026-01.js';
+
 export type ContestType = 'map-info' | 'start-status';
 
 export interface Contest {

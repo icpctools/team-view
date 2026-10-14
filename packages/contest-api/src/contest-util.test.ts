@@ -89,6 +89,8 @@ test('sortProblems', () => {
 			label: 'C',
 			name: 'C problem',
 			ordinal: 2,
+			time_limit: 1,
+			test_data_count: 1,
 			statement: []
 		},
 		{
@@ -96,6 +98,8 @@ test('sortProblems', () => {
 			label: 'A',
 			name: 'A problem',
 			ordinal: 0,
+			time_limit: 1,
+			test_data_count: 1,
 			statement: []
 		},
 		{
@@ -103,6 +107,8 @@ test('sortProblems', () => {
 			label: 'B',
 			name: 'B problem',
 			ordinal: 1,
+			time_limit: 1,
+			test_data_count: 1,
 			statement: []
 		}
 	] as Problem[];
