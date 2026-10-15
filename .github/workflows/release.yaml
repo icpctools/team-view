@@ -217,3 +217,21 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           id: ${{ needs.tag.outputs.releaseId}}
+
+  update-website:
+    name: Update website
+    runs-on: ubuntu-24.04
+    # The website only lists published releases, and also shows the npm packages, so wait for both -
+    # but still update the website for the new release if only the npm publish failed
+    needs: [tag, release, npm-publish]
+    if: always() && needs.release.result == 'success'
+    timeout-minutes: 5
+
+    steps:
+      # Needs a token with write access to icpctools/icpctools.github.io; the website also rebuilds
+      # every 6 hours, so it catches up if this fails
+      - name: Trigger website rebuild
+        run: gh api repos/icpctools/icpctools.github.io/dispatches -f event_type=release -f "client_payload[version]=$VERSION"
+        env:
+          GH_TOKEN: ${{ secrets.WEBSITE_DISPATCH_TOKEN }}
+          VERSION: ${{ needs.tag.outputs.releaseVersion }}
