@@ -7,7 +7,13 @@ permissions:
   pull-requests: write
   repository-projects: write
 
+# Every merge to main is tagged and released as a prerelease (e.g. 0.10.0-next.123), publishing the Docker
+# image and npm packages under the 'next' tag. A manual run releases the given version the same way, but
+# marks it as a full release ('latest') and bumps the version on main. Both live in this one workflow
+# because npm trusted publishing is tied to a single workflow file.
 on:
+  push:
+    branches: ['main']
   workflow_dispatch:
     inputs:
       version:
@@ -17,30 +23,70 @@ on:
         description: 'Branch to use for the release'
         required: true
         default: main
+
+# Don't run prerelease publishes in parallel; if merges queue up, only the newest one is published
+concurrency:
+  group: ${{ github.event_name == 'push' && 'release-next' || github.run_id }}
+  cancel-in-progress: false
+
 env:
   GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
   REGISTRY: ghcr.io
   IMAGE_NAME: icpctools/team-view
 
 jobs:
+  version:
+    name: Determine version
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      prerelease: ${{ steps.version.outputs.prerelease }}
+      publish: ${{ steps.version.outputs.publish }}
+
+    steps:
+      - uses: actions/checkout@v7.0.1
+        if: github.event_name == 'push'
+
+      - name: Determine version
+        id: version
+        env:
+          INPUT_VERSION: ${{ github.event.inputs.version }}
+          INPUT_BRANCH: ${{ github.event.inputs.branch }}
+        run: |
+          if [ "${{ github.event_name }}" == "push" ]; then
+            # e.g. 0.10.0-next -> 0.10.0-next.123
+            BASE=$(node -p "require('./package.json').version.split('-')[0]")
+            VERSION="${BASE}-next.${{ github.run_number }}"
+            PUBLISH=true
+          else
+            VERSION="$INPUT_VERSION"
+            PUBLISH=$([ "$INPUT_BRANCH" == "main" ] && echo true || echo false)
+          fi
+          PRERELEASE=$([[ "$VERSION" == *-* ]] && echo true || echo false)
+          echo "Version: $VERSION, prerelease: $PRERELEASE, publish: $PUBLISH"
+          echo "version=$VERSION" >> ${GITHUB_OUTPUT}
+          echo "prerelease=$PRERELEASE" >> ${GITHUB_OUTPUT}
+          echo "publish=$PUBLISH" >> ${GITHUB_OUTPUT}
+
   tag:
     name: Tag release
     runs-on: ubuntu-24.04
+    needs: [version]
     timeout-minutes: 10
     outputs:
       githubTag: ${{ steps.tag_util.outputs.githubTag }}
       releaseVersion: ${{ steps.tag_util.outputs.releaseVersion }}
-      releaseId: ${{ steps.create_release.outputs.id }}
 
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@v7.0.1
         with:
-          ref: ${{ github.event.inputs.branch }}
+          ref: ${{ github.event.inputs.branch || github.sha }}
 
       - name: Generate tags
         id: tag_util
         run: |
-          TAG_PATTERN=${{ github.event.inputs.version }}
+          TAG_PATTERN=${{ needs.version.outputs.version }}
           echo "githubTag=v$TAG_PATTERN" >> ${GITHUB_OUTPUT}
           echo "releaseVersion=$TAG_PATTERN" >> ${GITHUB_OUTPUT}
 
@@ -69,10 +115,10 @@ jobs:
           tag: ${{ steps.tag_util.outputs.githubTag }}
           name: ${{ steps.tag_util.outputs.githubTag }}
           draft: true
-          prerelease: true
+          prerelease: ${{ needs.version.outputs.prerelease }}
 
-      - name: Create PR to bump the version (only if we're on the main branch)
-        if: ${{ github.event.inputs.branch == 'main' }}
+      - name: Create PR to bump the version (only if releasing from the main branch)
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.branch == 'main' }}
         run: |
           git config --local user.name ${{ github.actor }}
           git config --local user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
@@ -105,19 +151,19 @@ jobs:
   build-publish:
     name: Build and publish
     runs-on: ubuntu-24.04
-    needs: [tag]
-    timeout-minutes: 20
+    needs: [version, tag]
+    timeout-minutes: 25
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@v7.0.1
         with:
           ref: ${{ needs.tag.outputs.githubTag }}
           fetch-depth: 0
 
       - name: Log in to Container Registry
-        if: github.event.inputs.branch == 'main'
-        uses: docker/login-action@v4.1.0
+        if: needs.version.outputs.publish == 'true'
+        uses: docker/login-action@v4.4.0
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -129,18 +175,19 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,value=latest,enable={{is_default_branch}}
-            type=raw,value=${{ github.event.inputs.version }},enable={{is_default_branch}}
+            type=raw,value=latest,enable=${{ needs.version.outputs.prerelease == 'false' }}
+            type=raw,value=next,enable=${{ needs.version.outputs.prerelease == 'true' }}
+            type=raw,value=${{ needs.version.outputs.version }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v7.1.0
+        uses: docker/build-push-action@v7.3.0
         with:
           context: .
           platforms: linux/amd64,linux/arm64
-          push: ${{ github.event.inputs.branch == 'main' }}
+          push: ${{ needs.version.outputs.publish == 'true' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
@@ -149,8 +196,8 @@ jobs:
   npm-publish:
     name: Publish npm packages
     runs-on: ubuntu-24.04
-    needs: [tag]
-    if: github.event.inputs.branch == 'main'
+    needs: [version, tag]
+    if: needs.version.outputs.publish == 'true'
     timeout-minutes: 10
     permissions:
       contents: read
@@ -158,7 +205,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@v7.0.1
         with:
           ref: ${{ needs.tag.outputs.githubTag }}
 
@@ -185,14 +232,14 @@ jobs:
       - name: Publish to npm
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          VERSION: ${{ needs.tag.outputs.releaseVersion }}
+          PRERELEASE: ${{ needs.version.outputs.prerelease }}
         run: |
           if [ -n "$NPM_TOKEN" ]; then
             echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
           fi
-          # npm requires a dist-tag for prerelease versions (e.g. 1.0.0-rc1), and they shouldn't become latest
+          # npm requires a dist-tag for prerelease versions (e.g. 1.0.0-next.123), and they shouldn't become latest
           DIST_TAG=latest
-          if [[ "$VERSION" == *-* ]]; then
+          if [ "$PRERELEASE" == "true" ]; then
             DIST_TAG=next
           fi
           # contest-api first, since contest-ui depends on it. The ./ prefix is required, otherwise npm
@@ -204,19 +251,16 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-24.04
-    needs: [tag, build-publish]
+    needs: [version, tag, build-publish]
     timeout-minutes: 5
 
     steps:
-      - name: id
-        run: echo the release id is ${{ needs.tag.outputs.releaseId}}
-
+      # Prereleases are never marked as latest by GitHub, so this only moves 'latest' for full releases
       - name: Publish release
-        uses: StuYarrow/publish-release@v1.1.2
+        run: gh release edit "$TAG" --repo "${{ github.repository }}" --draft=false
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          id: ${{ needs.tag.outputs.releaseId}}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ needs.tag.outputs.githubTag }}
 
   update-website:
     name: Update website
@@ -235,3 +279,28 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.WEBSITE_DISPATCH_TOKEN }}
           VERSION: ${{ needs.tag.outputs.releaseVersion }}
+
+  cleanup:
+    name: Clean up old prereleases
+    runs-on: ubuntu-24.04
+    needs: [release]
+    timeout-minutes: 5
+
+    steps:
+      # The -next.<run_number> suffix increases across versions, so sort by it and keep the newest. Also
+      # catches tags whose release was never created or published (e.g. because the build failed)
+      - name: Delete old prerelease tags and releases
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          KEEP: 10
+        run: |
+          gh api --paginate "repos/$REPO/git/matching-refs/tags/v" --jq '.[].ref | ltrimstr("refs/tags/")' \
+            | grep -E -- '-next\.[0-9]+$' \
+            | awk -F'-next.' '{ print $NF " " $0 }' | sort -rn | cut -d' ' -f2 \
+            | tail -n +$((KEEP + 1)) \
+            | while read -r tag; do
+                echo "Deleting $tag"
+                gh release delete "$tag" --repo "$REPO" --cleanup-tag --yes \
+                  || gh api -X DELETE "repos/$REPO/git/refs/tags/$tag"
+              done
