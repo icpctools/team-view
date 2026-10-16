@@ -1,6 +1,6 @@
 {
 	"name": "team",
-	"version": "0.10.0-next",
+	"version": "0.10.0-next.5",
 	"license": "MIT",
 	"type": "module",
 	"private": true,
