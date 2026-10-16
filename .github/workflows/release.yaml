@@ -37,7 +37,7 @@ env:
 jobs:
   version:
     name: Determine version
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 5
     outputs:
       version: ${{ steps.version.outputs.version }}
@@ -71,7 +71,7 @@ jobs:
 
   tag:
     name: Tag release
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     needs: [version]
     timeout-minutes: 10
     outputs:
@@ -150,7 +150,7 @@ jobs:
 
   build-publish:
     name: Build and publish
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     needs: [version, tag]
     timeout-minutes: 25
 
@@ -195,7 +195,7 @@ jobs:
 
   npm-publish:
     name: Publish npm packages
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     needs: [version, tag]
     if: needs.version.outputs.publish == 'true'
     timeout-minutes: 10
@@ -250,7 +250,7 @@ jobs:
 
   release:
     name: Release
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     needs: [version, tag, build-publish]
     timeout-minutes: 5
 
@@ -264,7 +264,7 @@ jobs:
 
   update-website:
     name: Update website
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     # The website only lists published releases, and also shows the npm packages, so wait for both -
     # but still update the website for the new release if only the npm publish failed
     needs: [tag, release, npm-publish]
@@ -282,7 +282,7 @@ jobs:
 
   cleanup:
     name: Clean up old prereleases
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     needs: [release]
     timeout-minutes: 5
 
