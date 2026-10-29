@@ -9,11 +9,11 @@
 		SourceColumn,
 		type Column
 	} from '@icpctools/contest-ui';
-	import ReactionModal from '$lib/ui/ReactionModal.svelte';
+	import ReactionModal from '#lib/ui/ReactionModal.svelte';
 	import type { SubmissionData } from '../../../lib/submissionData.js';
 	import { parseRelTime, timeToMin } from '@icpctools/contest-api';
-	import SourceModal from '$lib/ui/SourceModal.svelte';
-	import { gotoTeam } from '$lib/navigation.js';
+	import SourceModal from '#lib/ui/SourceModal.svelte';
+	import { gotoTeam } from '#lib/navigation.js';
 
 	let { data } = $props();
 

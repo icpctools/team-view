@@ -1,4 +1,4 @@
-import { browser } from '$app/environment';
+import { browser } from '$app/env';
 
 // Don't use $state for server-side singletons - it's meant for component reactivity
 // Using plain objects to avoid Svelte proxy issues in server-side load functions

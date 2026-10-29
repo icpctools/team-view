@@ -1,5 +1,5 @@
-import { sessionStore } from '$lib/session-store';
-import type { Handle } from '@sveltejs/kit';
+import type { Handle } from '@sveltejs/kit/hooks';
+import { sessionStore } from '#lib/session-store.js';
 import { randomBytes } from 'crypto';
 
 function generateSessionId(): string {

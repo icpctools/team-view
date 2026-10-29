@@ -3,7 +3,7 @@
 	import type { ClarificationData } from '../../routes/clarifications/clarificationData';
 	import ClarificationUI from './ClarificationUI.svelte';
 	import { TeamColumn } from '@icpctools/contest-ui';
-	import { gotoTeam } from '$lib/navigation';
+	import { gotoTeam } from '#lib/navigation.js';
 
 	interface Props {
 		clar: ClarificationData;

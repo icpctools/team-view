@@ -1,4 +1,4 @@
-import { loadContest } from '$lib/state.svelte.js';
+import { loadContest } from '#lib/state.svelte.js';
 
 export const load = async ({ depends }) => {
 	depends('app:contest', 'app:state');

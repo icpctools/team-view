@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { gotoTeam } from '$lib/navigation.js';
+	import { gotoTeam } from '#lib/navigation.js';
 	import type { Team } from '@icpctools/contest-api';
 	import { FloorMap } from '@icpctools/contest-ui';
 

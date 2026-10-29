@@ -1,5 +1,5 @@
 <script lang="ts">
-	import JudgeQueue from '$lib/ui/JudgeQueue.svelte';
+	import JudgeQueue from '#lib/ui/JudgeQueue.svelte';
 
 	let { data } = $props();
 </script>

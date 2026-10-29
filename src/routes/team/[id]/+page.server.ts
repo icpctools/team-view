@@ -1,8 +1,8 @@
 import { error } from '@sveltejs/kit';
 import { findById } from '@icpctools/contest-api';
-import { loadContest } from '$lib/state.svelte.js';
+import { loadContest } from '#lib/state.svelte.js';
 import type { Judgement } from '@icpctools/contest-api';
-import type { SubmissionData } from '$lib/submissionData';
+import type { SubmissionData } from '#lib/submissionData.js';
 import { findManyBySubmissionId } from '@icpctools/contest-api';
 import { hasEndpointProperty } from '@icpctools/contest-api';
 

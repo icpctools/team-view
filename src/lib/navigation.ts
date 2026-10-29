@@ -11,11 +11,11 @@ export async function gotoTeam(team?: Team): Promise<void> {
 export async function gotoTeamId(team_id?: string): Promise<void> {
 	if (!team_id) return;
 
-	return goto(resolve(`/team/${team_id}`));
+	return goto(resolve(`team/${team_id}`));
 }
 
 export async function gotoProblem(problem?: Problem): Promise<void> {
 	if (!problem) return;
 
-	return goto(resolve(`/problem/${problem.id}`));
+	return goto(resolve(`problem/${problem.id}`));
 }
