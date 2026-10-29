@@ -22,8 +22,8 @@ describe('gotoTeam', () => {
 
 		await gotoTeam(team);
 
-		expect(resolve).toHaveBeenCalledWith('/team/team-123');
-		expect(goto).toHaveBeenCalledWith('/team/team-123');
+		expect(resolve).toHaveBeenCalledWith('team/team-123');
+		expect(goto).toHaveBeenCalledWith('team/team-123');
 	});
 
 	test('does not navigate when team is undefined', async () => {
@@ -47,8 +47,8 @@ describe('gotoTeamId', () => {
 	test('navigates to team page with team id', async () => {
 		await gotoTeamId('team-456');
 
-		expect(resolve).toHaveBeenCalledWith('/team/team-456');
-		expect(goto).toHaveBeenCalledWith('/team/team-456');
+		expect(resolve).toHaveBeenCalledWith('team/team-456');
+		expect(goto).toHaveBeenCalledWith('team/team-456');
 	});
 
 	test('does not navigate when team id is undefined', async () => {
@@ -76,8 +76,8 @@ describe('gotoProblem', () => {
 
 		await gotoProblem(problem);
 
-		expect(resolve).toHaveBeenCalledWith('/problem/problem-a');
-		expect(goto).toHaveBeenCalledWith('/problem/problem-a');
+		expect(resolve).toHaveBeenCalledWith('problem/problem-a');
+		expect(goto).toHaveBeenCalledWith('problem/problem-a');
 	});
 
 	test('does not navigate when problem is undefined', async () => {
@@ -92,7 +92,7 @@ describe('gotoProblem', () => {
 
 		await gotoProblem(problem);
 
-		expect(resolve).toHaveBeenCalledWith('/problem/undefined');
-		expect(goto).toHaveBeenCalledWith('/problem/undefined');
+		expect(resolve).toHaveBeenCalledWith('problem/undefined');
+		expect(goto).toHaveBeenCalledWith('problem/undefined');
 	});
 });

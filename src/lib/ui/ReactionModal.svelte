@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { SubmissionData } from '$lib/submissionData';
+	import type { SubmissionData } from '#lib/submissionData.js';
 	import { timeToMin } from '@icpctools/contest-api';
 	import Modal from './Modal.svelte';
 	import { JudgementUI, ProblemUI, Video } from '@icpctools/contest-ui';

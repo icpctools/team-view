@@ -1,5 +1,5 @@
 <script lang="ts">
-	import ClarificationUI from '$lib/ui/ClarificationUI.svelte';
+	import ClarificationUI from '#lib/ui/ClarificationUI.svelte';
 
 	let { data } = $props();
 </script>

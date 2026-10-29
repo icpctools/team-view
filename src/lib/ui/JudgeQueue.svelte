@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { JudgementUI, ProblemColumn, SimpleColumn, Table, TeamColumn, type Column } from '@icpctools/contest-ui';
-	import type { SubmissionData } from '$lib/submissionData';
-	import { gotoProblem, gotoTeam } from '$lib/navigation';
+	import type { SubmissionData } from '#lib/submissionData.js';
+	import { gotoProblem, gotoTeam } from '#lib/navigation.js';
 
 	interface Props {
 		submissions: SubmissionData[];

@@ -1,4 +1,4 @@
-import { CONFIG, CONTEST } from '$lib/hardcoded.svelte';
+import { CONFIG, CONTEST } from '#lib/hardcoded.svelte.js';
 import type { RequestHandler } from './$types';
 
 // Proxy will only support GET for now

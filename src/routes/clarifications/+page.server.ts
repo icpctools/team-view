@@ -1,5 +1,5 @@
 import { error } from '@sveltejs/kit';
-import { loadContest } from '$lib/state.svelte.js';
+import { loadContest } from '#lib/state.svelte.js';
 import type { ClarificationData } from './clarificationData.js';
 import {
 	findById,

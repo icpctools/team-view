@@ -1,5 +1,5 @@
 import type { RequestHandler } from './$types';
-import { loadContest } from '$lib/state.svelte';
+import { loadContest } from '#lib/state.svelte.js';
 import type { ContestListener } from '@icpctools/contest-api';
 
 export const GET: RequestHandler = async () => {

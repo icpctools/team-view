@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { Clock, Image, Logo, ICPC, ICPCtools } from '@icpctools/contest-ui';
-	import DarkModeToggle from '$lib/ui/DarkModeToggle.svelte';
+	import DarkModeToggle from '#lib/ui/DarkModeToggle.svelte';
 	import { onMount } from 'svelte';
 	import '../app.css';
 	import '@fortawesome/fontawesome-free/css/all.min.css';
-	import { invalidate, invalidateAll } from '$app/navigation';
+	import { invalidate, refreshAll } from '$app/navigation';
 	import { ModeWatcher } from 'mode-watcher';
 	import type { ContestEvent } from '@icpctools/contest-api';
 	import { SvelteSet } from 'svelte/reactivity';
@@ -61,7 +61,7 @@
 
 				// Events fired from the server while this client was subscribing (or missed
 				// while reconnecting) are lost, so re-run every load function to catch up
-				invalidateAll();
+				refreshAll();
 			};
 
 			eventSource.onmessage = (event) => {

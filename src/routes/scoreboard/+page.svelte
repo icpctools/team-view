@@ -10,7 +10,7 @@
 		ScoreboardSolved,
 		type Column
 	} from '@icpctools/contest-ui';
-	import { gotoProblem, gotoTeamId } from '$lib/navigation.js';
+	import { gotoProblem, gotoTeamId } from '#lib/navigation.js';
 
 	let { data } = $props();
 

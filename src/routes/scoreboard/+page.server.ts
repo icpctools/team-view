@@ -1,6 +1,6 @@
 import { error } from '@sveltejs/kit';
 import { findById } from '@icpctools/contest-api';
-import { loadContest } from '$lib/state.svelte.js';
+import { loadContest } from '#lib/state.svelte.js';
 
 export const load = async ({ depends }) => {
 	depends('app:teams', 'app:organizations', 'app:problems', 'app:scoreboard');

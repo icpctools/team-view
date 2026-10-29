@@ -1,5 +1,5 @@
 <script lang="ts">
-	import StartStatusPanel from '$lib/ui/StartStatusPanel.svelte';
+	import StartStatusPanel from '#lib/ui/StartStatusPanel.svelte';
 	import { Logo } from '@icpctools/contest-ui';
 
 	let { data } = $props();

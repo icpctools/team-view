@@ -24,7 +24,7 @@ export default defineConfig({
 			})
 		}
 	},
-	plugins: [tailwindcss(), svelte({ configFile: '../../svelte.config.js' }), svelteTesting()],
+	plugins: [tailwindcss(), svelte(), svelteTesting()],
 	test: {
 		include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
 		globals: true,

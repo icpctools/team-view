@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { fetchAndUnzipSubmission, getFileLanguage } from '$lib/source-util';
-	import type { SubmissionData } from '$lib/submissionData';
+	import { fetchAndUnzipSubmission, getFileLanguage } from '#lib/source-util.js';
+	import type { SubmissionData } from '#lib/submissionData.js';
 	import { JudgementUI, ProblemUI } from '@icpctools/contest-ui';
 	import CodeEditor from './CodeEditor.svelte';
 	import Modal from './Modal.svelte';
