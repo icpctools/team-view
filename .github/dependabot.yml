@@ -9,3 +9,22 @@ updates:
     groups:
       github-actions:
         patterns: ['*']
+
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: weekly
+      # check at 3am UTC
+      time: "03:00"
+    open-pull-requests-limit: 5
+    groups:
+      eslint:
+        applies-to: version-updates
+        patterns:
+          - "eslint"
+          - "@eslint/*"
+      tailwindcss:
+        applies-to: version-updates
+        patterns:
+          - "@tailwindcss/*"
+          - "tailwindcss"
