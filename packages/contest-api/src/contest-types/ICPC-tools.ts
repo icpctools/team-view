@@ -8,7 +8,7 @@
 
 import type { FileReference, Id, TeamLocation } from './2026-01.js';
 
-export type ContestType = 'map-info' | 'start-status';
+export type ContestType = 'map-info' | 'start-status' | 'resolver-selection';
 
 export interface Contest {
 	time_multiplier?: number;
@@ -68,4 +68,9 @@ export interface StartStatus {
 	id: Id;
 	label: string;
 	status: 0 | 1 | 2;
+}
+
+export interface ResolverSelection {
+	team_ids?: string[];
+	problem_id?: string;
 }

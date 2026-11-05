@@ -31,7 +31,8 @@ export type ContestType =
 	| 'commentary'
 	| 'scoreboard'
 	| 'map-info'
-	| 'start-status';
+	| 'start-status'
+	| 'resolver-selection';
 
 export type Id = string;
 
@@ -378,4 +379,10 @@ export interface StartStatus {
 	id: Id;
 	label: string;
 	status: 0 | 1 | 2;
+}
+
+// ICPC Tools
+export interface ResolverSelection {
+	team_ids?: string[];
+	problem_id?: string;
 }

@@ -25,6 +25,7 @@ import type {
 	Organization,
 	Person,
 	Problem,
+	ResolverSelection,
 	Run,
 	Scoreboard,
 	StartStatus,
@@ -138,6 +139,7 @@ export class ContestAPI {
 	private startStatus?: StartStatus[];
 	private scoreboard?: Scoreboard;
 	private mapInfo?: MapInfo;
+	private resolverSelection?: ResolverSelection;
 
 	private id: string;
 	private contestURL: string;
@@ -396,6 +398,13 @@ export class ContestAPI {
 		}
 	}
 
+	async loadResolverSelection(force?: boolean): Promise<void> {
+		if (force || !this.resolverSelection) {
+			this.resolverSelection = await this.loadObject('resolver-selection');
+			this.fireChange({ type: 'resolver-selection' });
+		}
+	}
+
 	getContestURL(): string {
 		return this.contestURL;
 	}
@@ -464,6 +473,9 @@ export class ContestAPI {
 	}
 	getMapInfo(): MapInfo | undefined {
 		return this.mapInfo;
+	}
+	getResolverSelection(): ResolverSelection | undefined {
+		return this.resolverSelection;
 	}
 
 	getTimeDelta() {
@@ -548,6 +560,12 @@ export class ContestAPI {
 			}
 			case 'map-info': {
 				this.mapInfo = data as MapInfo;
+				break;
+			}
+			case 'resolver-selection': {
+				this.resolverSelection = data as ResolverSelection;
+				console.log('resolver!');
+				console.log(this.resolverSelection);
 				break;
 			}
 			default: {
@@ -815,6 +833,7 @@ export class ContestAPI {
 		this.startStatus = [];
 		this.scoreboard = undefined;
 		this.mapInfo = undefined;
+		this.resolverSelection = undefined;
 	}
 
 	async watch(): Promise<void> {
