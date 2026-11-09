@@ -25,6 +25,7 @@ import type {
 	Organization,
 	Person,
 	Problem,
+	ResolverPresentation,
 	ResolverSelection,
 	Run,
 	Scoreboard,
@@ -140,6 +141,7 @@ export class ContestAPI {
 	private scoreboard?: Scoreboard;
 	private mapInfo?: MapInfo;
 	private resolverSelection?: ResolverSelection;
+	private resolverPresentation?: ResolverPresentation;
 
 	private id: string;
 	private contestURL: string;
@@ -405,6 +407,13 @@ export class ContestAPI {
 		}
 	}
 
+	async loadResolverPresentation(force?: boolean): Promise<void> {
+		if (force || !this.resolverPresentation) {
+			this.resolverPresentation = await this.loadObject('resolver-presentation');
+			this.fireChange({ type: 'resolver-presentation' });
+		}
+	}
+
 	getContestURL(): string {
 		return this.contestURL;
 	}
@@ -476,6 +485,9 @@ export class ContestAPI {
 	}
 	getResolverSelection(): ResolverSelection | undefined {
 		return this.resolverSelection;
+	}
+	getResolverPresentation(): ResolverPresentation | undefined {
+		return this.resolverPresentation;
 	}
 
 	getTimeDelta() {
@@ -564,8 +576,10 @@ export class ContestAPI {
 			}
 			case 'resolver-selection': {
 				this.resolverSelection = data as ResolverSelection;
-				console.log('resolver!');
-				console.log(this.resolverSelection);
+				break;
+			}
+			case 'resolver-presentation': {
+				this.resolverPresentation = data as ResolverPresentation;
 				break;
 			}
 			default: {
@@ -834,6 +848,7 @@ export class ContestAPI {
 		this.scoreboard = undefined;
 		this.mapInfo = undefined;
 		this.resolverSelection = undefined;
+		this.resolverPresentation = undefined;
 	}
 
 	async watch(): Promise<void> {
