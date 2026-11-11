@@ -171,7 +171,7 @@
 <div
 	bind:this={containerElement}
 	style="--table-grid-table-columns: {gridTemplateColumns}"
-	class="w-full relative"
+	class="w-full relative [overflow-anchor:none]"
 	class:h-full={fitToScreen}
 	class:hidden={data2.length === 0}
 	role="table"
@@ -230,7 +230,7 @@
 	</div>
 
 	<!-- Rows -->
-	<div role="rowgroup" class="relative">
+	<div role="rowgroup" class="relative isolate">
 		{#each data2 as object, rowIndex (object?.[keyProperty])}
 			<div
 				class="grid grid-table gap-x-0.5 min-h-10 ml-1 hover:bg-gray-300/80 dark:hover:bg-gray-800/80 rounded-lg relative will-change-transform"
