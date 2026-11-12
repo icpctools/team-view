@@ -17,6 +17,8 @@
 		animationSpeed?: number;
 		/** Key(s) of persistently selected rows. */
 		selected?: T[keyof T] | T[keyof T][];
+		/** Id of the selected column. Only highlighted within the selected row(s). */
+		selectedColumn?: string;
 	}
 	let {
 		kind,
@@ -28,7 +30,8 @@
 		fitToScreen = false,
 		visibleRowCount = $bindable(Infinity),
 		animationSpeed = 1,
-		selected = undefined
+		selected = undefined,
+		selectedColumn = undefined
 	}: Props = $props();
 
 	let sortCol = $state<Column<T>>();
@@ -253,9 +256,11 @@
 				role="row">
 				{#each columns as column, colIndex (colIndex)}
 					{#if !column.hidden}
+						{@const isCellSelected = isSelected && selectedColumn !== undefined && column.id === selectedColumn}
 						<div
 							class={{
 								'flex items-center max-w-full py-px whitespace-nowrap': true,
+								'rounded-md ring-2 ring-sky-600 dark:ring-sky-400 bg-sky-400/60 dark:bg-sky-600/60': isCellSelected,
 								'justify-self-start': column.align === 'left',
 								'justify-self-center': column.align === 'center',
 								'justify-self-end': column.align === 'right',

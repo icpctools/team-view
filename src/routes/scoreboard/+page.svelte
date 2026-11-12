@@ -14,6 +14,8 @@
 
 	let { data } = $props();
 
+	const selectedProblem = $derived(data.problems.find((problem) => problem.id === data.resolverSel?.problem_id));
+
 	const scoreboard_type = () => data.scoreboard_type;
 	const columns: Column<ScoreboardRow>[] = $derived.by(() => {
 		const cols: Column<ScoreboardRow>[] = [
@@ -65,6 +67,7 @@
 
 		for (let i = 0; i < data.problems.length; i++) {
 			cols.push({
+				id: data.problems[i].id,
 				title: ProblemColumn,
 				titleProps: {
 					problem: data.problems[i],
@@ -92,5 +95,6 @@
 		{columns}
 		keyProperty="team_id"
 		animationSpeed={0.3}
-		selected={data.resolverSel?.team_ids}></Table>
+		selected={data.resolverSel?.team_ids}
+		selectedColumn={selectedProblem?.id}></Table>
 </div>

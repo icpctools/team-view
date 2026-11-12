@@ -5,6 +5,11 @@ import type { Component } from 'svelte';
  */
 export interface Column<Type> {
 	/**
+	 * Optional unique identifier for the column, used for column selection.
+	 */
+	readonly id?: string;
+
+	/**
 	 * The column title.
 	 */
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
