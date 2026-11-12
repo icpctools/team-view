@@ -15,6 +15,8 @@
 		visibleRowCount?: number;
 		/** Row-reorder animation speed multiplier (see smoothFlip). */
 		animationSpeed?: number;
+		/** Key(s) of persistently selected rows. */
+		selected?: T[keyof T] | T[keyof T][];
 	}
 	let {
 		kind,
@@ -25,7 +27,8 @@
 		keyProperty = 'id' as keyof T,
 		fitToScreen = false,
 		visibleRowCount = $bindable(Infinity),
-		animationSpeed = 1
+		animationSpeed = 1,
+		selected = undefined
 	}: Props = $props();
 
 	let sortCol = $state<Column<T>>();
@@ -35,6 +38,10 @@
 	let rowHeight = $state(0);
 	let headerHeight = $state(0);
 	let containerElement = $state<HTMLDivElement>();
+
+	let selectedKeys = $derived(
+		new Set<T[keyof T]>(selected === undefined ? [] : Array.isArray(selected) ? selected : [selected])
+	);
 
 	// calculate visible row count when fitToScreen is enabled
 	$effect(() => {
@@ -232,10 +239,17 @@
 	<!-- Rows -->
 	<div role="rowgroup" class="relative isolate">
 		{#each data2 as object, rowIndex (object?.[keyProperty])}
+			{@const key = object[keyProperty]}
+			{@const isSelected = selectedKeys.has(key)}
 			<div
-				class="grid grid-table gap-x-0.5 min-h-10 ml-1 hover:bg-gray-300/80 dark:hover:bg-gray-800/80 rounded-lg relative will-change-transform"
+				class={{
+					'grid grid-table gap-x-0.5 min-h-10 ml-1 rounded-lg relative will-change-transform': true,
+					'hover:bg-gray-300/80 dark:hover:bg-gray-800/80': !isSelected,
+					'bg-sky-300/70 dark:bg-sky-800/70': isSelected
+				}}
 				in:fade={{ duration: 1000 }}
 				animate:smoothFlip={{ speed: animationSpeed }}
+				aria-selected={isSelected}
 				role="row">
 				{#each columns as column, colIndex (colIndex)}
 					{#if !column.hidden}

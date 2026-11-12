@@ -3,7 +3,7 @@ import { findById } from '@icpctools/contest-api';
 import { loadContest } from '#lib/state.svelte.js';
 
 export const load = async ({ depends }) => {
-	depends('app:teams', 'app:organizations', 'app:problems', 'app:scoreboard');
+	depends('app:teams', 'app:organizations', 'app:problems', 'app:scoreboard', 'app:resolver-selection');
 
 	const cc = await loadContest();
 	if (!cc) throw error(404);
@@ -32,6 +32,7 @@ export const load = async ({ depends }) => {
 		teams: sortedTeams,
 		logos: logos,
 		problems: problems,
-		hasLogos: hasLogos
+		hasLogos: hasLogos,
+		resolverSel: cc.getResolverSelection()
 	};
 };

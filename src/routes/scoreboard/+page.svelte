@@ -86,5 +86,11 @@
 </script>
 
 <div class="w-full h-full overflow-auto text-sm">
-	<Table kind="scoreboard" data={data.scoreboard.rows} {columns} keyProperty="team_id" animationSpeed={0.3}></Table>
+	<Table
+		kind="scoreboard"
+		data={data.scoreboard.rows}
+		{columns}
+		keyProperty="team_id"
+		animationSpeed={0.3}
+		selected={data.resolverSel?.team_ids}></Table>
 </div>
