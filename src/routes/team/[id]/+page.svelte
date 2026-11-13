@@ -138,7 +138,7 @@
 		<div class="flex flex-col">
 			<div class="text-xl">Photo</div>
 			<div class="flex flex-row gap-2 max-h-64 h-64">
-				<Image ref={data.team.photo} size={96} />
+				<Image ref={data.team.photo} size={96} rounded />
 			</div>
 		</div>
 	{/if}

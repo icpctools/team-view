@@ -9,9 +9,10 @@
 		ref?: FileReference[];
 		size: number;
 		tag?: string;
+		rounded?: boolean;
 	}
 
-	let { ref, size, tag }: Props = $props();
+	let { ref, size, tag, rounded = false }: Props = $props();
 
 	let mounted = $state(false);
 	onMount(() => {
@@ -50,7 +51,8 @@
 	src={displaySrc}
 	alt="logo"
 	class={{
-		'max-w-full max-h-full object-scale-down rounded-md': true,
+		'max-w-full max-h-full object-scale-down': true,
+		'rounded-md': rounded,
 		'opacity-0': isLoading,
 		'opacity-100': !isLoading
 	}}

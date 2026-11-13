@@ -12,7 +12,7 @@
 <div class="flex flex-col items-center border bg-gray-200 dark:bg-gray-900 gap-2">
 	<div class="flex flex-col w-32 h-44 items-center justify-center">
 		{#if person.photo && person.photo.length > 0}
-			<Image ref={person.photo} size={24} />
+			<Image ref={person.photo} size={24} rounded />
 		{:else}
 			<span class="self-center">(unavailable)</span>
 		{/if}
