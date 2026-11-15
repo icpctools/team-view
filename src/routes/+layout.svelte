@@ -149,7 +149,7 @@
 
 			<div class="text-lg hover:bg-hover hover:text-link p-2 rounded-md">
 				<a href="/scoreboard" class="flex flex-row items-center"
-					><i class="fa-solid fa-square-poll-horizontal pr-2"></i>Scoreboard</a>
+					><i class="fa-solid fa-ranking-star pr-2"></i>Scoreboard</a>
 			</div>
 
 			<DarkModeToggle />

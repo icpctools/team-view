@@ -49,7 +49,7 @@
 
 	<div class="flex flex-row w-full">
 		<div
-			class="rounded-xl bg-slate-200 dark:bg-slate-700 px-4 py-3 shadow-sm grow"
+			class="rounded-xl bg-slate-200 dark:bg-slate-700 px-4 py-3 shadow-sm grow whitespace-pre-line"
 			class:rounded-bl-xs={clar.from_team}
 			class:rounded-br-xs={!clar.from_team}>
 			{clar.text}
