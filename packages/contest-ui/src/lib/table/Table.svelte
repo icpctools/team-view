@@ -34,7 +34,8 @@
 		selectedColumn = undefined
 	}: Props = $props();
 
-	let sortCol = $state<Column<T>>();
+	// Preserve column identity for the active indicator and direction toggle.
+	let sortCol = $state.raw<Column<T>>();
 	let sortAscending = $state<boolean>();
 
 	let containerHeight = $state(0);
@@ -189,7 +190,7 @@
 	<!-- Table header -->
 	{#if showHeader}
 		<div role="rowgroup" class="sticky top-0 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm rounded z-10">
-			<div class="grid grid-table mx-1 gap-x-0.5 h-7 text-gray-600 dark:text-gray-300 uppercase" role="row">
+			<div class="grid grid-table ml-1 gap-x-0.5 h-7 text-gray-600 dark:text-gray-300 uppercase" role="row">
 				{#each columns as column, colIndex (colIndex)}
 					{#if !column.hidden}
 						<!-- svelte-ignore a11y_click_events_have_key_events -->
