@@ -102,13 +102,18 @@
 		</div>
 	{/if}
 
-	{#if data.submissions && data.submissions.length > 0}
-		<div class="flex flex-col">
-			<div class="text-xl">Submissions ({data.submissions.length})</div>
-
-			<Table kind="submissions" data={data.submissions} {columns} defaultSortColumn="Time"></Table>
+	<div class="flex flex-col">
+		<div class="text-xl">
+			Submissions{#if data.submissions?.length > 0}
+				({data.submissions.length}){/if}
 		</div>
-	{/if}
+
+		<Table kind="submissions" data={data.submissions} {columns} defaultSortColumn="Time"></Table>
+
+		{#if data.submissions.length === 0}
+			<div>None</div>
+		{/if}
+	</div>
 </div>
 
 <SourceModal bind:this={sourceModal} />

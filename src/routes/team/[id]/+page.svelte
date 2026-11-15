@@ -119,20 +119,28 @@
 		<div class="flex flex-col">
 			<div class="text-xl">Groups</div>
 			<div class="flex flex-row gap-2">
-				{#each data.groups as group (group.id)}
+				{#each data.groups as group, i (group.id)}
+					{#if i != 0}
+						|
+					{/if}
 					<div>{group.name}</div>
 				{/each}
 			</div>
 		</div>
 	{/if}
 
-	{#if data.submissions && data.submissions.length > 0}
-		<div class="flex flex-col">
-			<div class="text-xl">Submissions</div>
-
-			<Table kind="submissions" data={data.submissions} {columns} defaultSortColumn="Time"></Table>
+	<div class="flex flex-col">
+		<div class="text-xl">
+			Submissions{#if data.submissions?.length > 0}
+				({data.submissions.length}){/if}
 		</div>
-	{/if}
+
+		<Table kind="submissions" data={data.submissions} {columns} defaultSortColumn="Time"></Table>
+
+		{#if data.submissions.length === 0}
+			<div>None</div>
+		{/if}
+	</div>
 
 	{#if data.team.photo}
 		<div class="flex flex-col">
