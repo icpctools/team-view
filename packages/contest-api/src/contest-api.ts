@@ -138,7 +138,7 @@ export class ContestAPI {
 	private commentary?: Commentary[];
 	private awards?: Award[];
 	private startStatus?: StartStatus[];
-	private scoreboard?: Scoreboard;
+	private scoreboard: Map<string | undefined, Scoreboard> = new Map();
 	private mapInfo?: MapInfo;
 	private resolverSelection?: ResolverSelection;
 	private resolverPresentation?: ResolverPresentation;
@@ -200,9 +200,9 @@ export class ContestAPI {
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	async loadObject(type: ContestType): Promise<any> {
+	async loadObject(type: ContestType, param?: string): Promise<any> {
 		const startTime = performance.now();
-		const url = this.getURL(type);
+		const url = this.getURL(type) + (param ? '?' + param : '');
 		try {
 			const response = await fetch(url, fetchOptions(this.credentials));
 			if (!response.ok) {
@@ -374,14 +374,14 @@ export class ContestAPI {
 		}
 	}
 
-	async loadScoreboard(force?: boolean): Promise<void> {
-		if (force || !this.scoreboard) {
-			const scoreboard2: Scoreboard = await this.loadObject('scoreboard');
+	async loadScoreboard(groupId?: string, force?: boolean): Promise<void> {
+		if (force || !this.scoreboard.get(groupId)) {
+			const scoreboard2: Scoreboard = await this.loadObject('scoreboard', groupId ? 'group_id=' + groupId : undefined);
 			scoreboard2.rows.sort((a, b) => {
 				return a.rank - b.rank;
 			});
 
-			this.scoreboard = scoreboard2;
+			this.scoreboard.set(groupId, scoreboard2);
 			this.fireChange({ type: 'scoreboard' });
 		}
 	}
@@ -474,8 +474,8 @@ export class ContestAPI {
 	getCommentary(): Commentary[] {
 		return this.commentary || [];
 	}
-	getScoreboard(): Scoreboard | undefined {
-		return this.scoreboard;
+	getScoreboard(groupId?: string): Scoreboard | undefined {
+		return this.scoreboard.get(groupId);
 	}
 	getAwards(): Award[] {
 		return this.awards || [];
@@ -845,7 +845,7 @@ export class ContestAPI {
 		this.commentary = [];
 		this.awards = [];
 		this.startStatus = [];
-		this.scoreboard = undefined;
+		this.scoreboard = new Map();
 		this.mapInfo = undefined;
 		this.resolverSelection = undefined;
 		this.resolverPresentation = undefined;
@@ -864,7 +864,7 @@ export class ContestAPI {
 		// load the initial version, access, and scoreboard endpoints since they're not in the feed
 		await this.loadVersion(true);
 		await this.loadAccess(true);
-		await this.loadScoreboard(true);
+		await this.loadScoreboard(undefined, true);
 
 		// Enable reconnection and start reading the event feed
 		this.shouldReconnect = true;
@@ -900,11 +900,9 @@ export class ContestAPI {
 		}
 		this.scoreboardReloadTimeout = setTimeout(async () => {
 			this.scoreboardReloadTimeout = undefined;
-			try {
-				await this.loadScoreboard(true);
-			} catch (error: unknown) {
-				console.error(`Error reloading scoreboard: ${error}`);
-			}
+			this.scoreboard.forEach((_scoreboard, groupId) => {
+				this.loadScoreboard(groupId, true);
+			});
 		}, ContestAPI.SCOREBOARD_RELOAD_THROTTLE_MS);
 	}
 

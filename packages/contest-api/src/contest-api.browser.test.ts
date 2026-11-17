@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { beforeEach, expect, test, vi } from 'vitest';
-import { ContestAPI } from './contest-api.js';
+import { ContestAPI, ContestEvent } from './contest-api.js';
 import { Contests } from './contests.js';
 import { fetchOptions } from './fetch-utils.js';
 
@@ -13,6 +13,12 @@ const fixtures: Record<string, string> = {
 	contests: '[{ "id": "test", "name": "Test Contest" }]'
 };
 
+// Group-specific scoreboards, returned when the request has a group_id query param.
+const groupScoreboards: Record<string, string> = {
+	'1': '{ "rows": [{ "rank": 3, "team_id": "7", "score": {} }, { "rank": 1, "team_id": "5", "score": {} }, { "rank": 2, "team_id": "3", "score": {} }] }',
+	'2': '{ "rows": [{ "rank": 1, "team_id": "7", "score": {} }] }'
+};
+
 const fetchMock = vi.fn((url: string) => {
 	const urlObj = new URL(url);
 	const pathParts = urlObj.pathname.split('/').filter(Boolean);
@@ -23,6 +29,17 @@ const fetchMock = vi.fn((url: string) => {
 		type = 'contests';
 	} else {
 		type = pathParts[contestsIndex + 2] || '';
+	}
+
+	if (type === 'scoreboard') {
+		const groupId = urlObj.searchParams.get('group_id');
+		if (groupId !== null) {
+			const groupBody = groupScoreboards[groupId];
+			if (groupBody === undefined) {
+				return Promise.resolve(new Response('Not found', { status: 404 }));
+			}
+			return Promise.resolve(new Response(groupBody, { status: 200 }));
+		}
 	}
 
 	const body = fixtures[type];
@@ -78,6 +95,72 @@ test('loadScoreboard works in browser and sorts by rank', async () => {
 	expect(scoreboard?.rows.length).toBe(2);
 	expect(scoreboard?.rows[0].rank).toBe(1);
 	expect(scoreboard?.rows[1].rank).toBe(2);
+});
+
+test('loadScoreboard with group id requests and sorts the group scoreboard', async () => {
+	const api = new ContestAPI('https://example.com/api/contests/test');
+	await api.loadScoreboard('1');
+
+	expect(fetchMock).toHaveBeenCalledWith(
+		'https://example.com/api/contests/test/scoreboard?group_id=1',
+		expect.objectContaining({ headers: expect.any(Object) })
+	);
+
+	const scoreboard = api.getScoreboard('1');
+	expect(scoreboard?.rows.map((row) => row.rank)).toEqual([1, 2, 3]);
+	expect(scoreboard?.rows[0].team_id).toBe('5');
+	expect(scoreboard?.rows[2].team_id).toBe('7');
+});
+
+test('loadScoreboard caches general and group scoreboards separately', async () => {
+	const api = new ContestAPI('https://example.com/api/contests/test');
+	await api.loadScoreboard();
+	await api.loadScoreboard('1');
+
+	expect(api.getScoreboard()?.rows.length).toBe(2);
+	expect(api.getScoreboard('1')?.rows.length).toBe(3);
+});
+
+test('loadScoreboard caches each group independently', async () => {
+	const api = new ContestAPI('https://example.com/api/contests/test');
+	await api.loadScoreboard('1');
+	await api.loadScoreboard('2');
+
+	expect(api.getScoreboard('1')?.rows.length).toBe(3);
+	expect(api.getScoreboard('2')?.rows.length).toBe(1);
+	expect(fetchMock).toHaveBeenCalledTimes(2);
+});
+
+test('loadScoreboard with group id does not refetch a cached group', async () => {
+	const api = new ContestAPI('https://example.com/api/contests/test');
+	await api.loadScoreboard('1');
+	await api.loadScoreboard('1');
+
+	expect(fetchMock).toHaveBeenCalledTimes(1);
+});
+
+test('loadScoreboard with group id and force refetches', async () => {
+	const api = new ContestAPI('https://example.com/api/contests/test');
+	await api.loadScoreboard('1');
+	await api.loadScoreboard('1', true);
+
+	expect(fetchMock).toHaveBeenCalledTimes(2);
+});
+
+test('loadScoreboard with group id fires a scoreboard change event', async () => {
+	const events: ContestEvent[] = [];
+	const api = new ContestAPI('https://example.com/api/contests/test');
+	api.addContestListener((event) => events.push(event));
+
+	await api.loadScoreboard('1');
+
+	expect(events).toContainEqual({ type: 'scoreboard' });
+});
+
+test('loadScoreboard with unknown group id rejects', async () => {
+	const api = new ContestAPI('https://example.com/api/contests/test');
+	await expect(api.loadScoreboard('missing')).rejects.toThrow('404');
+	expect(api.getScoreboard('missing')).toBeUndefined();
 });
 
 test('processNotification works in browser', () => {
