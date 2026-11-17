@@ -40,5 +40,6 @@
 	role="link"
 	style="{pStyle};--problem-bg:{problem?.rgb ?? '#fff'}"
 	{onclick}>
-	<span class="text-center @max-[20px]:invisible">{problem?.label}</span>
+	<span class={{ 'group-hover:text-white': onclick, 'text-center @max-[20px]:invisible': true }}
+		>{problem?.label}</span>
 </div>
