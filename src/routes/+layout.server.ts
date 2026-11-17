@@ -29,7 +29,8 @@ export const load = async ({ depends }) => {
 	return {
 		contest: contest,
 		contestState: cc.getState(),
-		name: contest.formal_name || contest.name,
+		formalName: contest.formal_name || contest.name,
+		name: contest.name,
 		banner: contest.banner,
 		logo: contest.logo,
 		map: cc.getMapInfo()

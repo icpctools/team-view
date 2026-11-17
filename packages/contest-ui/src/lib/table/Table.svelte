@@ -197,11 +197,11 @@
 						<!-- svelte-ignore a11y_interactive_supports_focus -->
 						<div
 							class={{
-								'flex items-center max-w-full overflow-hidden text-sm font-semibold whitespace-nowrap select-none': true,
-								'justify-self-start': (column.titleAlign ?? column.align) === 'left',
-								'justify-self-center': (column.titleAlign ?? column.align) === 'center',
-								'justify-self-end': (column.titleAlign ?? column.align) === 'right',
-								'justify-self-stretch': (column.titleAlign ?? column.align) === 'stretch',
+								'@container flex items-center w-full max-w-full overflow-hidden text-sm font-semibold whitespace-nowrap select-none': true,
+								'justify-start': (column.titleAlign ?? column.align) === 'left',
+								'justify-center': (column.titleAlign ?? column.align) === 'center',
+								'justify-end': (column.titleAlign ?? column.align) === 'right',
+								'justify-stretch': (column.titleAlign ?? column.align) === 'stretch',
 								'cursor-pointer': column.comparator,
 								'hover:text-black': sortCol !== column,
 								'hover:dark:text-white': sortCol !== column
@@ -210,7 +210,12 @@
 							role="columnheader">
 							{#if typeof column.title === 'string'}
 								<div class="overflow-hidden text-ellipsis">
-									{column.title}
+									{#if column.shortTitle}
+										<span class="hidden @min-[68px]:inline">{column.title}</span><span class="@min-[68px]:hidden"
+											>{column.shortTitle}</span>
+									{:else}
+										{column.title}
+									{/if}
 								</div>
 							{:else}
 								<column.title {...column.titleProps} />

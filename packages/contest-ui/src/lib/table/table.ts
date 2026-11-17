@@ -16,6 +16,12 @@ export interface Column<Type> {
 	readonly title: string | Component<any>;
 
 	/**
+	 * Optional abbreviated column title, displayed instead of the full
+	 * title when the column is narrow.
+	 */
+	readonly shortTitle?: string;
+
+	/**
 	 * Properties to pass to the title renderer component.
 	 * These properties will be spread onto the component, allowing you
 	 * to renderer title components with any property.

@@ -121,35 +121,45 @@
 			<div class="h-48 pt-8"><ICPC /></div>
 		</div>
 	{:else}
-		<div class="flex flex-row gap-8 bg-gray-800 dark:bg-gray-950 text-white p-4 items-center">
+		<div class="flex flex-row gap-2 md:gap-3 bg-gray-800 dark:bg-gray-950 text-white p-2 md:p-3 items-center">
 			{#if data.logo && data.logo.length > 0}
 				<div class="w-12">
 					<Logo ref={data.logo} size={12} />
 				</div>
 			{/if}
 
-			<div class="text-2xl w-full">{data.name}</div>
+			<div class="text-lg md:text-2xl w-full truncate">
+				<span class="hidden md:inline">{data.formalName}</span>
+				<span class="inline md:hidden">{data.name}</span>
+			</div>
 
-			<div class="w-48"><Clock contest={data.contest} contestState={data.contestState} /></div>
+			<div class="w-24"><Clock contest={data.contest} contestState={data.contestState} /></div>
 
 			<div class="text-lg hover:bg-hover hover:text-link p-2 rounded-md">
-				<a href="/" class="flex flex-row items-center"><i class="fa-solid fa-people-group pr-2"></i>Teams</a>
+				<a href="/" class="flex flex-row items-baseline" title="Teams" aria-label="Teams"
+					><i class="fa-solid fa-people-group md:pr-2"></i><span class="hidden md:inline">Teams</span></a>
 			</div>
 
 			{#if data.map}
 				<div class="text-lg hover:bg-hover hover:text-link p-2 rounded-md">
-					<a href="/map" class="flex flex-row items-center"><i class="fa-regular fa-map pr-2"></i>Map</a>
+					<a href="/map" class="flex flex-row items-baseline" title="Map" aria-label="Map"
+						><i class="fa-solid fa-map md:pr-2"></i><span class="hidden md:inline">Map</span></a>
 				</div>
 			{/if}
 
 			<div class="text-lg hover:bg-hover hover:text-link p-2 rounded-md">
-				<a href="/clarifications" class="flex flex-row items-center"
-					><i class="fa-solid fa-clipboard-question pr-2"></i>Clarifications</a>
+				<a
+					href="/clarifications"
+					class="flex flex-row items-baseline"
+					title="Clarifications"
+					aria-label="Clarifications"
+					><i class="fa-solid fa-clipboard-question md:pr-2"></i><span class="hidden md:inline">Clarifications</span
+					></a>
 			</div>
 
 			<div class="text-lg hover:bg-hover hover:text-link p-2 rounded-md">
-				<a href="/scoreboard" class="flex flex-row items-center"
-					><i class="fa-solid fa-ranking-star pr-2"></i>Scoreboard</a>
+				<a href="/scoreboard" class="flex flex-row items-baseline" title="Scoreboard" aria-label="Scoreboard"
+					><i class="fa-solid fa-ranking-star md:pr-2"></i><span class="hidden md:inline">Scoreboard</span></a>
 			</div>
 
 			<DarkModeToggle />

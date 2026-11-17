@@ -38,6 +38,7 @@
 			},
 			{
 				title: 'Solved',
+				shortTitle: 'Sol',
 				hidden: scoreboard_type() !== 'pass-fail',
 				renderer: ScoreboardSolved,
 				rendererProps: (row: ScoreboardRow) => ({
@@ -47,6 +48,7 @@
 			},
 			{
 				title: 'Penalty',
+				shortTitle: 'Pen',
 				hidden: scoreboard_type() !== 'pass-fail',
 				renderer: SimpleColumn,
 				rendererProps: (row: ScoreboardRow) => ({
@@ -56,6 +58,7 @@
 			},
 			{
 				title: 'Score',
+				shortTitle: 'Scr',
 				hidden: scoreboard_type() !== 'score',
 				renderer: SimpleColumn,
 				rendererProps: (row: ScoreboardRow) => ({
