@@ -17,7 +17,7 @@ But it is also much more:
 
 ## Running
 
-For ease of use, the latest team view is packaged as a Docker container here:
+For ease of use, team view is packaged as a container image:
 https://github.com/icpctools/team-view/pkgs/container/team-view
 
 To configure your backend Contest API server, set the following environment variables:
@@ -27,19 +27,14 @@ To configure your backend Contest API server, set the following environment vari
 - CONTEST_USER - A user on the contest server.
 - CONTEST_PASSWORD - The user's password.
 
-Team view wil work with any server that supports the 2023-06 or 2026-01 Contest API specifications.
-
-## Building
-
-To create a production version of the app:
-
-```bash
-pnpm build
+For instance:
+```
+podman pull ghcr.io/icpctools/team-view:0.x.x
+podman images (to see the image sha)
+podman run -e CONTEST_URL="<url>" -e CONTEST_ID="<id>" -e CONTEST_USER="<user>" -e CONTEST_PASSWORD="<pwd>" -p 80:3000 <image-sha>
 ```
 
-You can preview the production build with `pnpm preview`.
-
-> To deploy the app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+Team view works with any server that supports the 2023-06 or 2026-01 Contest API specifications.
 
 ## Communication
 

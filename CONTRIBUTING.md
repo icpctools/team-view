@@ -60,6 +60,18 @@ To run tests:
 pnpm test
 ```
 
+## Building
+
+To create a production version of the app:
+
+```bash
+pnpm build
+```
+
+You can preview the production build with `pnpm preview`.
+
+> To deploy the app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+
 ## Submitting Pull Requests
 
 We use conventional commits and signing. Once those are complete, you're ready to push the
