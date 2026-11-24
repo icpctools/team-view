@@ -211,8 +211,9 @@
 							{#if typeof column.title === 'string'}
 								<div class="overflow-hidden text-ellipsis">
 									{#if column.shortTitle}
-										<span class="hidden @min-[68px]:inline">{column.title}</span><span class="@min-[68px]:hidden"
-											>{column.shortTitle}</span>
+										<span class="hidden @min-[68px]:inline">{column.title}</span><span class="@min-[68px]:hidden">
+											{column.shortTitle}
+										</span>
 									{:else}
 										{column.title}
 									{/if}

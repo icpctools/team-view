@@ -136,14 +136,16 @@
 			<div class="w-24"><Clock contest={data.contest} contestState={data.contestState} /></div>
 
 			<div class="text-lg hover:bg-hover hover:text-link p-2 rounded-md">
-				<a href="/" class="flex flex-row items-baseline" title="Teams" aria-label="Teams"
-					><i class="fa-solid fa-people-group md:pr-2"></i><span class="hidden md:inline">Teams</span></a>
+				<a href="/" class="flex flex-row items-baseline" title="Teams" aria-label="Teams">
+					<i class="fa-solid fa-people-group md:pr-2"></i><span class="hidden md:inline">Teams</span>
+				</a>
 			</div>
 
 			{#if data.map}
 				<div class="text-lg hover:bg-hover hover:text-link p-2 rounded-md">
-					<a href="/map" class="flex flex-row items-baseline" title="Map" aria-label="Map"
-						><i class="fa-solid fa-map md:pr-2"></i><span class="hidden md:inline">Map</span></a>
+					<a href="/map" class="flex flex-row items-baseline" title="Map" aria-label="Map">
+						<i class="fa-solid fa-map md:pr-2"></i><span class="hidden md:inline">Map</span>
+					</a>
 				</div>
 			{/if}
 
@@ -152,14 +154,15 @@
 					href="/clarifications"
 					class="flex flex-row items-baseline"
 					title="Clarifications"
-					aria-label="Clarifications"
-					><i class="fa-solid fa-clipboard-question md:pr-2"></i><span class="hidden md:inline">Clarifications</span
-					></a>
+					aria-label="Clarifications">
+					<i class="fa-solid fa-clipboard-question md:pr-2"></i><span class="hidden md:inline">Clarifications</span>
+				</a>
 			</div>
 
 			<div class="text-lg hover:bg-hover hover:text-link p-2 rounded-md">
-				<a href="/scoreboard" class="flex flex-row items-baseline" title="Scoreboard" aria-label="Scoreboard"
-					><i class="fa-solid fa-ranking-star md:pr-2"></i><span class="hidden md:inline">Scoreboard</span></a>
+				<a href="/scoreboard" class="flex flex-row items-baseline" title="Scoreboard" aria-label="Scoreboard">
+					<i class="fa-solid fa-ranking-star md:pr-2"></i><span class="hidden md:inline">Scoreboard</span>
+				</a>
 			</div>
 
 			<DarkModeToggle />

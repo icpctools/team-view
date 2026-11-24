@@ -59,8 +59,9 @@
 				<div class="text-black dark:text-white grow">
 					{@render title?.()}
 				</div>
-				<button onclick={close} class="hover:bg-hover p-1 rounded" aria-label="close"
-					><i class="fa-solid fa-xmark"></i></button>
+				<button onclick={close} class="hover:bg-hover p-1 rounded" aria-label="close">
+					<i class="fa-solid fa-xmark"></i>
+				</button>
 			</div>
 
 			<!-- Content -->

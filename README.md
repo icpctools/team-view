@@ -28,6 +28,7 @@ To configure your backend Contest API server, set the following environment vari
 - CONTEST_PASSWORD - The user's password.
 
 For instance:
+
 ```
 podman pull ghcr.io/icpctools/team-view:0.x.x
 podman images (to see the image sha)
