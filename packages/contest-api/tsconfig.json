@@ -10,6 +10,7 @@
 		"resolveJsonModule": true,
 
 		"lib": ["esnext", "dom"],
+		"types": ["node"],
 
 		"paths": {
 			"/@/*": ["./src/*"]
