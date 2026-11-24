@@ -41,6 +41,8 @@ export type RelTime = string;
 
 export type Time = string;
 
+export type ScoreboardType = 'pass-fail' | 'score';
+
 export interface Provider {
 	name: string;
 	version?: string;
@@ -77,7 +79,7 @@ export interface Contest {
 	duration: RelTime;
 	scoreboard_freeze_duration?: RelTime;
 	scoreboard_thaw_time?: Time;
-	scoreboard_type: 'pass-fail' | 'score';
+	scoreboard_type: ScoreboardType;
 	penalty_time?: number | RelTime; // 2023-06 | 2026-01 spec
 	main_scoreboard_group_id?: Id; // 2026-01
 	banner?: FileReference[];

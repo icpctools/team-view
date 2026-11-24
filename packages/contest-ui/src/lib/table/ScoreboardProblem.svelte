@@ -1,10 +1,15 @@
 <script lang="ts">
-	import { timeToMin, type Problem, type ScoreboardProblem as ScoreboardProblemData } from '@icpctools/contest-api';
+	import {
+		type ScoreboardType,
+		timeToMin,
+		type Problem,
+		type ScoreboardProblem as ScoreboardProblemData
+	} from '@icpctools/contest-api';
 	import { parseHexColor, rgbToHex } from '../color-util.js';
 	import { FAILED, PENDING, SCORING_MID, SOLVED } from '../colors.js';
 
 	interface Props {
-		scoreboard_type: 'pass-fail' | 'score';
+		scoreboard_type: ScoreboardType;
 		problem: Problem;
 		rp: ScoreboardProblemData;
 		mode?: 'full' | 'summary';
