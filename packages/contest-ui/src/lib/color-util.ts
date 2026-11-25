@@ -47,11 +47,15 @@ export function darker(color: number[]): number[] {
 	return darker;
 }
 
+export function darkerHex(hex: string): string {
+	return rgbToHex(darker(parseHexColor(hex)));
+}
+
 export function rgbToHex(color: number[]): string {
 	return '#' + colorToHex(color[0]) + colorToHex(color[1]) + colorToHex(color[2]);
 }
 
-export function colorToHex(c: number): string {
+function colorToHex(c: number): string {
 	const hex = Math.floor(c).toString(16);
 	return hex.length === 1 ? '0' + hex : hex;
 }

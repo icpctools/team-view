@@ -33,4 +33,5 @@ export {
 };
 
 export * from './colors.js';
+export * from './color-util.js';
 export type { Column } from './table/table.js';

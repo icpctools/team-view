@@ -106,6 +106,10 @@
 		"./colors": {
 			"types": "./dist/colors.d.ts",
 			"default": "./dist/colors.js"
+		},
+		"./color-util": {
+			"types": "./dist/color-util.d.ts",
+			"default": "./dist/color-util.js"
 		}
 	},
 	"scripts": {
