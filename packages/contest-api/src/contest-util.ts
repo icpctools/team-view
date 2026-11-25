@@ -3,7 +3,7 @@
  */
 import type { ContestAPI } from './contest-api.js';
 import { parseRelTime } from './contest-time-util.js';
-import type { Access, FileReference, Problem, Submission } from './contest-types.js';
+import type { Access, FileReference, Judgement, Problem, Submission } from './contest-types.js';
 
 export function findById<Type extends { id: string }>(
 	arr: Array<Type> | undefined,
@@ -227,4 +227,14 @@ export function hasEndpointProperty(acc: Access | undefined, endpoint: string, p
 	}
 
 	return false;
+}
+
+export function getCurrentJudgement(submissionId: string, judgements: Judgement[]): Judgement | undefined {
+	const jud = findManyBySubmissionId(judgements, submissionId);
+	if (!jud || jud.length === 0) {
+		return undefined;
+	}
+
+	// find current judgement, otherwise it is the first one
+	return jud.find((jj) => jj.current) ?? jud[0];
 }

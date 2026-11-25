@@ -1,9 +1,7 @@
 import { error } from '@sveltejs/kit';
 import { findById } from '@icpctools/contest-api';
 import { loadContest } from '#lib/state.svelte.js';
-import type { Judgement } from '@icpctools/contest-api';
-import type { SubmissionData } from '#lib/submissionData.js';
-import { findManyBySubmissionId } from '@icpctools/contest-api';
+import { getSubmissionData } from '#lib/submissionData.js';
 import { hasEndpointProperty } from '@icpctools/contest-api';
 
 export const load = async ({ params, depends }) => {
@@ -28,42 +26,10 @@ export const load = async ({ params, depends }) => {
 	const coaches = persons?.filter((p) => p.role === 'coach' && p.team_ids?.includes(team.id));
 	const contestants = persons?.filter((p) => p.role === 'contestant' && p.team_ids?.includes(team.id));
 
-	const problems = cc.getProblems();
-
-	const languages = cc.getLanguages();
-
-	const submissions2 = cc.getSubmissions();
-
-	const submissions = submissions2?.filter((s) => s.team_id === team.id);
-
-	const judgements = cc.getJudgements();
-
-	const judgementTypes = cc.getJudgementTypes();
-
-	const submissionData = submissions?.map((s) => {
-		const jud = findManyBySubmissionId(judgements, s.id);
-		let j: Judgement | undefined;
-		if (jud && jud.length > 0) {
-			// find current judgement
-			j = jud.find((jj) => jj.current);
-
-			// otherwise it is the first one
-			if (!j) j = jud[0];
-		}
-
-		return {
-			id: s.id,
-			time: s.contest_time,
-			team: team,
-			problem: findById(problems, s.problem_id),
-			language: findById(languages, s.language_id),
-			judgement: j,
-			judgementType: findById(judgementTypes, j?.judgement_type_id),
-			files: s.files,
-			reaction: s.reaction,
-			auth: cc.getAuth()
-		} as SubmissionData;
-	});
+	const submissionData = getSubmissionData(
+		cc,
+		cc.getSubmissions().filter((s) => s.team_id === team.id)
+	);
 
 	let country;
 	if (org?.country) {
