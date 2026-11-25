@@ -35,38 +35,43 @@
 					logo: data.logos[index],
 					onclick: () => gotoTeamId(row.team_id)
 				})
-			},
-			{
-				title: 'Solved',
-				shortTitle: 'Sol',
-				hidden: scoreboard_type() !== 'pass-fail',
-				renderer: ScoreboardSolved,
-				rendererProps: (row: ScoreboardRow) => ({
-					score: row.score
-				}),
-				align: 'center'
-			},
-			{
-				title: 'Penalty',
-				shortTitle: 'Pen',
-				hidden: scoreboard_type() !== 'pass-fail',
-				renderer: SimpleColumn,
-				rendererProps: (row: ScoreboardRow) => ({
-					object: timeToMin(row.score.total_time)
-				}),
-				align: 'center'
-			},
-			{
-				title: 'Score',
-				shortTitle: 'Scr',
-				hidden: scoreboard_type() !== 'score',
-				renderer: SimpleColumn,
-				rendererProps: (row: ScoreboardRow) => ({
-					object: row.score.score ? row.score.score : ''
-				}),
-				align: 'center'
 			}
 		];
+
+		if (data.problems.length > 0) {
+			cols.push(
+				{
+					title: 'Solved',
+					shortTitle: 'Sol',
+					hidden: scoreboard_type() !== 'pass-fail',
+					renderer: ScoreboardSolved,
+					rendererProps: (row: ScoreboardRow) => ({
+						score: row.score
+					}),
+					align: 'center'
+				},
+				{
+					title: 'Penalty',
+					shortTitle: 'Pen',
+					hidden: scoreboard_type() !== 'pass-fail',
+					renderer: SimpleColumn,
+					rendererProps: (row: ScoreboardRow) => ({
+						object: timeToMin(row.score.total_time)
+					}),
+					align: 'center'
+				},
+				{
+					title: 'Score',
+					shortTitle: 'Scr',
+					hidden: scoreboard_type() !== 'score',
+					renderer: SimpleColumn,
+					rendererProps: (row: ScoreboardRow) => ({
+						object: row.score.score ? row.score.score : ''
+					}),
+					align: 'center'
+				}
+			);
+		}
 
 		for (let i = 0; i < data.problems.length; i++) {
 			cols.push({

@@ -13,57 +13,60 @@
 	let { data, children } = $props();
 
 	const scoreboard_type = () => data.scoreboard_type;
-	const columns: Column<ScoreboardRow>[] = [
-		{
-			title: 'Rank',
-			width: '50px',
-			renderer: RankColumn,
-			rendererProps: (row: ScoreboardRow) => ({ rank: row.rank }),
-			align: 'center'
-		},
-		{
-			title: 'Solved',
-			hidden: scoreboard_type() !== 'pass-fail',
-			renderer: ScoreboardSolved,
-			rendererProps: (row: ScoreboardRow) => ({
-				score: row.score
-			}),
-			align: 'center'
-		},
-		{
-			title: 'Penalty',
-			hidden: scoreboard_type() !== 'pass-fail',
-			renderer: SimpleColumn,
-			rendererProps: (row: ScoreboardRow) => ({
-				object: timeToMin(row.score.total_time)
-			}),
-			align: 'center'
-		},
-		{
-			title: 'Score',
-			hidden: scoreboard_type() !== 'score',
-			renderer: SimpleColumn,
-			rendererProps: (row: ScoreboardRow) => ({
-				object: row.score.score ? row.score.score : ''
-			}),
-			align: 'center'
-		}
-	];
+	const columns: Column<ScoreboardRow>[] = $derived.by(() => {
+		const cols: Column<ScoreboardRow>[] = [
+			{
+				title: 'Rank',
+				width: '50px',
+				renderer: RankColumn,
+				rendererProps: (row: ScoreboardRow) => ({ rank: row.rank }),
+				align: 'center'
+			},
+			{
+				title: 'Solved',
+				hidden: scoreboard_type() !== 'pass-fail',
+				renderer: ScoreboardSolved,
+				rendererProps: (row: ScoreboardRow) => ({
+					score: row.score
+				}),
+				align: 'center'
+			},
+			{
+				title: 'Penalty',
+				hidden: scoreboard_type() !== 'pass-fail',
+				renderer: SimpleColumn,
+				rendererProps: (row: ScoreboardRow) => ({
+					object: timeToMin(row.score.total_time)
+				}),
+				align: 'center'
+			},
+			{
+				title: 'Score',
+				hidden: scoreboard_type() !== 'score',
+				renderer: SimpleColumn,
+				rendererProps: (row: ScoreboardRow) => ({
+					object: row.score.score ? row.score.score : ''
+				}),
+				align: 'center'
+			}
+		];
 
-	let probs = () => data.problems;
-	for (let i = 0; i < probs().length; i++) {
-		columns.push({
-			title: 'Problem',
-			renderer: ScoreboardProblem,
-			rendererProps: (row: ScoreboardRow) => ({
-				scoreboard_type: data.scoreboard_type,
-				rp: row.problems?.find((p) => p.problem_id == data.problems[i].id),
-				problem: data.problems[i],
-				mode: 'summary'
-			}),
-			align: 'stretch'
-		});
-	}
+		for (let i = 0; i < data.problems.length; i++) {
+			cols.push({
+				title: 'Problem',
+				renderer: ScoreboardProblem,
+				rendererProps: (row: ScoreboardRow) => ({
+					scoreboard_type: data.scoreboard_type,
+					rp: row.problems?.find((p) => p.problem_id == data.problems[i].id),
+					problem: data.problems[i],
+					mode: 'summary'
+				}),
+				align: 'stretch'
+			});
+		}
+
+		return cols;
+	});
 </script>
 
 <div class="w-full h-full max-w-full max-h-full overflow-hidden flex flex-col bg-white dark:bg-gray-900">
@@ -98,7 +101,7 @@
 		</div>
 	</div>
 
-	{#if data.problems && data.row}
+	{#if data.problems?.length > 0 && data.row}
 		<Table kind="scoreboard" data={[data.row]} {columns} showHeader={false}></Table>
 	{/if}
 
