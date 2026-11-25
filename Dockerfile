@@ -1,5 +1,5 @@
-# Build stage
-FROM node:24-alpine AS build
+# Build once on the builder's native architecture for both runtime platforms.
+FROM --platform=$BUILDPLATFORM node:24-alpine AS build
 RUN npm install -g pnpm@11 && apk add --no-cache git
 
 # Set working directory
@@ -13,14 +13,18 @@ COPY packages/contest-ui/package.json ./packages/contest-ui/
 # Install dependencies (including devDependencies needed for build)
 RUN CI=true pnpm install --frozen-lockfile
 
-# Copy source code
+# Cache workspace package builds independently of application source changes.
+COPY packages/ ./packages/
+RUN pnpm build:packages
+
+# Copy application source code
 COPY . .
 
 # Build the application. The output is self-contained and the runtime stage does
 # not include node_modules: adapter-node bundles devDependencies into the build but
 # leaves `dependencies` as runtime imports. Any package the server code imports
 # (e.g. video.js, @monaco-editor/loader) must therefore be a devDependency.
-RUN pnpm run build
+RUN pnpm exec vite build
 
 # Runtime stage
 FROM node:24-alpine

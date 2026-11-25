@@ -1,11 +1,11 @@
 # Dependencies
-node_modules
+**/node_modules
 npm-debug.log*
 
 # Build outputs
 build/
-.svelte-kit/
-dist/
+**/.svelte-kit/
+**/dist/
 
 # Environment files
 .env

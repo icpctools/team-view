@@ -25,6 +25,9 @@ export default defineConfig({
 	worker: {
 		format: 'es'
 	},
+	build: {
+		reportCompressedSize: false
+	},
 	server: {
 		fs: {
 			// Allow serving files from packages directory for module resolution
